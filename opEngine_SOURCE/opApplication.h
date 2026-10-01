@@ -18,6 +18,8 @@ namespace op
 		void Render();
 
 	private:
+		void ClearRenderTarget();
+		void CopyRenderTarget(HDC source, HDC dest);
 		void AdjustWindow(HWND hwnd, UINT width, UINT height);
 		void CreateBuffer(UINT Width, UINT height);
 
@@ -31,6 +33,5 @@ namespace op
 		UINT m_width;
 		UINT m_height;
 
-		GameObject m_player;
 	};
 }

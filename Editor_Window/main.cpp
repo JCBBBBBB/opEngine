@@ -5,6 +5,7 @@
 #include "Editor_Window.h"
 
 #include "..\\opEngine_SOURCE\\opApplication.h"
+#include "..\\opEngine_Window\\opLoadScenes.h"
 
 op::Application application;
 
@@ -156,6 +157,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
+
+   // Load Scenes, 반드시 호출
+   op::LoadScenes(); // 씬을 생성하고 현재 씬을 선택
 
    return TRUE;
 }
