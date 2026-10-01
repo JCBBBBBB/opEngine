@@ -1,5 +1,9 @@
 #include "opPlayScene.h"
 #include "opGameObject.h"
+#include "opPlayer.h"
+#include "opTransform.h"
+#include "opSpriteRenderer.h"
+
 
 namespace op
 {
@@ -15,11 +19,29 @@ namespace op
 
 	void PlayScene::Initialize()
 	{
-		for (size_t i = 0; i < 100; i++)
 		{
-			GameObject* obj = new GameObject();
-			obj->SetPosition(rand() % 800, rand() % 600);
-			AddGameObject(obj);
+			Player* player = new Player();
+
+			Transform* transform = player->AddComponent<Transform>();
+			transform->SetPos(700, 450);
+			transform->SetName(L"Transform");
+
+			SpriteRenderer* spriteRenderer = player->AddComponent<SpriteRenderer>();
+			spriteRenderer->SetName(L"SpriteRenderer");
+
+			AddGameObject(player);
+		}
+		{
+			Player* player = new Player();
+
+			Transform* transform = player->AddComponent<Transform>();
+			transform->SetPos(300, 450);
+			transform->SetName(L"Transform");
+
+			SpriteRenderer* spriteRenderer = player->AddComponent<SpriteRenderer>();
+			spriteRenderer->SetName(L"SpriteRenderer");
+
+			AddGameObject(player);
 		}
 	}
 

@@ -5,64 +5,50 @@
 namespace op
 {
 
-	GameObject::GameObject() : m_x(0), m_y(0)
+	GameObject::GameObject()
 	{
 
 	}
 
 	GameObject::~GameObject()
 	{
-
+		for (Component* component : m_components)
+		{
+			delete component;
+			component = nullptr;
+		}
 	}
 	
+	void GameObject::Initialize()
+	{
+		for (Component* component : m_components)
+		{
+			component->Initialize();
+		}
+	}
+
 	void GameObject::Update()
 	{
-		const int speed = 100.0f;
-
-		if (Input::GetKey(KeyCode::A))
+		for (Component* component : m_components)
 		{
-			m_x -= speed * Time::DeltaTime();
-		}
-
-		if (Input::GetKey(KeyCode::D))
-		{
-			m_x += speed * Time::DeltaTime();
-		}
-
-		if (Input::GetKey(KeyCode::W))
-		{
-			m_y -= speed * Time::DeltaTime();
-		}
-
-		if (Input::GetKey(KeyCode::S))
-		{
-			m_y += speed * Time::DeltaTime();
+			component->Update();
 		}
 	}
 
 	void GameObject::LateUpdate()
 	{
-	
+		for (Component* component : m_components)
+		{
+			component->LateUpdate();
+		}
 	}
 
 	void GameObject::Render(HDC hdc)
 	{
-		//파랑 브러쉬 생성
-		HBRUSH blueBrush = CreateSolidBrush(RGB(rand() % 255, rand() % 255, rand() % 255));
-
-		// 파랑 브러쉬 DC에 선택 그리고 흰색 브러쉬 반환값 반환
-		HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, blueBrush);
-
-		HPEN redPen = CreatePen(PS_SOLID, 2, RGB(rand() % 255, rand() % 255, rand() % 255));
-		HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
-
-		SelectObject(hdc, oldPen);
-
-		Ellipse(hdc, m_x, m_y, 100 + m_x, 100 + m_y);
-
-		SelectObject(hdc, oldBrush);
-		DeleteObject(blueBrush);
-		DeleteObject(redPen);
+		for (Component* component : m_components)
+		{
+			component->Render(hdc);
+		}
 	}
 	
 }

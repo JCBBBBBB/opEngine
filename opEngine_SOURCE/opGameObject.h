@@ -1,5 +1,6 @@
 #pragma once
 #include "CommonInclude.h"
+#include "opComponent.h"
 
 namespace op
 {
@@ -9,21 +10,38 @@ namespace op
 		GameObject();
 		~GameObject();
 
-		void Update();
-		void LateUpdate();
-		void Render(HDC hdc);
+		virtual void Initialize();
+		virtual void Update();
+		virtual void LateUpdate();
+		virtual void Render(HDC hdc);
 
-		void SetPosition(float x, float y)
+		template <typename T>
+		T* AddComponent()
 		{
-			m_x = x;
-			m_y = y;
+			T* component = new T();
+			component->SetOwner(this);
+			m_components.push_back(component);
+
+			return component;
 		}
 
-		float GetPositionX() { return m_x; }
-		float GetPositionY() { return m_y; }
+		template<typename T>
+		T* GetComponent()
+		{
+			T* component = nullptr;
+			for (Component* comp : m_components)
+			{
+				component = dynamic_cast<T*>(comp);
+				if (component)
+				{
+					break;
+				}
+			}
+
+			return component;
+		}
 
 	private:
-		float m_x;
-		float m_y;
+		std::vector<Component*> m_components;
 	};
 }
