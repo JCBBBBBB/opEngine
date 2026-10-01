@@ -1,5 +1,5 @@
 #include "opApplication.h"
-#include "opGameObject.h"
+#include "opInput.h"
 
 namespace op
 {
@@ -19,6 +19,8 @@ namespace op
 		m_hdc = GetDC(hwnd);
 
 		m_player.SetPosition(0, 0);
+
+		Input::Initialize();
 	}
 
 	void Application::Run()
@@ -31,6 +33,7 @@ namespace op
 
 	void Application::Update()
 	{
+		Input::Update(); // 입력 먼저 갱신한 다음 플레이어 갱신해야 함
 		m_player.Update();
 	}
 

@@ -17,9 +17,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)CommonInclude.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opApplication.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)opApplication.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opGameObject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opInput.cpp" />
   </ItemGroup>
 </Project>

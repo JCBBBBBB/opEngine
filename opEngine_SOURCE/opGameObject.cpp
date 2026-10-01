@@ -1,4 +1,5 @@
 #include "opGameObject.h"
+#include "opInput.h"
 
 namespace op
 {
@@ -15,22 +16,22 @@ namespace op
 	
 	void GameObject::Update()
 	{
-		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		if (Input::GetKey(KeyCode::A))
 		{
 			m_x -= 0.01f;
 		}
 
-		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		if (Input::GetKey(KeyCode::D))
 		{
 			m_x += 0.01f;
 		}
 
-		if (GetAsyncKeyState(VK_UP) & 0x8000)
+		if (Input::GetKey(KeyCode::W))
 		{
 			m_y -= 0.01f;
 		}
 
-		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+		if (Input::GetKey(KeyCode::S))
 		{
 			m_y += 0.01f;
 		}
@@ -53,7 +54,7 @@ namespace op
 		HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
 		SelectObject(hdc, oldPen);
 
-		Rectangle(hdc, 100 + mX, 100 + mY, 200 + mX, 200 + mY);
+		Rectangle(hdc, 100 + m_x, 100 + m_y, 200 + m_x, 200 + m_y);
 
 		SelectObject(hdc, oldBrush);
 		DeleteObject(blueBrush);
