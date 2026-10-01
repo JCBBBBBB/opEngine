@@ -10,7 +10,7 @@ namespace op
 		Application();
 		~Application();
 
-		void Initialize(HWND hwnd);
+		void Initialize(HWND hwnd, UINT width, UINT height);
 		void Run();
 
 		void Update();
@@ -20,6 +20,12 @@ namespace op
 	private:
 		HWND m_hwnd; // 사용할 창의 핸들
 		HDC m_hdc; // 그 창에 그리기 위한 DC 핸들
+
+		HDC m_backHdc; // 메모리에 그리는데 사용할 DC
+		HBITMAP m_backBitmap; // 그 그림을 저장할 비트맵
+
+		UINT m_width;
+		UINT m_height;
 
 		GameObject m_player;
 	};

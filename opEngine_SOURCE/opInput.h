@@ -16,6 +16,7 @@ namespace op
 		Q, W, E, R, T, Y, U, I, O, P,
 		A, S, D, F, G, H, J, K, L,
 		Z, X, C, V, B, N, M,
+		Left, Right, Down, Up,
 		End,
 	};
 
@@ -36,7 +37,6 @@ namespace op
 		static bool GetKeyDown(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Down; }
 		static bool GetKeyUp(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Up; }
 		static bool GetKey(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Pressed; }
-
 
 	private:
 		static std::vector<Key> m_keys;

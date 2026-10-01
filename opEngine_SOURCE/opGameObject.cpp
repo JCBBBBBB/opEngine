@@ -1,5 +1,6 @@
 #include "opGameObject.h"
 #include "opInput.h"
+#include "opTime.h"
 
 namespace op
 {
@@ -16,24 +17,26 @@ namespace op
 	
 	void GameObject::Update()
 	{
+		const int speed = 100.0f;
+
 		if (Input::GetKey(KeyCode::A))
 		{
-			m_x -= 0.01f;
+			m_x -= speed * Time::DeltaTime();
 		}
 
 		if (Input::GetKey(KeyCode::D))
 		{
-			m_x += 0.01f;
+			m_x += speed * Time::DeltaTime();
 		}
 
 		if (Input::GetKey(KeyCode::W))
 		{
-			m_y -= 0.01f;
+			m_y -= speed * Time::DeltaTime();
 		}
 
 		if (Input::GetKey(KeyCode::S))
 		{
-			m_y += 0.01f;
+			m_y += speed * Time::DeltaTime();
 		}
 	}
 

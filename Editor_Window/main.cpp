@@ -135,26 +135,29 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, 0, 800, 600, nullptr, nullptr, hInstance, nullptr);
+   const UINT width = 800;
+   const UINT height = 600;
 
-    application.Initialize(hWnd);
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+      CW_USEDEFAULT, 0, width, height, nullptr, nullptr, hInstance, nullptr);
 
-    //2개이상의 윈도우도 생성 가능하다.
-    //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-    //    CW_USEDEFAULT, 0, 1600, 900, nullptr, nullptr, hInstance, nullptr);
+   application.Initialize(hWnd, width, height);
 
-    if (!hWnd)
-    {
-        return FALSE;
-    }
+   //2개이상의 윈도우도 생성 가능하다.
+   //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   //    CW_USEDEFAULT, 0, 1600, 900, nullptr, nullptr, hInstance, nullptr);
 
-    ShowWindow(hWnd, nCmdShow);
-    UpdateWindow(hWnd);
+   if (!hWnd)
+   {
+      return FALSE;
+   }
 
-    return TRUE;
+   ShowWindow(hWnd, nCmdShow);
+   UpdateWindow(hWnd);
+
+   return TRUE;
 }
 
 //

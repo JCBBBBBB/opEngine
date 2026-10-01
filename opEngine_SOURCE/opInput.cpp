@@ -9,6 +9,7 @@ namespace op
 		'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
 		'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
 		'Z', 'X', 'C', 'V', 'B', 'N', 'M',
+		VK_LEFT, VK_RIGHT, VK_DOWN, VK_UP,
 	};
 
 	// 26개 키 각각의 정보를 만들어 m_keys에 추가
@@ -64,4 +65,5 @@ namespace op
 			}
 		}
 	}
+
 }
