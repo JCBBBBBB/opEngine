@@ -1,5 +1,6 @@
 #pragma once
-#include "CommonInclude.h"
+
+#include "opGameObject.h"
 
 namespace op
 {
@@ -20,8 +21,6 @@ namespace op
 		HWND m_hwnd; // 사용할 창의 핸들
 		HDC m_hdc; // 그 창에 그리기 위한 DC 핸들
 
-		float m_speed;
-		float m_x;
-		float m_y;
+		GameObject m_player;
 	};
 }
