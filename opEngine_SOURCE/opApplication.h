@@ -18,6 +18,10 @@ namespace op
 		void Render();
 
 	private:
+		void AdjustWindow(HWND hwnd, UINT width, UINT height);
+		void CreateBuffer(UINT Width, UINT height);
+
+	private:
 		HWND m_hwnd; // 사용할 창의 핸들
 		HDC m_hdc; // 그 창에 그리기 위한 DC 핸들
 
