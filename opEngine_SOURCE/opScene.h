@@ -2,6 +2,7 @@
 
 #include "opEntity.h"
 #include "opGameObject.h"
+#include "opLayer.h"
 
 namespace op
 {
@@ -16,9 +17,15 @@ namespace op
 		virtual void LateUpdate();
 		virtual void Render(HDC hdc);
 
-		void AddGameObject(GameObject* gameObject);
+		virtual void OnEnter(); // 이 씬을 현재 씬으로 선택했을 때
+		virtual void OnExit(); // 현재 씬에서 다른 씬으로 넘어갈 때
+
+		void AddGameObject(GameObject* gameObject, const LayerType layerType);
+	
+	private:
+		void CreateLayers();
 
 	private:
-		std::vector<GameObject*> m_gameObjects; // 씬에 속한 개임 객체들
+		std::vector<Layer*> m_layers; // 씬에 속한 개임 객체들
 	};
 }

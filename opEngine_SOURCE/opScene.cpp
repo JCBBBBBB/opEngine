@@ -2,9 +2,9 @@
 
 namespace op
 {
-	Scene::Scene() : m_gameObjects{}
+	Scene::Scene() : m_layers{}
 	{
-
+		CreateLayers();
 	}
 
 	Scene::~Scene()
@@ -14,36 +14,78 @@ namespace op
 
 	void Scene::Initialize()
 	{
+		for (Layer* layer : m_layers)
+		{
+			if (layer == nullptr)
+			{
+				continue;
+			}
 
+			layer->Initialize();
+		}
 	}
 
 	void Scene::Update()
 	{
-		for (GameObject* gameObject : m_gameObjects)
+		for (Layer* layer : m_layers)
 		{
-			gameObject->Update();
+			if (layer == nullptr)
+			{
+				continue;
+			}
+
+			layer->Update();
 		}
 	}
 
 	void Scene::LateUpdate()
 	{
-		for (GameObject* gameObject : m_gameObjects)
+		for (Layer* layer : m_layers)
 		{
-			gameObject->LateUpdate();
+			if (layer == nullptr)
+			{
+				continue;
+			}
+
+			layer->LateUpdate();
 		}
 	}
 
 	void Scene::Render(HDC hdc)
 	{
-		for (GameObject* gameObject : m_gameObjects)
+		for (Layer* layer : m_layers)
 		{
-			gameObject->Render(hdc);
+			if (layer == nullptr)
+			{
+				continue;
+			}
+
+			layer->Render(hdc);
 		}
 	}
 
-	void Scene::AddGameObject(GameObject* gameObject)
+	void Scene::AddGameObject(GameObject* gameObject, const LayerType layerType)
 	{
-		m_gameObjects.push_back(gameObject);
+		m_layers[(UINT)layerType]->AddGameObject(gameObject);
+	}
+
+	void Scene::CreateLayers()
+	{
+		m_layers.resize((UINT)LayerType::Max);
+		for (size_t i = 0; i < (UINT)LayerType::Max; i++)
+		{
+			m_layers[i] = new Layer();
+		}
+	}
+
+	void Scene::OnEnter()
+	{
+
+	}
+
+	void Scene::OnExit()
+	{
+
 	}
 
 }

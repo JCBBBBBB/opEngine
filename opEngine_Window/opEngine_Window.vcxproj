@@ -135,10 +135,12 @@
     <ClInclude Include="opLoadScenes.h" />
     <ClInclude Include="opPlayer.h" />
     <ClInclude Include="opPlayScene.h" />
+    <ClInclude Include="opTitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayer.cpp" />
     <ClCompile Include="opPlayScene.cpp" />
+    <ClCompile Include="opTitleScene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

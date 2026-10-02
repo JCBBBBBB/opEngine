@@ -22,12 +22,19 @@ namespace op
 		// 이미 만든 씬을 현재 씬으로 선택하는 함수
 		static Scene* LoadScene(const std::wstring& name)
 		{
+			if (m_activeScene)
+			{
+				m_activeScene->OnExit();
+			}
+
 			std::map<std::wstring, Scene*>::iterator iter = m_scene.find(name);
 			if (iter == m_scene.end())
 			{
 				return nullptr;
 			}
+
 			m_activeScene = iter->second;
+			m_activeScene->OnEnter();
 
 			return iter->second;
 		}

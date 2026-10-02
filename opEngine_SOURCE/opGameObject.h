@@ -19,6 +19,7 @@ namespace op
 		T* AddComponent()
 		{
 			T* component = new T();
+			component->Initialize();
 			component->SetOwner(this);
 			m_components.push_back(component);
 

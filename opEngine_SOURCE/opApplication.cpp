@@ -44,7 +44,7 @@ namespace op
 
 	void Application::LateUpdate()
 	{
-
+		SceneManager::LateUpdate();
 	}
 
 	// 백버퍼에서 그림 그리고, 프론트버퍼에 복사해서 보여주는 거 반복

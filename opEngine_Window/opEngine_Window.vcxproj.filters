@@ -18,6 +18,9 @@
     <ClInclude Include="opPlayer.h">
       <Filter>Content</Filter>
     </ClInclude>
+    <ClInclude Include="opTitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayScene.cpp">
@@ -25,6 +28,9 @@
     </ClCompile>
     <ClCompile Include="opPlayer.cpp">
       <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="opTitleScene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

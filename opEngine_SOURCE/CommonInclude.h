@@ -15,3 +15,5 @@
 
 #include <gdiplus.h>
 #pragma comment(lib, "gdiplus.lib");
+
+#include "opEnums.h"
