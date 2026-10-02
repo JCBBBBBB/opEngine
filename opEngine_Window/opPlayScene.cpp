@@ -19,30 +19,16 @@ namespace op
 
 	void PlayScene::Initialize()
 	{
-		{
-			Player* player = new Player();
+		Player* backGround = new Player();
+		Transform* transform = backGround->AddComponent<Transform>();
+		transform->SetPos(Vector2(0, 0));
+		transform->SetName(L"Transform");
 
-			Transform* transform = player->AddComponent<Transform>();
-			transform->SetPos(700, 450);
-			transform->SetName(L"Transform");
-
-			SpriteRenderer* spriteRenderer = player->AddComponent<SpriteRenderer>();
-			spriteRenderer->SetName(L"SpriteRenderer");
-
-			AddGameObject(player);
-		}
-		{
-			Player* player = new Player();
-
-			Transform* transform = player->AddComponent<Transform>();
-			transform->SetPos(300, 450);
-			transform->SetName(L"Transform");
-
-			SpriteRenderer* spriteRenderer = player->AddComponent<SpriteRenderer>();
-			spriteRenderer->SetName(L"SpriteRenderer");
-
-			AddGameObject(player);
-		}
+		SpriteRenderer* spriteRenderer = backGround->AddComponent<SpriteRenderer>();
+		spriteRenderer->SetName(L"SpriteRenderer");
+		spriteRenderer->ImageLoad(L"C:\\Workspace\\opEngine\\Resources\\CloudOcean.png");
+	
+		AddGameObject(backGround);
 	}
 
 	void PlayScene::Update()

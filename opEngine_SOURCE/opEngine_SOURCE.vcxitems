@@ -20,6 +20,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opEntity.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opInput.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opScene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSceneManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSpriteRenderer.h" />
@@ -32,6 +34,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opEntity.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opGameObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opInput.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSceneManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSpriteRenderer.cpp" />

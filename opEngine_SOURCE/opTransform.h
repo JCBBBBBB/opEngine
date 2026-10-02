@@ -5,11 +5,7 @@
 
 namespace op
 {
-	struct Pos
-	{
-		int m_x;
-		int m_y;
-	};
+	using namespace math;
 
 	class Transform : public Component
 	{
@@ -22,12 +18,10 @@ namespace op
 		void LateUpdate() override;
 		void Render(HDC hdc) override;
 
-		void SetPos(int x, int y) { m_x = x; m_y = y; }
-		int GetPosX() { return m_x; }
-		int GetPosY() { return m_y; }
+		void SetPos(Vector2 pos) { m_position.x = pos.x; m_position.y = pos.y; }
+		Vector2 GetPosition() { return m_position; }
 
 	private:
-		int m_x;
-		int m_y;
+		Vector2 m_position;
 	};
 }

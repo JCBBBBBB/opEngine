@@ -31,6 +31,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opEntity.cpp">
       <Filter>Base</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h">
@@ -66,11 +68,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opApplication.h">
       <Filter>Base</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="GameObject">
-      <UniqueIdentifier>{9597056e-4c88-497b-96c7-65e0523f63bb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{11e24c86-dc1a-413c-88b9-4d8da7d36c1b}</UniqueIdentifier>
     </Filter>
@@ -82,6 +83,9 @@
     </Filter>
     <Filter Include="Base">
       <UniqueIdentifier>{af12ff29-02b2-4505-aa00-679a92268ac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{9597056e-4c88-497b-96c7-65e0523f63bb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
