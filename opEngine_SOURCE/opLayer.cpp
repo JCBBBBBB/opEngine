@@ -14,6 +14,7 @@ namespace op
 
 	void Layer::Initialize()
 	{
+		// 목록에 들어있는 오브젝트 주소를 하나씩 가져옴
 		for (GameObject* gameObject : m_gameObjects)
 		{
 			if (gameObject == nullptr)
@@ -65,10 +66,10 @@ namespace op
 	{
 		if (gameObject == nullptr)
 		{
-			return;
+			return; // 등록할 객체가 없으면 함수 종료
 		}
 
-		m_gameObjects.push_back(gameObject);
+		m_gameObjects.push_back(gameObject); // 목록 맨 뒤에 주소 추가
 	}
 
 }

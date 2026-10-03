@@ -19,6 +19,6 @@ namespace op
 		void AddGameObject(GameObject* gameObject);
 
 	private:
-		std::vector<GameObject*> m_gameObjects;
+		std::vector<GameObject*> m_gameObjects; // 이 Layer에 등록된 오브젝트 목록
 	};
 }

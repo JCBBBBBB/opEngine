@@ -2,7 +2,7 @@
 
 namespace op
 {
-	Transform::Transform()
+	Transform::Transform() : Component(enums::ComponentType::Transform)
 	{
 
 	}

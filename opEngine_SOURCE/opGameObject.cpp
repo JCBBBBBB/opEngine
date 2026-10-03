@@ -9,6 +9,7 @@ namespace op
 
 	GameObject::GameObject()
 	{
+		m_components.resize((UINT)enums::ComponentType::End);
 		InitializeTransform();
 	}
 
@@ -25,6 +26,11 @@ namespace op
 	{
 		for (Component* component : m_components)
 		{
+			if (component == nullptr)
+			{
+				continue;
+			}
+
 			component->Initialize();
 		}
 	}
@@ -33,6 +39,11 @@ namespace op
 	{
 		for (Component* component : m_components)
 		{
+			if (component == nullptr)
+			{
+				continue;
+			}
+
 			component->Update();
 		}
 	}
@@ -41,6 +52,11 @@ namespace op
 	{
 		for (Component* component : m_components)
 		{
+			if (component == nullptr)
+			{
+				continue;
+			}
+
 			component->LateUpdate();
 		}
 	}
@@ -49,6 +65,11 @@ namespace op
 	{
 		for (Component* component : m_components)
 		{
+			if (component == nullptr)
+			{
+				continue;
+			}
+
 			component->Render(hdc);
 		}
 	}

@@ -2,6 +2,16 @@
 
 namespace op::enums
 {
+	enum class ComponentType
+	{
+		Transform,
+		SpriteRenderer,
+		Script,
+		Camera,
+		End,
+	};
+
+
 	enum class LayerType
 	{
 		None,
@@ -12,9 +22,9 @@ namespace op::enums
 
 	enum class ResourceType
 	{
-		Texture,
-		AudioClip,
-		Prefab,
+		Texture, // 이미지
+		AudioClip, // 소리
+		Prefab, // 재사용할 오브젝트
 		End,
 	};
 }

@@ -20,13 +20,6 @@ namespace op
 	{
 		GameObject::LateUpdate();
 
-		if (Input::GetKey(KeyCode::Right))
-		{
-			Transform* transform = GetComponent<Transform>();
-			Vector2 pos = transform->GetPosition();
-			pos.x += 100.0f * Time::DeltaTime();
-			transform->SetPosition(pos);
-		}
 	}
 
 	void Player::Render(HDC hdc)

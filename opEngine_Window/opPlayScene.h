@@ -19,6 +19,6 @@ namespace op
 		void OnExit() override;
 
 	private:
-		class Player* backGround;
+		class Player* m_player;
 	};
 }

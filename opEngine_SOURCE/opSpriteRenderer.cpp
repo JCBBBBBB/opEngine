@@ -1,3 +1,4 @@
+#include "opRenderer.h"
 #include "opSpriteRenderer.h"
 #include "opGameObject.h"
 #include "opTransform.h"
@@ -5,7 +6,7 @@
 
 namespace op
 {
-	SpriteRenderer::SpriteRenderer() : Component(), m_texture(nullptr), m_size(Vector2::One)
+	SpriteRenderer::SpriteRenderer() : Component(enums::ComponentType::SpriteRenderer), m_texture(nullptr), m_size(Vector2::One)
 	{
 
 	}
@@ -39,6 +40,7 @@ namespace op
 
 		Transform* transform = GetOwner()->GetComponent<Transform>();
 		Vector2 pos = transform->GetPosition();
+		pos = renderer::mainCamera->CalculatePosition(pos);
 
 		if (m_texture->GetTextureType() == graphics::Texture::TextureType::Bmp)
 		{
@@ -47,8 +49,7 @@ namespace op
 				, m_texture->GetHdc(), 0, 0, m_texture->GetWidth(), m_texture->GetHeight()
 				, RGB(255, 0, 255));
 		}
-		else if (m_texture->GetTextureType()
-			== graphics::Texture::TextureType::Png)
+		else if (m_texture->GetTextureType() == graphics::Texture::TextureType::Png)
 		{
 			Gdiplus::Graphics graphcis(hdc);
 			graphcis.DrawImage(m_texture->GetImage()

@@ -3,11 +3,11 @@
 
 namespace op
 {
-	// 개별 리소스의 부모
+	// 개별 리소스의 부모, 추상 클래스
 	class Resource abstract : public Entity
 	{
 	public:
-		Resource(enums::ResourceType resourceType);
+		Resource(enums::ResourceType resourceType); // 생성할 때 리소스 종류 전달받는다
 		virtual ~Resource();
 
 		virtual HRESULT Load(const std::wstring& path) = 0; // 순수 가상함수

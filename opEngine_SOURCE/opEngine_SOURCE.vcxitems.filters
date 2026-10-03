@@ -32,11 +32,20 @@
       <Filter>Base</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opLayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opObject.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)opTexture.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)opResources.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opResources.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opTexture.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opScript.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCamera.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h">
@@ -73,12 +82,21 @@
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opLayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEnums.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opObject.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)opTexture.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)opResources.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opResources.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opTexture.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opScript.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCamera.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
@@ -95,6 +113,9 @@
     </Filter>
     <Filter Include="GameObject">
       <UniqueIdentifier>{9597056e-4c88-497b-96c7-65e0523f63bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{20fdc200-f3d9-48ad-ab05-29a1e7a6da9d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

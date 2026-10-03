@@ -24,6 +24,7 @@
     <ClInclude Include="opLoadResources.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="opPlayerScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayScene.cpp">
@@ -35,5 +36,6 @@
     <ClCompile Include="opTitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="opPlayerScript.cpp" />
   </ItemGroup>
 </Project>

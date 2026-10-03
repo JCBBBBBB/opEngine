@@ -1,3 +1,8 @@
+#include "opPlayerScript.h"
+#include "opCamera.h"
+#include "opRenderer.h"
+
+
 #include "opTexture.h"
 #include "opResources.h"
 
@@ -25,13 +30,26 @@ namespace op
 
 	void PlayScene::Initialize()
 	{
-		// 게임 오브젝트 만들기 전 리소스들 전부 Load하면 좋다
-		backGround = object::Instantiate<Player>(enums::LayerType::BackGround, Vector2(100.0f, 100.0f));
+		// main camera
+		GameObject* camera = object::Instantiate<GameObject>(enums::LayerType::None, Vector2(344.0f, 442.0f));
+		Camera* cameraComponent = camera->AddComponent<Camera>();
+		renderer::mainCamera = cameraComponent;
+		//camera->AddComponent<PlayerScript>();
 
-		SpriteRenderer* spriteRenderer = backGround->AddComponent<SpriteRenderer>();
-		graphics::Texture* backGround = Resources::Find < graphics::Texture>(L"BackGround");
-		spriteRenderer->SetTexture(backGround);
-		spriteRenderer->SetTexture(backGround);
+		m_player = object::Instantiate<Player>(enums::LayerType::Player);
+		SpriteRenderer* spriteRenderer = m_player->AddComponent<SpriteRenderer>();
+		spriteRenderer->SetSize(Vector2(3.0f, 3.0f));
+		m_player->AddComponent<PlayerScript>();
+
+		graphics::Texture* packmanTexture = Resources::Find<graphics::Texture>(L"PackMan");
+		spriteRenderer->SetTexture(packmanTexture);
+
+		GameObject* backGround = object::Instantiate<GameObject>(enums::LayerType::BackGround);
+		SpriteRenderer* backGroundSpriteRenderer = backGround->AddComponent<SpriteRenderer>();
+		backGroundSpriteRenderer->SetSize(Vector2(3.0f, 3.0f));
+
+		graphics::Texture* backGroundTexture = Resources::Find<graphics::Texture>(L"Map");
+		backGroundSpriteRenderer->SetTexture(backGroundTexture);
 
 		Scene::Initialize();
 	}
@@ -54,8 +72,6 @@ namespace op
 	void PlayScene::Render(HDC hdc)
 	{
 		Scene::Render(hdc);
-		wchar_t str[50] = L"PlayScene";
-		TextOut(hdc, 0, 0, str, 10);
 	}
 
 	void PlayScene::OnEnter()

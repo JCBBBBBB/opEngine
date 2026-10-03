@@ -21,7 +21,7 @@ namespace op
 			T* component = new T();
 			component->Initialize();
 			component->SetOwner(this);
-			m_components.push_back(component);
+			m_components[(UINT)component->GetType()] = component;
 
 			return component;
 		}

@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)CommonInclude.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opApplication.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEntity.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEnums.h" />
@@ -24,10 +25,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opLayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opResources.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opScene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSceneManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opScript.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSpriteRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTexture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTime.h" />
@@ -35,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)opApplication.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opEntity.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opGameObject.cpp" />
@@ -42,10 +46,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opLayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opObject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opResources.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSceneManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opScript.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSpriteRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTexture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTime.cpp" />

@@ -2,7 +2,7 @@
 
 namespace op
 {
-	Component::Component()
+	Component::Component(enums::ComponentType componentType) : m_type(componentType)
 	{
 
 	}
