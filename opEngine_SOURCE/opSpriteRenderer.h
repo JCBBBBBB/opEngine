@@ -1,6 +1,7 @@
 #pragma once
 #include "opEntity.h"
 #include "opComponent.h"
+#include "opTexture.h"
 
 namespace op
 {
@@ -15,12 +16,12 @@ namespace op
 		void LateUpdate() override;
 		void Render(HDC hdc) override;
 
-		void ImageLoad(const std::wstring& path);
+		void SetTexture(graphics::Texture* texture) { m_texture = texture; }
+		void SetSize(math::Vector2 size) { m_size = size; }
 
 	private:
-		Gdiplus::Image* m_image;
-		UINT m_width;
-		UINT m_height;
+		graphics::Texture* m_texture;
+		math::Vector2 m_size;
 	};
 
 }

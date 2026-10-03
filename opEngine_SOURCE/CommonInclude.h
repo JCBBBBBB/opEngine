@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <map>
+#include <assert.h>
 
 #include "opMath.h"
 

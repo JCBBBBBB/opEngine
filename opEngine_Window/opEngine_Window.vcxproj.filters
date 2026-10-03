@@ -21,6 +21,9 @@
     <ClInclude Include="opTitleScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="opLoadResources.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayScene.cpp">

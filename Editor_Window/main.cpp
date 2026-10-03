@@ -6,6 +6,7 @@
 
 #include "..\\opEngine_SOURCE\\opApplication.h"
 #include "..\\opEngine_Window\\opLoadScenes.h"
+#include "..\\opEngine_Window\\opLoadResources.h"
 
 op::Application application;
 
@@ -156,8 +157,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    Gdiplus::GdiplusStartup(&gpToken, &gpsi, NULL);
 
-   // Load Scenes, 반드시 호출
+   op::LoadResources(); // 배경 이미지 읽기, "BackGround로 등록"
    op::LoadScenes(); // 씬을 생성하고 현재 씬을 선택
+   
 
    return TRUE;
 }

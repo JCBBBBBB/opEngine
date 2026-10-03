@@ -25,9 +25,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opResources.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opScene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSceneManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSpriteRenderer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opTexture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTransform.h" />
   </ItemGroup>
@@ -41,9 +43,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opResources.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSceneManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSpriteRenderer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opTexture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTransform.cpp" />
   </ItemGroup>

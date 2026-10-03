@@ -9,4 +9,12 @@ namespace op::enums
 		Player,
 		Max = 16,
 	};
+
+	enum class ResourceType
+	{
+		Texture,
+		AudioClip,
+		Prefab,
+		End,
+	};
 }

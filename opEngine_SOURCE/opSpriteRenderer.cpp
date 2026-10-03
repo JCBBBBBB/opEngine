@@ -1,10 +1,11 @@
 #include "opSpriteRenderer.h"
 #include "opGameObject.h"
 #include "opTransform.h"
+#include "opTexture.h"
 
 namespace op
 {
-	SpriteRenderer::SpriteRenderer() : m_image(nullptr), m_width(0), m_height(0)
+	SpriteRenderer::SpriteRenderer() : Component(), m_texture(nullptr), m_size(Vector2::One)
 	{
 
 	}
@@ -31,17 +32,30 @@ namespace op
 
 	void SpriteRenderer::Render(HDC hdc)
 	{
-		Transform* tr = GetOwner()->GetComponent<Transform>(); // 게임 객체에서 위치 담당 부품을 찾는다
-		Vector2 pos = tr->GetPosition(); // 부품에서 위치를 읽는다
+		if (m_texture == nullptr)
+		{
+			assert(false);
+		}
 
-		Gdiplus::Graphics graphics(hdc); // 전달받은 hdc에 그림을 그릴 도구 준비
-		graphics.DrawImage(m_image, Gdiplus::Rect(pos.x, pos.y, m_width, m_height)); // 준비된 이미지를 지정한 위치와 크기로 그린다
+		Transform* transform = GetOwner()->GetComponent<Transform>();
+		Vector2 pos = transform->GetPosition();
+
+		if (m_texture->GetTextureType() == graphics::Texture::TextureType::Bmp)
+		{
+			TransparentBlt(hdc, pos.x, pos.y
+				, m_texture->GetWidth() * m_size.x, m_texture->GetHeight() * m_size.y
+				, m_texture->GetHdc(), 0, 0, m_texture->GetWidth(), m_texture->GetHeight()
+				, RGB(255, 0, 255));
+		}
+		else if (m_texture->GetTextureType()
+			== graphics::Texture::TextureType::Png)
+		{
+			Gdiplus::Graphics graphcis(hdc);
+			graphcis.DrawImage(m_texture->GetImage()
+				, Gdiplus::Rect(pos.x, pos.y
+					, m_texture->GetWidth() * m_size.x, m_texture->GetHeight() * m_size.y));
+		}
 	}
 
-	void SpriteRenderer::ImageLoad(const std::wstring& path)
-	{
-		m_image = Gdiplus::Image::FromFile(path.c_str()); // 파일 경로 사용해서 이미지 읽기
-		m_width = m_image->GetWidth();
-		m_height = m_image->GetHeight();
-	}
+	
 }

@@ -35,6 +35,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opLayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opObject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opTexture.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opResources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h">
@@ -75,6 +77,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opLayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEnums.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opTexture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opResources.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">

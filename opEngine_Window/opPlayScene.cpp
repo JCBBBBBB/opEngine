@@ -1,3 +1,6 @@
+#include "opTexture.h"
+#include "opResources.h"
+
 #include "opPlayScene.h"
 #include "opGameObject.h"
 #include "opPlayer.h"
@@ -22,11 +25,14 @@ namespace op
 
 	void PlayScene::Initialize()
 	{
+		// 게임 오브젝트 만들기 전 리소스들 전부 Load하면 좋다
 		backGround = object::Instantiate<Player>(enums::LayerType::BackGround, Vector2(100.0f, 100.0f));
 
 		SpriteRenderer* spriteRenderer = backGround->AddComponent<SpriteRenderer>();
-		spriteRenderer->ImageLoad(L"C:\\Workspace\\opEngine\\Resources\\CloudOcean.png");
-	
+		graphics::Texture* backGround = Resources::Find < graphics::Texture>(L"BackGround");
+		spriteRenderer->SetTexture(backGround);
+		spriteRenderer->SetTexture(backGround);
+
 		Scene::Initialize();
 	}
 
