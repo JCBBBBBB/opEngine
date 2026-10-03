@@ -64,15 +64,15 @@ namespace op
 		}
 	}
 
-	void Scene::AddGameObject(GameObject* gameObject, const LayerType layerType)
+	void Scene::AddGameObject(GameObject* gameObject, const enums::LayerType layerType)
 	{
 		m_layers[(UINT)layerType]->AddGameObject(gameObject);
 	}
 
 	void Scene::CreateLayers()
 	{
-		m_layers.resize((UINT)LayerType::Max);
-		for (size_t i = 0; i < (UINT)LayerType::Max; i++)
+		m_layers.resize((UINT)enums::LayerType::Max);
+		for (size_t i = 0; i < (UINT)enums::LayerType::Max; i++)
 		{
 			m_layers[i] = new Layer();
 		}

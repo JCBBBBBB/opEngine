@@ -41,6 +41,9 @@ namespace op
 
 			return component;
 		}
+	
+	private:
+		void InitializeTransform();
 
 	private:
 		std::vector<Component*> m_components;

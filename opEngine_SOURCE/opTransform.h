@@ -18,7 +18,7 @@ namespace op
 		void LateUpdate() override;
 		void Render(HDC hdc) override;
 
-		void SetPos(Vector2 pos) { m_position.x = pos.x; m_position.y = pos.y; }
+		void SetPosition(Vector2 pos) { m_position.x = pos.x; m_position.y = pos.y; }
 		Vector2 GetPosition() { return m_position; }
 
 	private:

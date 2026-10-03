@@ -23,6 +23,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opInput.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opLayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opScene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSceneManager.h" />
@@ -38,6 +39,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opInput.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opLayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSceneManager.cpp" />

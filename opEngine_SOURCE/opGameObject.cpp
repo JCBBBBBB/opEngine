@@ -1,13 +1,15 @@
 #include "opGameObject.h"
 #include "opInput.h"
 #include "opTime.h"
+#include "opTransform.h"
+
 
 namespace op
 {
 
 	GameObject::GameObject()
 	{
-
+		InitializeTransform();
 	}
 
 	GameObject::~GameObject()
@@ -49,6 +51,11 @@ namespace op
 		{
 			component->Render(hdc);
 		}
+	}
+
+	void GameObject::InitializeTransform()
+	{
+		AddComponent<Transform>();
 	}
 	
 }

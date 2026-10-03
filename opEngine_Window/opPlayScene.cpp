@@ -4,6 +4,7 @@
 #include "opTransform.h"
 #include "opSpriteRenderer.h"
 #include "opInput.h"
+#include "opObject.h"
 #include "opTitleScene.h"
 #include "opSceneManager.h"
 
@@ -21,16 +22,12 @@ namespace op
 
 	void PlayScene::Initialize()
 	{
-		backGround = new Player();
-		Transform* transform = backGround->AddComponent<Transform>();
-		transform->SetPos(Vector2(0, 0));
-		transform->SetName(L"Transform");
+		backGround = object::Instantiate<Player>(enums::LayerType::BackGround, Vector2(100.0f, 100.0f));
 
 		SpriteRenderer* spriteRenderer = backGround->AddComponent<SpriteRenderer>();
-		spriteRenderer->SetName(L"SpriteRenderer");
 		spriteRenderer->ImageLoad(L"C:\\Workspace\\opEngine\\Resources\\CloudOcean.png");
 	
-		AddGameObject(backGround, LayerType::BackGround);
+		Scene::Initialize();
 	}
 
 	void PlayScene::Update()
@@ -61,8 +58,8 @@ namespace op
 	}
 
 	void PlayScene::OnExit()
-	{
+	{/*
 		Transform* transform = backGround->GetComponent<Transform>();
 		transform->SetPos(Vector2(0, 0));
-	}
+	*/}
 }

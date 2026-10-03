@@ -25,7 +25,7 @@ namespace op
 			Transform* transform = GetComponent<Transform>();
 			Vector2 pos = transform->GetPosition();
 			pos.x += 100.0f * Time::DeltaTime();
-			transform->SetPos(pos);
+			transform->SetPosition(pos);
 		}
 	}
 

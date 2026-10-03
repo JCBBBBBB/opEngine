@@ -12,6 +12,7 @@ namespace op
 		{
 			T* scene = new T();
 			scene->SetName(name);
+			m_activeScene = scene;
 			scene->Initialize();
 
 			m_scene.insert(std::make_pair(name, scene));
@@ -38,7 +39,7 @@ namespace op
 
 			return iter->second;
 		}
-		
+		static Scene* GetActiveScene() { return m_activeScene; }
 
 		static void Initialize();
 		static void Update();

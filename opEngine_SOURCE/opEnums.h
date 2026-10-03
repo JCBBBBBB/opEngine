@@ -1,6 +1,6 @@
 #pragma once
 
-namespace op
+namespace op::enums
 {
 	enum class LayerType
 	{
