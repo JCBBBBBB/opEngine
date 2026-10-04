@@ -5,7 +5,8 @@
 #include "opTitleScene.h"
 
 namespace op
-{
+{	
+	// 씬을 만들고 초기화
 	void LoadScenes()
 	{
 		// 시작할 때 두 씬 만들어둔다

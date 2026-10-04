@@ -6,6 +6,7 @@ namespace op::enums
 	{
 		Transform,
 		SpriteRenderer,
+		Animator,
 		Script,
 		Camera,
 		End,
@@ -24,6 +25,7 @@ namespace op::enums
 	{
 		Texture, // 이미지
 		AudioClip, // 소리
+		Animation,
 		Prefab, // 재사용할 오브젝트
 		End,
 	};

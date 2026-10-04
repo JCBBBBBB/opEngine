@@ -22,12 +22,12 @@ namespace op::object
 	template <typename T>
 	static T* Instantiate(op::enums::LayerType layerType, math::Vector2 position)
 	{
-		T* gameObject = new T();
-		Scene* activeScene = SceneManager::GetActiveScene();
-		Layer* layer = activeScene->GetLayer(layerType);
-		layer->AddGameObject(gameObject);
+		T* gameObject = new T(); // T의 게임 오브젝트 객체 생성
+		Scene* activeScene = SceneManager::GetActiveScene(); // 현재 씬 가져오기
+		Layer* layer = activeScene->GetLayer(layerType); // 레이어 가져오기
+		layer->AddGameObject(gameObject); // 레이어에 게임 오브젝트 등록
 
-		Transform* transform = gameObject->GetComponent<Transform>(); // 생성한 오브젝트에 붙어 있는 Transform 찾기
+		Transform* transform = gameObject->GetComponent<Transform>(); // 생성한 오브젝트에 붙어 있는 Transform 가져오기
 		transform->SetPosition(position); // 전달받은 위치를 Transform에 저장
 
 		return gameObject;

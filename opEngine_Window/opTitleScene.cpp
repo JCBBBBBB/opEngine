@@ -37,7 +37,5 @@ namespace op
 	void TitleScene::Render(HDC hdc)
 	{
 		Scene::Render(hdc);
-		wchar_t str[50] = L"TitleScene";
-		TextOut(hdc, 0, 0, str, 11);
 	}
 }

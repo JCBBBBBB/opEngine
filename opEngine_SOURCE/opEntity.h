@@ -1,5 +1,6 @@
 #pragma once
 #include "CommonInclude.h"
+using namespace op::math;
 
 namespace op
 {
