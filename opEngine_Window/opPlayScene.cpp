@@ -1,3 +1,6 @@
+#include "opCat.h"
+#include "opCatScript.h"
+
 #include "opPlayerScript.h"
 #include "opCamera.h"
 #include "opRenderer.h"
@@ -47,7 +50,7 @@ namespace op
 		Animator* animator = m_player->AddComponent<Animator>(); // 애니메이션을 관리하고 그리는 컴포넌트 추가
 		animator->CreateAnimation(L"DownWalk", chickenTexture, Vector2(0.0f, 0.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
 		animator->CreateAnimation(L"RightWalk", chickenTexture, Vector2(0.0f, 32.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
-		animator->CreateAnimation(L"UpWalk", chickenTexture, Vector2(0.0f, 60.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+		animator->CreateAnimation(L"UpWalk", chickenTexture, Vector2(0.0f, 64.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
 		animator->CreateAnimation(L"LeftWalk", chickenTexture, Vector2(0.0f, 96.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
 		animator->CreateAnimation(L"SitDown", chickenTexture, Vector2(0.0f, 128.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
 		animator->CreateAnimation(L"Grooming", chickenTexture, Vector2(0.0f, 160.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
@@ -63,12 +66,28 @@ namespace op
 		/*spriteRenderer->SetTexture(chickenTexture);*/
 
 		// 배경
-		GameObject* backGround = object::Instantiate<GameObject>(enums::LayerType::Player);
+		/*GameObject* backGround = object::Instantiate<GameObject>(enums::LayerType::Player);
 		SpriteRenderer* backGroundSpriteRenderer = backGround->AddComponent<SpriteRenderer>();
 		backGroundSpriteRenderer->SetSize(Vector2(3.0f, 3.0f));
 
 		graphics::Texture* backGroundTexture = Resources::Find<graphics::Texture>(L"Bubble");
-		backGroundSpriteRenderer->SetTexture(backGroundTexture);
+		backGroundSpriteRenderer->SetTexture(backGroundTexture);*/
+		Cat* cat = object::Instantiate<Cat>(enums::LayerType::Animal);
+		cat->AddComponent<CatScript>();
+
+		graphics::Texture* catTexture = Resources::Find<graphics::Texture>(L"Cat");
+		Animator* catAnimator = cat->AddComponent<Animator>();
+		catAnimator->CreateAnimation(L"DownWalk", catTexture, Vector2(0.0f, 0.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+		catAnimator->CreateAnimation(L"RightWalk", catTexture, Vector2(0.0f, 32.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+		catAnimator->CreateAnimation(L"UpWalk", catTexture, Vector2(0.0f, 64.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+		catAnimator->CreateAnimation(L"LeftWalk", catTexture, Vector2(0.0f, 96.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+		catAnimator->CreateAnimation(L"SitDown", catTexture, Vector2(0.0f, 128.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+		catAnimator->CreateAnimation(L"Grooming", catTexture, Vector2(0.0f, 160.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+		catAnimator->CreateAnimation(L"LayDown", catTexture, Vector2(0.0f, 192.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.1f);
+
+		catAnimator->PlayAnimation(L"SitDown", false);
+		cat->GetComponent<Transform>()->SetPosition(Vector2(200.0f, 200.0f));
+		cat->GetComponent<Transform>()->SetScale(Vector2(2.0f, 2.0f));
 
 		Scene::Initialize();
 	}

@@ -25,6 +25,8 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="opPlayerScript.h" />
+    <ClInclude Include="opCat.h" />
+    <ClInclude Include="opCatScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayScene.cpp">
@@ -37,5 +39,7 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="opPlayerScript.cpp" />
+    <ClCompile Include="opCat.cpp" />
+    <ClCompile Include="opCatScript.cpp" />
   </ItemGroup>
 </Project>

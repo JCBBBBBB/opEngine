@@ -136,6 +136,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="opCat.h" />
+    <ClInclude Include="opCatScript.h" />
     <ClInclude Include="opLoadResources.h" />
     <ClInclude Include="opLoadScenes.h" />
     <ClInclude Include="opPlayer.h" />
@@ -144,6 +146,8 @@
     <ClInclude Include="opTitleScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="opCat.cpp" />
+    <ClCompile Include="opCatScript.cpp" />
     <ClCompile Include="opPlayer.cpp" />
     <ClCompile Include="opPlayerScript.cpp" />
     <ClCompile Include="opPlayScene.cpp" />

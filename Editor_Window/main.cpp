@@ -160,6 +160,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    op::LoadResources(); // 배경 이미지 읽기, "BackGround로 등록"
    op::LoadScenes(); // 씬을 생성하고 현재 씬을 선택
    
+   int a = 0;
+   srand((unsigned int)(&a));
 
    return TRUE;
 }

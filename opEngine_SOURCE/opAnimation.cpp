@@ -81,7 +81,7 @@ namespace op
 			func.BlendOp = AC_SRC_OVER;
 			func.BlendFlags = 0;
 			func.AlphaFormat = AC_SRC_ALPHA;
-			func.SourceConstantAlpha = 125; // 0(transparent) ~ 255(Opaque)
+			func.SourceConstantAlpha = 255; // 0(transparent) ~ 255(Opaque)
 
 			HDC imgHdc = m_texture->GetHdc(); // 원본 bmp가 선택되어 있는 메모리 DC
 

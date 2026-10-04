@@ -4,6 +4,7 @@
 #include "opTime.h"
 #include "opGameObject.h"
 #include "opAnimator.h"
+#include "opCatScript.h"
 
 
 namespace op
@@ -56,6 +57,8 @@ namespace op
 	{
 	}
 
+	
+
 	void PlayerScript::SitDown()
 	{
 		if (Input::GetKey(KeyCode::D))
@@ -107,4 +110,5 @@ namespace op
 			m_animator->PlayAnimation(L"SitDown", false);
 		}
 	}
+
 }
