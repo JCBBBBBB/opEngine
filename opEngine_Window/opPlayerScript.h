@@ -7,6 +7,14 @@ namespace op
 	class PlayerScript : public Script
 	{
 	public:
+		enum class State
+		{
+			SitDown,
+			Walk,
+			Sleep,
+			Attack,
+		};
+
 		PlayerScript();
 		~PlayerScript();
 
@@ -16,5 +24,11 @@ namespace op
 		void Render(HDC hdc) override;
 
 	private:
+		void SitDown();
+		void Move();
+
+	private:
+		State m_state;
+		class Animator* m_animator;
 	};
 }

@@ -61,24 +61,63 @@ namespace op
 		GameObject* gameObject = m_animator->GetOwner(); // 이 Animaton의 Animator가 붙어 있는 플레이어를 찾는다
 		Transform* transform = gameObject->GetComponent<Transform>(); // 플레이어의 위치 정보를 찾는다
 		Vector2 pos = transform->GetPosition();
+		float rot = transform->GetRotation();
+		Vector2 scale = transform->GetScale();
+
+
 
 		if (renderer::mainCamera) // 메인 카메라가 있으면
 		{
 			pos = renderer::mainCamera->CalculatePosition(pos); // 게임 좌표를 실제 화면에 그릴 좌표로 변환
 		}
 
-		// 이미지와 배경을 합성할 설정 준비
-		BLENDFUNCTION func = {};
-		func.BlendOp = AC_SRC_OVER;
-		func.BlendFlags = 0;
-		func.AlphaFormat = AC_SRC_ALPHA;
-		func.SourceConstantAlpha = 125; // 0(transparent) ~ 255(Opaque)
 
 		Sprite sprite = m_animationSheet[m_index]; // 현재 프레임 번호의 영역 정보를 가져온다
-		HDC imgHdc = m_texture->GetHdc(); // 원본 bmp가 선택되어 있는 메모리 DC
+		graphics::Texture::TextureType type = m_texture->GetTextureType();
+		if (type == graphics::Texture::TextureType::Bmp)
+		{
+			// 이미지와 배경을 합성할 설정 준비
+			BLENDFUNCTION func = {};
+			func.BlendOp = AC_SRC_OVER;
+			func.BlendFlags = 0;
+			func.AlphaFormat = AC_SRC_ALPHA;
+			func.SourceConstantAlpha = 125; // 0(transparent) ~ 255(Opaque)
 
-		// 그릴 대상, 화면에서 그릴 위치, 표시 너비, 표시 높이, 원본 이미지의 DC, 원본에서 가져올 영역의 x,y, 너비, 높이, 알파 합성 설정
-		AlphaBlend(hdc, pos.x, pos.y, sprite.size.x * 5, sprite.size.y * 5, imgHdc, sprite.leftTop.x, sprite.leftTop.y, sprite.size.x, sprite.size.y, func);
+			HDC imgHdc = m_texture->GetHdc(); // 원본 bmp가 선택되어 있는 메모리 DC
+
+
+			// 그릴 대상, 화면에서 그릴 위치, 표시 너비, 표시 높이, 원본 이미지의 DC, 원본에서 가져올 영역의 x,y, 너비, 높이, 알파 합성 설정
+			AlphaBlend(hdc, pos.x, pos.y, sprite.size.x * 5, sprite.size.y * 5, imgHdc, sprite.leftTop.x, sprite.leftTop.y, sprite.size.x, sprite.size.y, func);
+		}
+		else if (type == graphics::Texture::TextureType::Png)
+		{
+			Gdiplus::ImageAttributes imgAtt = {}; // 내가 원하는 픽셀 투명화 시킬때
+
+			// 투명화 시킬 픽셀의 색 지정
+			imgAtt.SetColorKey(Gdiplus::Color(230, 230, 230), Gdiplus::Color(255, 255, 255));
+			Gdiplus::Graphics graphics(hdc);
+
+			graphics.TranslateTransform(pos.x, pos.y);
+			graphics.RotateTransform(rot);
+			graphics.TranslateTransform(-pos.x, -pos.y);
+
+			graphics.DrawImage(m_texture->GetImage()
+				, Gdiplus::Rect
+				(
+					pos.x - (sprite.size.x / 2.0f)
+					, pos.y - (sprite.size.y / 2.0f)
+					, sprite.size.x * scale.x
+					, sprite.size.y * scale.y
+				)
+				, sprite.leftTop.x
+				, sprite.leftTop.y
+				, sprite.size.x
+				, sprite.size.y
+				, Gdiplus::UnitPixel
+				, /*&imgAtt*/nullptr
+			);
+		}
+
 	}
 
 	// 프레임 정보 구성

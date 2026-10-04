@@ -2,7 +2,7 @@
 
 namespace op
 {
-	Transform::Transform() : Component(enums::ComponentType::Transform)
+	Transform::Transform() : Component(enums::ComponentType::Transform), m_scale(Vector2::One), m_rotation(0.0f)
 	{
 
 	}

@@ -40,6 +40,9 @@ namespace op
 
 		Transform* transform = GetOwner()->GetComponent<Transform>();
 		Vector2 pos = transform->GetPosition();
+		float rot = transform->GetRotation();
+		Vector2 scale = transform->GetScale();
+
 		pos = renderer::mainCamera->CalculatePosition(pos);
 
 		if (m_texture->GetTextureType() == graphics::Texture::TextureType::Bmp)
@@ -51,10 +54,17 @@ namespace op
 		}
 		else if (m_texture->GetTextureType() == graphics::Texture::TextureType::Png)
 		{
-			Gdiplus::Graphics graphcis(hdc);
-			graphcis.DrawImage(m_texture->GetImage()
-				, Gdiplus::Rect(pos.x, pos.y
-					, m_texture->GetWidth() * m_size.x, m_texture->GetHeight() * m_size.y));
+			Gdiplus::ImageAttributes imgAtt = {};
+			imgAtt.SetColorKey(Gdiplus::Color(230, 230, 230), Gdiplus::Color(255, 255, 255));
+
+			Gdiplus::Graphics graphics(hdc);
+
+			graphics.TranslateTransform(pos.x, pos.y);
+			graphics.RotateTransform(rot);
+			graphics.TranslateTransform(-pos.x, -pos.y);
+
+
+			graphics.DrawImage(m_texture->GetImage(), Gdiplus::Rect(pos.x, pos.y, m_texture->GetWidth() * m_size.x, m_texture->GetHeight() * m_size.y), 0, 0, m_texture->GetWidth(), m_texture->GetHeight(), Gdiplus::UnitPixel, nullptr);
 		}
 	}
 
