@@ -87,7 +87,7 @@ namespace op
 
 
 			// 그릴 대상, 화면에서 그릴 위치, 표시 너비, 표시 높이, 원본 이미지의 DC, 원본에서 가져올 영역의 x,y, 너비, 높이, 알파 합성 설정
-			AlphaBlend(hdc, pos.x, pos.y, sprite.size.x * 5, sprite.size.y * 5, imgHdc, sprite.leftTop.x, sprite.leftTop.y, sprite.size.x, sprite.size.y, func);
+			AlphaBlend(hdc, pos.x, pos.y, sprite.size.x * scale.x, sprite.size.y * scale.y, imgHdc, sprite.leftTop.x, sprite.leftTop.y, sprite.size.x, sprite.size.y, func);
 		}
 		else if (type == graphics::Texture::TextureType::Png)
 		{

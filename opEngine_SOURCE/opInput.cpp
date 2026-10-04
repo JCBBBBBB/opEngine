@@ -1,8 +1,12 @@
 #include "opInput.h"
+#include "opApplication.h"
+
+extern op::Application application;
 
 namespace op
 {
 	std::vector<Input::Key> Input::m_keys = {};
+	math::Vector2 Input::m_mousePosition = math::Vector2::One;
 
 	int ASCII[(UINT)KeyCode::End] =
 	{
@@ -10,6 +14,7 @@ namespace op
 		'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
 		'Z', 'X', 'C', 'V', 'B', 'N', 'M',
 		VK_LEFT, VK_RIGHT, VK_DOWN, VK_UP,
+		VK_LBUTTON, VK_MBUTTON, VK_RBUTTON,
 	};
 
 	// 26개 키 각각의 정보를 만들어 m_keys에 추가
@@ -64,6 +69,17 @@ namespace op
 				m_keys[i].isPressed = false;
 			}
 		}
+	}
+
+	void Input::GetMousePositionByWindow()
+	{
+		POINT mousePos = {};
+
+		GetCursorPos(&mousePos);
+		ScreenToClient(application.GetHwnd(), &mousePos);
+
+		m_mousePosition.x = mousePos.x;
+		m_mousePosition.y = mousePos.y;
 	}
 
 }

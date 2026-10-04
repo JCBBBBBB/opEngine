@@ -9,6 +9,33 @@ namespace op
 	class Animator : public Component
 	{
 	public:
+		struct Event
+		{
+			void operator=(std::function<void()> func)
+			{
+				m_event = std::move(func);
+			}
+
+			void operator()()
+			{
+				if (m_event)
+				{
+					m_event;
+				}
+			}
+
+			std::function<void()> m_event;
+		};
+
+		struct Events
+		{
+			Event m_startEvent; // 애니메이션이 시작할 때 실행할 함수
+			Event m_completeEvent; // 끝까지 재생했을 때 실행할 함수
+			Event m_endEvent; // 해당 애니메이션의 재생을 종료할 때 실행할 함수
+		};
+
+
+
 		Animator();
 		~Animator();
 
@@ -21,8 +48,13 @@ namespace op
 
 		Animation* FindAnimation(const std::wstring& name);
 		void PlayAnimation(const std::wstring& name, bool loop = true);
+		bool IsComplete()
+		{
+			return m_activeAnimation->IsComplete();
+		}
 
 	private:
+		std::map<std::wstring, Events*> m_events;
 		std::map<std::wstring, Animation*> m_animations; // 이름으로 찾을 수 있는 애니메이션 목록
 		Animation* m_activeAnimation; // 현재 Update와 Render를 실행할 Animation의 주소
 		bool m_isLoop; // 현재 Animation이 끝나면 첫 프레임부터 반복할지 여부

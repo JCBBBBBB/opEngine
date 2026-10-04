@@ -9,9 +9,10 @@ namespace op
 	public:
 		enum class State
 		{
-			SitDown,
+			Idle,
 			Walk,
 			Sleep,
+			GiveWater,
 			Attack,
 		};
 
@@ -24,8 +25,9 @@ namespace op
 		void Render(HDC hdc) override;
 
 	private:
-		void SitDown();
+		void Idle();
 		void Move();
+		void GiveWater();
 
 	private:
 		State m_state;

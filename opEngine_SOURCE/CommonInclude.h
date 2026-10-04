@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <assert.h>
+#include <functional>
 
 #include "opMath.h"
 #include "opEnums.h"

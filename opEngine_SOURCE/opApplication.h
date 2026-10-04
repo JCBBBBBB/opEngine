@@ -20,7 +20,7 @@ namespace op
 		HDC GetHDC() { return m_hdc; }
 		UINT GetWidth() { return m_width; }
 		UINT GetHeight() { return m_height; }
-
+		HWND GetHwnd() { return m_hwnd; }
 
 	private:
 		void ClearRenderTarget();

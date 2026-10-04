@@ -17,6 +17,7 @@ namespace op
 		A, S, D, F, G, H, J, K, L,
 		Z, X, C, V, B, N, M,
 		Left, Right, Down, Up,
+		LButton, MButton, RButton,
 		End,
 	};
 
@@ -37,8 +38,13 @@ namespace op
 		static bool GetKeyDown(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Down; }
 		static bool GetKeyUp(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Up; }
 		static bool GetKey(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Pressed; }
+		static math::Vector2 GetMousePosition() { return m_mousePosition; }
+	
+	private:
+		static void GetMousePositionByWindow();
 
 	private:
 		static std::vector<Key> m_keys;
+		static math::Vector2 m_mousePosition;
 	};
 }

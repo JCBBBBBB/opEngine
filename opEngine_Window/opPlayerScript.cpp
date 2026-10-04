@@ -4,12 +4,11 @@
 #include "opTime.h"
 #include "opGameObject.h"
 #include "opAnimator.h"
-#include "opCatScript.h"
 
 
 namespace op
 {
-	PlayerScript::PlayerScript() : m_state(PlayerScript::State::SitDown), m_animator(nullptr)
+	PlayerScript::PlayerScript() : m_state(PlayerScript::State::Idle), m_animator(nullptr)
 	{
 	}
 
@@ -30,8 +29,8 @@ namespace op
 
 		switch (m_state)
 		{
-		case op::PlayerScript::State::SitDown:
-			SitDown();
+		case op::PlayerScript::State::Idle:
+			Idle();
 			break;
 
 		case op::PlayerScript::State::Walk:
@@ -39,6 +38,10 @@ namespace op
 			break;
 
 		case op::PlayerScript::State::Sleep:
+			break;
+
+		case op::PlayerScript::State::GiveWater:
+			GiveWater();
 			break;
 
 		case op::PlayerScript::State::Attack:
@@ -55,31 +58,10 @@ namespace op
 
 	void PlayerScript::Render(HDC hdc)
 	{
+
 	}
 
 	
-
-	void PlayerScript::SitDown()
-	{
-		if (Input::GetKey(KeyCode::D))
-		{
-			m_state = PlayerScript::State::Walk;
-			m_animator->PlayAnimation(L"RightWalk");
-		}
-		if (Input::GetKey(KeyCode::A))
-		{
-			m_state = PlayerScript::State::Walk;
-		}
-		if (Input::GetKey(KeyCode::W))
-		{
-			m_state = PlayerScript::State::Walk;
-		}
-		if (Input::GetKey(KeyCode::S))
-		{
-			m_state = PlayerScript::State::Walk;
-		}
-	}
-
 	void PlayerScript::Move()
 	{
 		Transform* transform = GetOwner()->GetComponent<Transform>();
@@ -106,9 +88,34 @@ namespace op
 
 		if (Input::GetKeyUp(KeyCode::D) || Input::GetKeyUp(KeyCode::A) || Input::GetKeyUp(KeyCode::W) || Input::GetKeyUp(KeyCode::S))
 		{
-			m_state = PlayerScript::State::SitDown;
-			m_animator->PlayAnimation(L"SitDown", false);
+			m_state = PlayerScript::State::Idle;
+			m_animator->PlayAnimation(L"Idle", false);
+		}
+	}
+	void PlayerScript::Idle()
+	{
+		if (Input::GetKey(KeyCode::LButton))
+		{
+			m_state = PlayerScript::State::GiveWater;
+			m_animator->PlayAnimation(L"FrontGiveWater", false);
+
+			return;
+		}
+
+
+		if (Input::GetKey(KeyCode::W) || Input::GetKey(KeyCode::A) || Input::GetKey(KeyCode::S) || Input::GetKey(KeyCode::D))
+		{
+			m_state = State::Walk;
 		}
 	}
 
+
+	void PlayerScript::GiveWater()
+	{
+		if (m_animator->IsComplete())
+		{
+			m_state = State::Idle;
+			m_animator->PlayAnimation(L"Idle", false);
+		}
+	}
 }
