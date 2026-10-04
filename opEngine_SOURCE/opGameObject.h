@@ -7,6 +7,14 @@ namespace op
 	class GameObject
 	{
 	public:
+		enum class State
+		{
+			Active,
+			Paused,
+			Dead,
+			End,
+		};
+
 		GameObject();
 		virtual ~GameObject();
 
@@ -41,11 +49,29 @@ namespace op
 
 			return component;
 		}
-	
+		
+		State GetActive() { return m_state; }
+		void SetActive(bool power)
+		{
+			if (power == true)
+			{
+				m_state == State::Active;
+			}
+			if (power == false)
+			{
+				m_state = State::Paused;
+			}
+		}
+
+		void Death()
+		{
+			m_state = State::Dead;
+		}
 	private:
 		void InitializeTransform();
 
 	private:
 		std::vector<Component*> m_components;
+		State m_state;
 	};
 }

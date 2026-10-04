@@ -7,7 +7,7 @@
 namespace op
 {
 
-	GameObject::GameObject()
+	GameObject::GameObject() : m_state(State::Active)
 	{
 		m_components.resize((UINT)enums::ComponentType::End);
 		InitializeTransform();

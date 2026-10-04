@@ -43,6 +43,13 @@ namespace op
 			{
 				continue;
 			}
+			GameObject::State state = gameObject->GetActive();
+
+			if (state == GameObject::State::Paused || state == GameObject::State::Dead)
+			{
+				continue;
+			}
+
 			gameObject->Update();
 		}
 	}
@@ -55,6 +62,14 @@ namespace op
 			{
 				continue;
 			}
+
+			GameObject::State state = gameObject->GetActive();
+
+			if (state == GameObject::State::Paused || state == GameObject::State::Dead)
+			{
+				continue;
+			}
+
 			gameObject->LateUpdate();
 		}
 	}
@@ -67,7 +82,37 @@ namespace op
 			{
 				continue;
 			}
+
+			GameObject::State state = gameObject->GetActive();
+
+			if (state == GameObject::State::Paused || state == GameObject::State::Dead)
+			{
+				continue;
+			}
+
 			gameObject->Render(hdc);
+		}
+	}
+
+	void Layer::Destroy()
+	{
+		for (GameObjectIter iter = m_gameObjects.begin(); iter != m_gameObjects.end();)
+		{
+			GameObject::State active = (*iter)->GetActive();
+
+			if (active == GameObject::State::Dead)
+			{
+				GameObject* deathObj = (*iter);
+
+				iter = m_gameObjects.erase(iter);
+
+				delete deathObj;
+				deathObj = nullptr;
+
+				continue;
+			}
+
+			iter++;
 		}
 	}
 

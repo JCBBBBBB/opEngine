@@ -4,10 +4,11 @@
 #include "opTime.h"
 #include "opGameObject.h"
 #include "opAnimator.h"
+#include "opObject.h"
 
 namespace op
 {
-	CatScript::CatScript() : m_state(CatScript::State::SitDown), m_animator(nullptr), m_time(0.0f)
+	CatScript::CatScript() : m_state(CatScript::State::SitDown), m_animator(nullptr), m_time(0.0f), m_deathTime(0.0f)
 	{
 	}
 
@@ -21,6 +22,14 @@ namespace op
 
 	void CatScript::Update()
 	{
+		m_deathTime += Time::DeltaTime();
+
+		if (m_deathTime > 6.0f)
+		{
+			object::Destroy(GetOwner());
+			return;
+		}
+
 		if (m_animator == nullptr)
 		{
 			m_animator = GetOwner()->GetComponent<Animator>();

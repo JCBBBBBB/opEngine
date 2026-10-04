@@ -34,4 +34,8 @@ namespace op
 		}
 	}
 
+	void SceneManager::Destroy()
+	{
+		m_activeScene->Destroy();
+	}
 }

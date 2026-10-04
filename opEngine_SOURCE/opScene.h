@@ -20,6 +20,8 @@ namespace op
 		virtual void OnEnter(); // 이 씬을 현재 씬으로 선택했을 때
 		virtual void OnExit(); // 현재 씬에서 다른 씬으로 넘어갈 때
 
+		virtual void Destroy();
+
 		void AddGameObject(GameObject* gameObject, const enums::LayerType layerType);
 		Layer* GetLayer(const enums::LayerType type) { return m_layers[(UINT)type]; }
 

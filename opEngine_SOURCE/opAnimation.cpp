@@ -76,18 +76,21 @@ namespace op
 		graphics::Texture::TextureType type = m_texture->GetTextureType();
 		if (type == graphics::Texture::TextureType::Bmp)
 		{
-			// 이미지와 배경을 합성할 설정 준비
-			BLENDFUNCTION func = {};
-			func.BlendOp = AC_SRC_OVER;
-			func.BlendFlags = 0;
-			func.AlphaFormat = AC_SRC_ALPHA;
-			func.SourceConstantAlpha = 255; // 0(transparent) ~ 255(Opaque)
 
 			HDC imgHdc = m_texture->GetHdc(); // 원본 bmp가 선택되어 있는 메모리 DC
 
-
-			// 그릴 대상, 화면에서 그릴 위치, 표시 너비, 표시 높이, 원본 이미지의 DC, 원본에서 가져올 영역의 x,y, 너비, 높이, 알파 합성 설정
-			AlphaBlend(hdc, pos.x, pos.y, sprite.size.x * scale.x, sprite.size.y * scale.y, imgHdc, sprite.leftTop.x, sprite.leftTop.y, sprite.size.x, sprite.size.y, func);
+			TransparentBlt(
+				hdc,
+				pos.x - (sprite.size.x / 2.0f),
+				pos.y - (sprite.size.y / 2.0f),
+				sprite.size.x * scale.x,
+				sprite.size.y * scale.y,
+				imgHdc,
+				sprite.leftTop.x,
+				sprite.leftTop.y,
+				sprite.size.x,
+				sprite.size.y,
+				RGB(255, 0, 255));
 		}
 		else if (type == graphics::Texture::TextureType::Png)
 		{

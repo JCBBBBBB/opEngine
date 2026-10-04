@@ -32,4 +32,9 @@ namespace op::object
 
 		return gameObject;
 	}
+
+	static void Destroy(GameObject* obj)
+	{
+		obj->Death();
+	}
 }

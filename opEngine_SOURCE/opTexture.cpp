@@ -1,5 +1,6 @@
 #include "opTexture.h"
 #include "opApplication.h"
+#include "opResources.h"
 
 extern op::Application application;
 
@@ -58,5 +59,38 @@ namespace op::graphics
 		return S_OK;
 	}
 
+	Texture* Texture::Create(
+		const std::wstring& name,
+		UINT width,
+		UINT height)
+	{
+		Texture* image = Resources::Find<Texture>(name);
+
+		if (image)
+			return image;
+
+		image = new Texture();
+
+		image->SetName(name);
+		image->SetWidth(width);
+		image->SetHeight(height);
+
+		HDC hdc = application.GetHDC();
+		HWND hwnd = application.GetHwnd();
+
+		image->m_bitmap = CreateCompatibleBitmap(
+			hdc, width, height);
+
+		image->m_hdc = CreateCompatibleDC(hdc);
+
+		HBITMAP oldBitmap = (HBITMAP)SelectObject(
+			image->m_hdc, image->m_bitmap);
+
+		DeleteObject(oldBitmap);
+
+		Resources::Insert(name + L"Image", image);
+
+		return image;
+	}
 }
 

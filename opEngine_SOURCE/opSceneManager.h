@@ -46,7 +46,7 @@ namespace op
 		static void LateUpdate();
 		static void Render(HDC hdc);
 		static void Release();
-
+		static void Destroy();
 
 	private:
 		static std::map<std::wstring, Scene*> m_scene; // 이름으로 찾을 수 있는 씬 목록

@@ -17,6 +17,7 @@ namespace op
 		void LateUpdate();
 		void Render();
 		void Release();
+		void Destroy();
 
 		HDC GetHDC() { return m_hdc; }
 		UINT GetWidth() { return m_width; }

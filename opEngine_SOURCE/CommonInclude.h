@@ -7,6 +7,7 @@
 #include <map>
 #include <assert.h>
 #include <functional>
+#include <filesystem>
 
 #include "opMath.h"
 #include "opEnums.h"

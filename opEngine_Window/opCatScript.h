@@ -46,5 +46,6 @@ namespace op
 		class Animator* m_animator; // 
 		Direction m_direction; // 선택한 이동 방향
 		float m_time; // 현재 행동에서 누적한 시간
+		float m_deathTime;
 	};
 }

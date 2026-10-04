@@ -32,6 +32,8 @@ namespace op
 		Update();
 		LateUpdate();
 		Render();
+
+		Destroy();
 	}
 
 
@@ -64,6 +66,13 @@ namespace op
 		SceneManager::Release();
 		Resources::Release();
 	}
+
+	void Application::Destroy()
+	{
+		SceneManager::Destroy();
+	}
+
+
 
 	void Application::ClearRenderTarget()
 	{

@@ -19,7 +19,17 @@ namespace op::graphics
 		~Texture();
 
 		virtual HRESULT Load(const std::wstring& path) override;
-		
+		static Texture* Create(const std::wstring& name, UINT width, UINT height);
+
+		void SetWidth(UINT width)
+		{
+			m_width = width;
+		}
+
+		void SetHeight(UINT height)
+		{
+			m_height = height;
+		}
 		UINT GetWidth() { return m_width; }
 		UINT GetHeight() { return m_height; }
 		HDC GetHdc() { return m_hdc; }
@@ -35,5 +45,7 @@ namespace op::graphics
 		// 이미지 원본 크기
 		UINT m_width; 
 		UINT m_height;
+
+		bool m_isAlpha;
 	};
 }

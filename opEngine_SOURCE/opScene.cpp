@@ -68,6 +68,17 @@ namespace op
 		}
 	}
 
+	void Scene::Destroy()
+	{
+		for (Layer* layer : m_layers)
+		{
+			if (layer == nullptr)
+				continue;
+
+			layer->Destroy();
+		}
+	}
+
 	void Scene::AddGameObject(GameObject* gameObject, const enums::LayerType layerType)
 	{
 		m_layers[(UINT)layerType]->AddGameObject(gameObject);
