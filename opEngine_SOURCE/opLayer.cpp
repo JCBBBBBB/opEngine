@@ -9,7 +9,16 @@ namespace op
 
 	Layer::~Layer()
 	{
+		for (GameObject* gameObject : m_gameObjects)
+		{
+			if (gameObject == nullptr)
+			{
+				continue;
+			}
 
+			delete gameObject;
+			gameObject = nullptr;
+		}
 	}
 
 	void Layer::Initialize()

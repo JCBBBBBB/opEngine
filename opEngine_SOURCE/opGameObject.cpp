@@ -17,6 +17,11 @@ namespace op
 	{
 		for (Component* component : m_components)
 		{
+			if (component == nullptr)
+			{
+				continue;
+			}
+
 			delete component;
 			component = nullptr;
 		}

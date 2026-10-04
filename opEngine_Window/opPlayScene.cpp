@@ -41,7 +41,7 @@ namespace op
 
 		// 플레이어
 		m_player = object::Instantiate<Player>(enums::LayerType::Particle); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
-		m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다 
+		PlayerScript* playerScript = m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다 
 
 		graphics::Texture* playerTexture = Resources::Find<graphics::Texture>(L"Player"); // LoadResources()에서 Cat으로 등록한 bmp파일 찾음, Resources 목록에서 chicken 찾기
 		Animator* playerAnimator = m_player->AddComponent<Animator>(); // 애니메이션을 관리하고 그리는 컴포넌트 추가
@@ -49,12 +49,16 @@ namespace op
 		playerAnimator->CreateAnimation(L"FrontGiveWater", playerTexture, Vector2(0.0f, 2000.0f), Vector2(250.0f, 250.0f), Vector2::Zero, 12, 0.1f);
 
 		playerAnimator->PlayAnimation(L"Idle", false); // 처음에는 대기 애니메이션
+		playerAnimator->GetCompleteEvent(L"FrontGiveWater") = std::bind(&PlayerScript::AttackEffect, playerScript);
+
 		m_player->GetComponent<Transform>()->SetPosition(Vector2(100.0f, 100.0f));
 		m_player->GetComponent<Transform>()->SetScale(Vector2(0.5f, 0.5f));
 
 		// 고양이
 		Cat* cat = object::Instantiate<Cat>(enums::LayerType::Animal);
 		cat->AddComponent<CatScript>();
+
+		cameraComponent->SetTarget(cat);
 
 		graphics::Texture* catTexture = Resources::Find<graphics::Texture>(L"Cat");
 		Animator* catAnimator = cat->AddComponent<Animator>();

@@ -8,7 +8,7 @@ namespace op
 	{
 	public:
 		GameObject();
-		~GameObject();
+		virtual ~GameObject();
 
 		virtual void Initialize();
 		virtual void Update();

@@ -41,6 +41,15 @@ namespace op
 			return resource;
 		}
 
+		static void Release()
+		{
+			for (auto& iter : m_resources)
+			{
+				delete iter.second;
+				iter.second = nullptr;
+			}
+		}
+
 	private:
 		static std::map<std::wstring, Resource*> m_resources;
 	};

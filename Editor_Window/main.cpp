@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "Editor_Window.h"
+#include <crtdbg.h>
 
 #include "..\\opEngine_SOURCE\\opApplication.h"
 #include "..\\opEngine_Window\\opLoadScenes.h"
@@ -32,6 +33,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 �
     _In_ LPWSTR    lpCmdLine, //명령행 으로 입력된 프로그램 인수라고 하는데
     _In_ int       nCmdShow) //프로그램이 실행될 형태이며, 보통 모양정보등이 전달된다.
 {
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -83,6 +85,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 �
     }
 
     Gdiplus::GdiplusShutdown(gpToken);
+    application.Release();
 
     return (int)msg.wParam;
 }

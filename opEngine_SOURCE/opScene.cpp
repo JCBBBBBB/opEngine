@@ -9,7 +9,11 @@ namespace op
 
 	Scene::~Scene()
 	{
-
+		for (Layer* layer : m_layers)
+		{
+			delete layer;
+			layer = nullptr;
+		}
 	}
 
 	void Scene::Initialize()

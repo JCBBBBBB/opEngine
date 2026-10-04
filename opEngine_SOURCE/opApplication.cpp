@@ -2,6 +2,7 @@
 #include "opInput.h"
 #include "opTime.h"
 #include "opSceneManager.h"
+#include "opResources.h"
 
 namespace op
 {
@@ -56,6 +57,12 @@ namespace op
 		SceneManager::Render(m_backHdc); // 현재 씬의 모든 게임 객체 그리기
 		
 		CopyRenderTarget(m_backHdc, m_hdc); // 완성된 백버퍼를 실제 창에 복사
+	}
+
+	void Application::Release()
+	{
+		SceneManager::Release();
+		Resources::Release();
 	}
 
 	void Application::ClearRenderTarget()

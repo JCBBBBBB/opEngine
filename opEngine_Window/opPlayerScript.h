@@ -24,6 +24,8 @@ namespace op
 		void LateUpdate() override;
 		void Render(HDC hdc) override;
 
+		void AttackEffect();
+
 	private:
 		void Idle();
 		void Move();

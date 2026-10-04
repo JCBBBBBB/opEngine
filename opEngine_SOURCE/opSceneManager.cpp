@@ -25,5 +25,13 @@ namespace op
 		m_activeScene->Render(hdc);
 	}
 
+	void SceneManager::Release()
+	{
+		for (auto& iter : m_scene)
+		{
+			delete iter.second;
+			iter.second = nullptr;
+		}
+	}
 
 }

@@ -20,7 +20,7 @@ namespace op
 			{
 				if (m_event)
 				{
-					m_event;
+					m_event();
 				}
 			}
 
@@ -29,9 +29,9 @@ namespace op
 
 		struct Events
 		{
-			Event m_startEvent; // 애니메이션이 시작할 때 실행할 함수
-			Event m_completeEvent; // 끝까지 재생했을 때 실행할 함수
-			Event m_endEvent; // 해당 애니메이션의 재생을 종료할 때 실행할 함수
+			Event startEvent; // 애니메이션이 시작할 때 실행할 함수
+			Event completeEvent; // 끝까지 재생했을 때 실행할 함수
+			Event endEvent; // 해당 애니메이션의 재생을 종료할 때 실행할 함수
 		};
 
 
@@ -48,6 +48,13 @@ namespace op
 
 		Animation* FindAnimation(const std::wstring& name);
 		void PlayAnimation(const std::wstring& name, bool loop = true);
+
+		Events* FindEvents(const std::wstring& name);
+		std::function<void()>& GetStartEvent(const std::wstring& name);
+		std::function<void()>& GetCompleteEvent(const std::wstring& name);
+		std::function<void()>& GetEndEvent(const std::wstring& name);
+
+
 		bool IsComplete()
 		{
 			return m_activeAnimation->IsComplete();

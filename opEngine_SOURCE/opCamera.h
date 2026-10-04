@@ -17,6 +17,11 @@ namespace op
 		void LateUpdate() override;
 		void Render(HDC hdc) override;
 
+		void SetTarget(GameObject* target)
+		{
+			m_target = target;
+		}
+
 	private:
 		class GameObject* m_target; // 추적 대상으로 사용할 오브젝트 주소
 		Vector2 m_distance; // 게임 좌표를 화면 좌표로 바꿀 때 뺼 값
