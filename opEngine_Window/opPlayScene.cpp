@@ -19,7 +19,7 @@
 
 namespace op
 {
-	PlayScene::PlayScene()
+	PlayScene::PlayScene() : m_player(nullptr)
 	{
 
 	}
@@ -38,13 +38,16 @@ namespace op
 		//camera->AddComponent<PlayerScript>();
 
 		// 플레이어
-		m_player = object::Instantiate<Player>(enums::LayerType::Player);
+		m_player = object::Instantiate<Player>(enums::LayerType::Player); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
 		//SpriteRenderer* spriteRenderer = m_player->AddComponent<SpriteRenderer>();
 		//spriteRenderer->SetSize(Vector2(3.0f, 3.0f)); // 이미지를 그릴 크기의 배율
-		m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다
+		m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다 
 
-		graphics::Texture* chickenTexture = Resources::Find<graphics::Texture>(L"Cat"); // Resources 목록에서 chicken 찾기
-		Animator* animator = m_player->AddComponent<Animator>();
+		graphics::Texture* chickenTexture = Resources::Find<graphics::Texture>(L"Cat"); // LoadResources()에서 Cat으로 등록한 bmp파일 찾음, Resources 목록에서 chicken 찾기
+		Animator* animator = m_player->AddComponent<Animator>(); // 애니메이션을 관리하고 그리는 컴포넌트 추가
+
+		// 원본 이미지에서 가로로 이어진 32x32 영역 4개를 프레임으로 등록
+		// 프레임 하나를 약 0.5초 동안 표시하도록 설정
 		animator->CreateAnimation(L"CatFrontMove", chickenTexture, Vector2(0.0f, 0.0f), Vector2(32.0f, 32.0f), Vector2::Zero, 4, 0.5f); // 애니메이션 이름, 원본 이미지, 첫 프레임 시작 위치, 프레임 한 장의 크기, 보정값, 가로로 이어진 프레임 개수, 프레임당 유지시간
 		animator->PlayAnimation(L"CatFrontMove", true); // 0.5초마다 다음 프레임으로 바뀌므로 한 번의 재생은 약 2초이다, true는 반복 재생
 		/*spriteRenderer->SetTexture(chickenTexture);*/

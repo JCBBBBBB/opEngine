@@ -5,6 +5,7 @@
 namespace op
 {	
 	// 애니메이션 목록과 현재 애니메이션 관리
+	//Animator -> 어느 Animation을 재생할지 선택하고 실행
 	class Animator : public Component
 	{
 	public:
@@ -23,7 +24,7 @@ namespace op
 
 	private:
 		std::map<std::wstring, Animation*> m_animations; // 이름으로 찾을 수 있는 애니메이션 목록
-		Animation* m_activeAnimation; // 현재 재생 중인 애니메이션
-		bool m_isLoop; // 반복 재생 여분
+		Animation* m_activeAnimation; // 현재 Update와 Render를 실행할 Animation의 주소
+		bool m_isLoop; // 현재 Animation이 끝나면 첫 프레임부터 반복할지 여부
 	};
 }

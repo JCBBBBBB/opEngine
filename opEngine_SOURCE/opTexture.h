@@ -4,6 +4,7 @@
 
 namespace op::graphics
 {
+	//Texture->그림들이 들어 있는 원본 이미지
 	class Texture : public Resource
 	{
 	public:

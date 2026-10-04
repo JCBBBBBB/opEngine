@@ -4,6 +4,7 @@
 
 namespace op
 {
+	//Animation -> 어느 그림을 몇 초동안 보여줄지와 현재 그림 번호
 	class Animation : public Resource
 	{
 	public:
@@ -37,11 +38,11 @@ namespace op
 
 	private:
 		class Animator* m_animator; // 이 Animation을 관리하는 Animator
-		graphics::Texture* m_texture; // 원본 스프라이트 시트
+		graphics::Texture* m_texture; // 프레임들을 가져올 원본 스프라이트 시트
 
-		std::vector<Sprite> m_animationSheet; // 프레임 정보 목록
-		int m_index; // 현재 프레임 정보
+		std::vector<Sprite> m_animationSheet; // 각 프레임의 원본 영역, 크기, 유지 시간 정보 목록
+		int m_index; // 현재 표시할 프레임 정보 (0,1,2,3)
 		float m_time; // 현재 프레임에서 흐른 시간
-		bool m_isComplete; // 마지막 프레임까지 재생했는지
+		bool m_isComplete; // 마지막 프레임의 유지 시간까지 끝났는지
 	};
 }
