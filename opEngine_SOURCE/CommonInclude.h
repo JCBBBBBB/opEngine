@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <functional>
 #include <filesystem>
+#include <math.h>
 
 #include "opMath.h"
 #include "opEnums.h"

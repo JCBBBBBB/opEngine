@@ -1,38 +1,97 @@
 #pragma once
+#include <math.h>
 
 namespace op::math
 {
-	struct Vector2
-	{
-		static Vector2 One;
-		static Vector2 Zero;
+#define PI 3.141592f
 
-		float x;
-		float y;
+    struct Vector2
+    {
+        static Vector2 One;
+        static Vector2 Zero;
 
-		Vector2() : x(0.0f), y(0.0f)
-		{
+        float x;
+        float y;
 
-		}
+        Vector2()
+            : x(0.0f)
+            , y(0.0f)
+        {
+        }
 
-		Vector2(float _x, float _y) : x(_x), y(_y)
-		{
+        Vector2(float _x, float _y)
+            : x(_x)
+            , y(_y)
+        {
+        }
 
-		}
+        Vector2 operator+(Vector2 other)
+        {
+            return Vector2(x + other.x, y + other.y);
+        }
 
-		Vector2 operator+(Vector2 other)
-		{
-			return Vector2(x + other.x, y + other.y);
-		}
+        Vector2 operator-(Vector2 other)
+        {
+            return Vector2(x - other.x, y - other.y);
+        }
 
-		Vector2 operator-(Vector2 other)
-		{
-			return Vector2(x - other.x, y - other.y);
-		}
+        Vector2 operator/(float value)
+        {
+            return Vector2(x / value, y / value);
+        }
 
-		Vector2 operator/(float value)
-		{
-			return Vector2(x / value, y / value);
-		}
-	};
+        // 벡터를 (0, 0)으로 변경
+        void clear()
+        {
+            x = 0.0f;
+            y = 0.0f;
+        }
+
+        // 벡터의 길이 계산
+        float length()
+        {
+            return sqrtf(x * x + y * y);
+        }
+
+        // 방향을 유지하면서 길이를 1로 변경
+        Vector2 normalize()
+        {
+            float len = length();
+
+            x /= len;
+            y /= len;
+
+            return *this;
+        }
+    };
+
+    // 벡터를 정규화한 뒤 지정한 각도로 회전
+    inline Vector2 Rotate(Vector2 vector, float degree)
+    {
+        float radian = (degree / 180.f) * PI;
+
+        vector.normalize();
+
+        float x =
+            cosf(radian) * vector.x
+            - sinf(radian) * vector.y;
+
+        float y =
+            sinf(radian) * vector.x
+            + cosf(radian) * vector.y;
+
+        return Vector2(x, y);
+    }
+
+    // 두 벡터의 내적
+    inline float Dot(Vector2& v1, Vector2 v2)
+    {
+        return v1.x * v2.x + v1.y * v2.y;
+    }
+
+    // 두 벡터의 2차원 외적 값
+    inline float Cross(Vector2 v1, Vector2 v2)
+    {
+        return v1.x * v2.y - v1.y * v2.x;
+    }
 }
