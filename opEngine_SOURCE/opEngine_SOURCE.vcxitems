@@ -31,6 +31,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opResources.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opRigidbody.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opScene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSceneManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opScript.h" />
@@ -56,6 +57,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opResources.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opRigidbody.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSceneManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opScript.cpp" />

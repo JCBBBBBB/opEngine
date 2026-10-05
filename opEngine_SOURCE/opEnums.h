@@ -6,6 +6,7 @@ namespace op::enums
 	{
 		Transform,
 		Collider,
+		Rigidbody,
 		Script,
 		SpriteRenderer,
 		Animator,

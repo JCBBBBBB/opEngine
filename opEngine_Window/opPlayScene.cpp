@@ -1,3 +1,4 @@
+#include "..\\opEngine_SOURCE\\opRigidbody.h"
 #include "opTile.h"
 #include "..\\opEngine_SOURCE\\opTilemapRenderer.h"
 #include <cstdio>
@@ -66,6 +67,7 @@ namespace op
 		m_player->GetComponent<Transform>()->SetPosition(Vector2(300.0f, 250.0f));
 		m_player->GetComponent<Transform>()->SetScale(Vector2(0.5f, 0.5f));
 
+		m_player->AddComponent<Rigidbody>();
 
         // 원본과 같이 Animal 레이어에 버섯 애니메이션을 사용하는 Cat을 생성한다.
         Cat* cat = object::Instantiate<Cat>(enums::LayerType::Animal);

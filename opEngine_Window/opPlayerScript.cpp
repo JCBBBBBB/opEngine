@@ -1,3 +1,5 @@
+#include "..\\opEngine_SOURCE\\opRigidbody.h"
+
 #include "opPlayerScript.h"
 #include "opCollider.h"
 #include "opInput.h"
@@ -69,32 +71,45 @@ namespace op
 	
 	void PlayerScript::Move()
 	{
-		Transform* transform = GetOwner()->GetComponent<Transform>();
-		Vector2 position = transform->GetPosition();
+		Rigidbody* rigidbody = GetOwner()->GetComponent<Rigidbody>();
+
+		if (!rigidbody)
+		{
+			return;
+		}
 
 		if (Input::GetKey(KeyCode::D))
 		{
-			position.x += 100.0f * Time::DeltaTime();
+			rigidbody->AddForce(Vector2(200.0f, 0.0f));
 		}
+
 		if (Input::GetKey(KeyCode::A))
 		{
-			position.x -= 100.0f * Time::DeltaTime();
+			rigidbody->AddForce(Vector2(-200.0f, 0.0f));
 		}
+
+		// 화면 좌표는 y가 작아질수록 위쪽이다.
 		if (Input::GetKey(KeyCode::W))
 		{
-			position.y -= 100.0f * Time::DeltaTime();
+			rigidbody->AddForce(Vector2(0.0f, -200.0f));
 		}
+
 		if (Input::GetKey(KeyCode::S))
 		{
-			position.y += 100.0f * Time::DeltaTime();
+			rigidbody->AddForce(Vector2(0.0f, 200.0f));
 		}
 
-		transform->SetPosition(position);
-
-		if (Input::GetKeyUp(KeyCode::D) || Input::GetKeyUp(KeyCode::A) || Input::GetKeyUp(KeyCode::W) || Input::GetKeyUp(KeyCode::S))
+		if (Input::GetKeyUp(KeyCode::D)
+			|| Input::GetKeyUp(KeyCode::A)
+			|| Input::GetKeyUp(KeyCode::W)
+			|| Input::GetKeyUp(KeyCode::S))
 		{
-			m_state = PlayerScript::State::Idle;
-			m_animator->PlayAnimation(L"Idle", false);
+			m_state = State::Idle;
+
+			if (m_animator)
+			{
+				m_animator->PlayAnimation(L"Idle", false);
+			}
 		}
 	}
 	void PlayerScript::Idle()
@@ -162,13 +177,15 @@ namespace op
 			catScript->m_dest = mousePos;
 		}
 
-		// 이전에 추가한 WASD 이동 유지: 원본에는 없는 부분
 		if (Input::GetKey(KeyCode::W)
 			|| Input::GetKey(KeyCode::A)
 			|| Input::GetKey(KeyCode::S)
 			|| Input::GetKey(KeyCode::D))
 		{
 			m_state = State::Walk;
+
+			// 걷기 상태로 바뀐 프레임에도 힘을 전달한다.
+			Move();
 		}
 	}
 

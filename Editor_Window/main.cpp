@@ -5,6 +5,7 @@
 #include "Editor_Window.h"
 #include <crtdbg.h>
 
+#include "..\\opEngine_SOURCE\\opSceneManager.h"
 #include "..\\opEngine_SOURCE\\opApplication.h"
 #include "..\\opEngine_Window\\opLoadScenes.h"
 #include "..\\opEngine_Window\\opLoadResources.h"
@@ -177,31 +178,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         return FALSE;
     }
 
-    HWND toolHwnd = CreateWindowW(
-        L"TILEWINDOW",
-        L"TileWindow",
-        WS_OVERLAPPEDWINDOW,
-        0,
-        0,
-        static_cast<int>(width),
-        static_cast<int>(height),
-        nullptr,
-        nullptr,
-        hInstance,
-        nullptr);
-
-    if (!toolHwnd)
-    {
-        DestroyWindow(hWnd);
-        return FALSE;
-    }
-
     application.Initialize(hWnd, width, height);
 
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
-
-    // 타일용 창은 아직 표시하지 않는다.
 
     Gdiplus::GdiplusStartup(&gpToken, &gpsi, nullptr);
 
@@ -210,41 +190,65 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
     srand(static_cast<unsigned int>(GetTickCount()));
 
-    op::graphics::Texture* texture =
-        op::Resources::Find<op::graphics::Texture>(L"SpringFloor");
+    op::Scene* activeScene = op::SceneManager::GetActiveScene();
 
-    if (texture)
+    // 작업용 씬으로 시작할 때만 타일용 창 생성
+    if (activeScene && activeScene->GetName() == L"ToolScene")
     {
-        // 클라이언트 영역을 원본 이미지 크기로 설정
-        RECT rect = {
+        HWND toolHwnd = CreateWindowW(
+            L"TILEWINDOW",
+            L"TileWindow",
+            WS_OVERLAPPEDWINDOW,
             0,
             0,
-            static_cast<LONG>(texture->GetWidth()),
-            static_cast<LONG>(texture->GetHeight())
-        };
-
-        // 제목 표시줄과 테두리 크기를 포함한 창 크기 계산
-        AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
-
-        const int toolWidth = rect.right - rect.left;
-        const int toolHeight = rect.bottom - rect.top;
-
-        SetWindowPos(
-            toolHwnd,
-            nullptr,
             static_cast<int>(width),
-            0,
-            toolWidth,
-            toolHeight,
-            SWP_NOZORDER);
-    }
+            static_cast<int>(height),
+            nullptr,
+            nullptr,
+            hInstance,
+            nullptr);
 
-    ShowWindow(toolHwnd, SW_SHOW);
-    UpdateWindow(toolHwnd);
+        if (!toolHwnd)
+        {
+            MessageBoxW(
+                hWnd,
+                L"타일용 창을 생성하지 못했습니다.",
+                L"타일 도구",
+                MB_OK | MB_ICONERROR);
+
+            return TRUE;
+        }
+
+        op::graphics::Texture* texture =
+            op::Resources::Find<op::graphics::Texture>(L"SpringFloor");
+
+        if (texture)
+        {
+            RECT rect = {
+                0,
+                0,
+                static_cast<LONG>(texture->GetWidth()),
+                static_cast<LONG>(texture->GetHeight())
+            };
+
+            AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+            SetWindowPos(
+                toolHwnd,
+                nullptr,
+                static_cast<int>(width),
+                0,
+                rect.right - rect.left,
+                rect.bottom - rect.top,
+                SWP_NOZORDER);
+        }
+
+        ShowWindow(toolHwnd, SW_SHOW);
+        UpdateWindow(toolHwnd);
+    }
 
     return TRUE;
 }
-
 
 
 //

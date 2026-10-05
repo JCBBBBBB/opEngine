@@ -72,6 +72,18 @@ namespace op::math
             y += other.y;
         }
 
+        // 벡터 방향을 반대로 바꾼다.
+        Vector2 operator-() const
+        {
+            return Vector2(-x, -y);
+        }
+
+        // x와 y가 모두 같은지 확인한다.
+        bool operator==(Vector2 other) const
+        {
+            return x == other.x && y == other.y;
+        }
+
         Vector2 operator-(Vector2 other)
         {
             return Vector2(x - other.x, y - other.y);
