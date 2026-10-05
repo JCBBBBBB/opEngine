@@ -27,7 +27,6 @@ namespace op
 		if (m_deathTime > 6.0f)
 		{
 			object::Destroy(GetOwner());
-			return;
 		}
 
 		if (m_animator == nullptr)

@@ -20,6 +20,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opApplication.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opDestroy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEntity.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEnums.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h" />
@@ -44,6 +45,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opApplication.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opDestroy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opEntity.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opGameObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opInput.cpp" />

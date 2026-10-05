@@ -20,6 +20,11 @@ namespace op
 		void AddGameObject(GameObject* gameObject);
 
 	private:
+		void findDeadGameObjects(OUT std::vector<GameObject*>& gameObjs);
+		void deleteGameObjects(std::vector<GameObject*>& gameObjs);
+		void eraseGameObject();
+
+	private:
 		std::vector<GameObject*> m_gameObjects; // 이 Layer에 등록된 오브젝트 목록
 	};
 

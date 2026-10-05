@@ -58,6 +58,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opAnimator.cpp">
       <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opDestroy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h">
@@ -121,6 +122,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opAnimator.h">
       <Filter>Component</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opDestroy.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">

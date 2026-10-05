@@ -3,6 +3,14 @@
 #include "opTime.h"
 #include "opTransform.h"
 
+namespace op::object
+{
+	void Destroy(op::GameObject* gameObject)
+	{
+		if (gameObject != nullptr)
+			gameObject->Death();
+	}
+}
 
 namespace op
 {

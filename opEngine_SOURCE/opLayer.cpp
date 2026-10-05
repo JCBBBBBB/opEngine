@@ -43,9 +43,8 @@ namespace op
 			{
 				continue;
 			}
-			GameObject::State state = gameObject->GetActive();
 
-			if (state == GameObject::State::Paused || state == GameObject::State::Dead)
+			if (gameObject->IsActive() == false)
 			{
 				continue;
 			}
@@ -63,9 +62,7 @@ namespace op
 				continue;
 			}
 
-			GameObject::State state = gameObject->GetActive();
-
-			if (state == GameObject::State::Paused || state == GameObject::State::Dead)
+			if (gameObject->IsActive() == false)
 			{
 				continue;
 			}
@@ -83,9 +80,7 @@ namespace op
 				continue;
 			}
 
-			GameObject::State state = gameObject->GetActive();
-
-			if (state == GameObject::State::Paused || state == GameObject::State::Dead)
+			if (gameObject->IsActive() == false)
 			{
 				continue;
 			}
@@ -96,24 +91,11 @@ namespace op
 
 	void Layer::Destroy()
 	{
-		for (GameObjectIter iter = m_gameObjects.begin(); iter != m_gameObjects.end();)
-		{
-			GameObject::State active = (*iter)->GetActive();
+		std::vector<GameObject*> deleteObjects = {};
 
-			if (active == GameObject::State::Dead)
-			{
-				GameObject* deathObj = (*iter);
-
-				iter = m_gameObjects.erase(iter);
-
-				delete deathObj;
-				deathObj = nullptr;
-
-				continue;
-			}
-
-			iter++;
-		}
+		findDeadGameObjects(deleteObjects);
+		eraseGameObject();
+		deleteGameObjects(deleteObjects);
 	}
 
 	void Layer::AddGameObject(GameObject* gameObject)
@@ -126,4 +108,30 @@ namespace op
 		m_gameObjects.push_back(gameObject); // 목록 맨 뒤에 주소 추가
 	}
 
+	void Layer::findDeadGameObjects(OUT std::vector<GameObject*>& gameObjs)
+	{
+		for (GameObject* gameObject : m_gameObjects)
+		{
+			GameObject::State active = gameObject->GetState();
+
+			if (active == GameObject::State::Dead)
+			{
+				gameObjs.push_back(gameObject);
+			}
+		}
+	}
+
+	void Layer::deleteGameObjects(std::vector<GameObject*>& gameObjs)
+	{
+		for (GameObject* obj : gameObjs)
+		{
+			delete obj;
+			obj = nullptr;
+		}
+	}
+
+	void Layer::eraseGameObject()
+	{
+		std::erase_if(m_gameObjects, [](GameObject* gameObj) {return (gameObj)->IsDead(); });
+	}
 }

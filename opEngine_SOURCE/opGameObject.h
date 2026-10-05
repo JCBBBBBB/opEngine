@@ -2,11 +2,20 @@
 #include "CommonInclude.h"
 #include "opComponent.h"
 
+namespace op::object
+{
+	void Destroy(op::GameObject* gameObject);
+}
+
+
 namespace op
 {
+
 	class GameObject
 	{
 	public:
+		friend void object::Destroy(GameObject* gameObject);
+
 		enum class State
 		{
 			Active,
@@ -50,12 +59,12 @@ namespace op
 			return component;
 		}
 		
-		State GetActive() { return m_state; }
+		State GetState() { return m_state; }
 		void SetActive(bool power)
 		{
 			if (power == true)
 			{
-				m_state == State::Active;
+				m_state = State::Active;
 			}
 			if (power == false)
 			{
@@ -63,13 +72,12 @@ namespace op
 			}
 		}
 
-		void Death()
-		{
-			m_state = State::Dead;
-		}
+		bool IsActive() { return m_state == State::Active; }
+		bool IsDead() { return m_state == State::Dead; }
+
 	private:
 		void InitializeTransform();
-
+		void Death() { m_state = State::Dead; }
 	private:
 		std::vector<Component*> m_components;
 		State m_state;
