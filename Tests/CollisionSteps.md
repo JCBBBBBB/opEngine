@@ -1,22 +1,69 @@
-﻿# Collision implementation
+﻿# 충돌 구현 기록
 
-Original: eazuooz/YamYam_Engine
+원본 저장소: https://github.com/eazuooz/YamYam_Engine
 
-1. 70f27c4 - BoxCollider 구현
-   - op Collider/BoxCollider2D/CircleCollider2D, player and Animal sample.
-   - Keeps existing WASD controls and resource paths.
-   - Fixes owner initialization, idle Cat null access, client buffer dimensions,
-     GDI object ownership, folder frame ordering/resource keys and one-shot events.
-   - Collider outlines use the same camera conversion as sprites.
+아래 네 단계를 원본 순서대로 적용했다. 각 단계는 x64 Debug 빌드와
+회귀 테스트를 통과한 뒤 별도로 커밋·푸시했다.
 
-Validation: build the solution, then run Tests/RunTests.ps1.
+| 원본 커밋 | 적용 내용 |
+| --- | --- |
+| 70f27c4 / BoxCollider 구현 | Collider 부모, 사각형 영역 표시, 원형 클래스 뼈대, 플레이어·버섯 샘플 |
+| 099e767 / Collision Manager 충돌체 레이어 마스킹 체크 구조 및 충돌 체크 로직 | 레이어 검사 설정, 검사할 충돌체 쌍 순회 |
+| e112618 / Collision 충돌 함수 Enter, stay ,Exit 구현 | 충돌체 ID·크기, 사각형 판정, Script의 Enter/Stay/Exit, Player 레이어 적용 |
+| f70097c / 원-원 충돌 | ColliderType, 원형 영역 표시, 원–원 판정, PlayScene의 원형 샘플, 씬 진입·종료 부모 호출 |
 
-2. 099e767 - Collision Manager 충돌체 레이어 마스킹 체크 구조 및 충돌 체크 로직
-   - Layer mask and collider pair traversal. Geometry/events follow in step 3.
-   - Checks after object updates, skips self/duplicates, snapshots object lists.
+## 현재 동작
 
-3. e112618 - Collision 충돌 함수 Enter, stay ,Exit 구현
-   - Collider IDs/size, rectangle intersection, Script collision callbacks.
-   - Player enters Player layer; original demo teleports the other object to (400, 500).
-   - Canonical pair IDs, null-safe scripts, deleted contact cleanup and scene resets.
-   - Rectangle tests use the rendered top-left/size, fixing unequal-size boxes.
+- 기존 WASD 이동과 리소스 경로, 플레이어 이미지 배율을 유지한다.
+- 플레이어는 Player 레이어, 버섯 애니메이션을 쓰는 Cat은 Animal 레이어다.
+- Player–Animal 검사가 활성화되어 있다.
+- 원본 PlayerScript 데모처럼 충돌이 시작되면 상대를 (400, 500)으로 옮긴다.
+- Collider의 기본 지름/사각형 크기는 100픽셀이다. SetSize(Vector2(1, 1))이 기본값이다.
+- SetOffset(Vector2(-50, -50))은 오브젝트 위치가 100픽셀 영역의 중심이 되게 한다.
+- 충돌체 크기는 Transform의 이미지 배율과 별도로 설정한다.
+- 원형은 원본처럼 x와 y에 같은 배율을 사용한다. 반지름은 size.x * 100 / 2다.
+- 사각형은 면적이 겹쳐야 충돌하고, 원은 서로 접하는 경계도 충돌로 판정한다.
+- 원–사각형 판정은 이 원본 커밋에서 아직 미구현이다.
+
+## 오류를 막기 위해 보완한 부분
+
+- Component의 Owner를 Initialize 전에 설정한다.
+- 원본에서 주석 처리한 Cat 대기 중 이동 코드를 제거하여 빈 플레이어 포인터 접근을 막는다.
+- 실제 클라이언트 크기로 백버퍼를 생성·지우고, 이미지와 충돌 영역에 같은 카메라 변환을 적용한다.
+- 사각형 크기가 서로 달라도 그려지는 왼쪽 위와 크기를 기준으로 정확히 검사한다.
+- 충돌체 ID 순서를 고정해 역순의 동일 쌍을 중복 등록하지 않는다.
+- 같은 레이어는 자기 자신과 역순 중복 쌍을 검사하지 않는다.
+- Script 없는 오브젝트, 비활성화, 삭제, 씬 전환과 콜백 중 목록 변경을 처리한다.
+- 삭제한 충돌체의 기록을 제거하고 씬 전환 시 충돌 기록을 초기화한다.
+- 한 번 재생하는 애니메이션의 완료 이벤트가 반복 호출되던 문제를 수정한다.
+- 폴더 프레임 순서·리소스 키, 시트 배경 초기화와 GDI 객체 복원·해제를 보완한다.
+- 기존 픽셀 좌표 변환 경고와 포인터를 정수로 잘라 난수 초기화하던 코드를 수정한다.
+
+프레임 흐름:
+
+Input/Time 갱신 → Scene Update → Scene LateUpdate → Collision Update
+→ 백버퍼 그리기 → 창에 복사 → 삭제 예약된 오브젝트 정리
+
+이동이 끝난 위치로 충돌을 검사하며, 충돌 판정에는 카메라 변환 전 월드 좌표를 사용한다.
+
+## 검증 방법
+
+Visual Studio 2022 C++ 도구가 설치된 환경에서 솔루션을 먼저 빌드하고,
+저장소 루트에서 실행한다.
+
+```powershell
+.\Tests\RunTests.ps1 -Configuration Debug -Platform x64
+```
+
+Release와 x86도 같은 인자로 선택할 수 있다. 솔루션의 32비트 구성 이름은
+x86이고, 프로젝트의 이름은 Win32다. 테스트 스크립트는 둘 다 허용한다.
+
+최종 검증: Debug/Release × x64/x86 네 설정에서 빌드 오류·경고 없이 통과했고,
+아래 테스트도 모든 설정에서 통과했다.
+
+- 사각형·원 교차, 서로 다른 크기, 보정값, 경계 접촉
+- Enter/Stay/Exit, 검사 마스크, 같은 레이어의 중복 방지
+- 비활성화·삭제·씬 전환, 콜백에서 생성·씬 변경
+- 사각형·원형 영역의 위치와 카메라 변환, 반복 그리기의 GDI 자원 수
+- 실제 Player/버섯 이미지 로딩, 씬 초기화·렌더링·반복 전환
+- 한 번 재생하는 애니메이션의 완료 이벤트

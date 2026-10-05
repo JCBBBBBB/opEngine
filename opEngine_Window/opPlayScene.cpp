@@ -19,7 +19,7 @@
 #include "opTitleScene.h"
 #include "opSceneManager.h"
 #include "opAnimator.h"
-#include "opBoxCollider2D.h"
+#include "opCircleCollider2D.h"
 #include "opCollisionManager.h"
 
 namespace op
@@ -44,7 +44,7 @@ namespace op
 
 		// 플레이어
 		m_player = object::Instantiate<Player>(enums::LayerType::Player); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
-		BoxCollider2D* collider = m_player->AddComponent<BoxCollider2D>();
+		CircleCollider2D* collider = m_player->AddComponent<CircleCollider2D>();
         collider->SetOffset(Vector2(-50.0f, -50.0f));
         PlayerScript* playerScript = m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다
 
@@ -64,7 +64,7 @@ namespace op
         Cat* cat = object::Instantiate<Cat>(enums::LayerType::Animal);
         cat->AddComponent<CatScript>();
         Animator* catAnimator = cat->AddComponent<Animator>();
-        BoxCollider2D* catCollider = cat->AddComponent<BoxCollider2D>();
+        CircleCollider2D* catCollider = cat->AddComponent<CircleCollider2D>();
         catCollider->SetOffset(Vector2(-50.0f, -50.0f));
         catAnimator->CreateAnimationByFolder(L"MushroomIdle", L"..\\Resources\\Mushroom", Vector2::Zero, 0.1f);
         catAnimator->PlayAnimation(L"MushroomIdle", true);
@@ -96,11 +96,11 @@ namespace op
 
 	void PlayScene::OnEnter()
 	{
-
+        Scene::OnEnter();
 	}
 
 	void PlayScene::OnExit()
 	{
-
+        Scene::OnExit();
 	}
 }

@@ -1,4 +1,5 @@
-param([string]$Configuration = "Debug", [string]$Platform = "x64")
+param([ValidateSet("Debug", "Release")][string]$Configuration = "Debug", [ValidateSet("x64", "Win32", "x86")][string]$Platform = "x64")
+if ($Platform -eq "x86") { $Platform = "Win32" }
 $ErrorActionPreference = "Stop"
 $repo = Split-Path $PSScriptRoot -Parent
 $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"

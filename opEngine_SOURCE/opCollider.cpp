@@ -5,7 +5,7 @@
 namespace op
 {
     UINT32 Collider::CollisionID = 1;
-    Collider::Collider() : Component(enums::ComponentType::Collider), m_id(CollisionID++),
+    Collider::Collider(enums::ColliderType type) : Component(enums::ComponentType::Collider), m_id(CollisionID++), m_type(type),
         m_size(Vector2::One), m_offset(Vector2::Zero)
     {
         CollisionManager::RegisterCollider(this);

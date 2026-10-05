@@ -38,4 +38,6 @@ namespace op
 	{
 		Scene::Render(hdc);
 	}
+    void TitleScene::OnEnter() { Scene::OnEnter(); }
+    void TitleScene::OnExit() { Scene::OnExit(); }
 }

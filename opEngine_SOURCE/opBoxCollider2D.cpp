@@ -5,7 +5,7 @@
 #include "opCamera.h"
 namespace op
 {
-    BoxCollider2D::BoxCollider2D() : Collider() {}
+    BoxCollider2D::BoxCollider2D() : Collider(enums::ColliderType::Rect2D) {}
     BoxCollider2D::~BoxCollider2D() {}
     void BoxCollider2D::Initialize() {}
     void BoxCollider2D::Update() {}

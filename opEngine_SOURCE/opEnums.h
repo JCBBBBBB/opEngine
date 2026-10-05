@@ -24,6 +24,13 @@ namespace op::enums
 		Max = 16,
 	};
 
+    enum class ColliderType
+    {
+        Circle2D,
+        Rect2D,
+        End,
+    };
+
 	enum class ResourceType
 	{
 		Texture, // ÀÌ¹ÌÁö

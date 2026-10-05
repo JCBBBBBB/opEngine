@@ -7,7 +7,7 @@ namespace op
     class Collider : public Component
     {
     public:
-        Collider();
+        explicit Collider(enums::ColliderType type);
         ~Collider() override;
         void Initialize() override;
         void Update() override;
@@ -16,6 +16,7 @@ namespace op
         virtual void OnCollisionEnter(Collider* other);
         virtual void OnCollisionStay(Collider* other);
         virtual void OnCollisionExit(Collider* other);
+        enums::ColliderType GetColliderType() const { return m_type; }
         UINT32 GetID() const { return m_id; }
         Vector2 GetSize() const { return m_size; }
         void SetSize(Vector2 size) { m_size = size; }
@@ -24,6 +25,7 @@ namespace op
     private:
         static UINT32 CollisionID;
         const UINT32 m_id;
+        const enums::ColliderType m_type;
         Vector2 m_size;
         Vector2 m_offset;
     };

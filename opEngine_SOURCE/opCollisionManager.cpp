@@ -155,8 +155,22 @@ namespace op
         Vector2 leftSize = left->GetSize() * 100.0f;
         Vector2 rightSize = right->GetSize() * 100.0f;
         if (leftSize.x <= 0 || leftSize.y <= 0 || rightSize.x <= 0 || rightSize.y <= 0) return false;
-        // 서로 다른 크기의 상자도 실제 그려지는 모서리로 정확히 검사한다.
-        return leftPos.x < rightPos.x + rightSize.x && rightPos.x < leftPos.x + leftSize.x
-            && leftPos.y < rightPos.y + rightSize.y && rightPos.y < leftPos.y + leftSize.y;
+        const auto leftType = left->GetColliderType();
+        const auto rightType = right->GetColliderType();
+        if (leftType == enums::ColliderType::Rect2D && rightType == enums::ColliderType::Rect2D)
+        {
+            // 서로 다른 크기의 상자도 실제 그려지는 모서리로 정확히 검사한다.
+            return leftPos.x < rightPos.x + rightSize.x && rightPos.x < leftPos.x + leftSize.x
+                && leftPos.y < rightPos.y + rightSize.y && rightPos.y < leftPos.y + leftSize.y;
+        }
+        if (leftType == enums::ColliderType::Circle2D && rightType == enums::ColliderType::Circle2D)
+        {
+            // 원본과 동일: size.x * 100은 지름, 왼쪽 위에서 반 크기만큼 이동하면 중심이다.
+            Vector2 delta = (leftPos + leftSize / 2.0f) - (rightPos + rightSize / 2.0f);
+            const float radiusSum = (leftSize.x + rightSize.x) / 2.0f;
+            return delta.x * delta.x + delta.y * delta.y <= radiusSum * radiusSum;
+        }
+        // 원-사각형은 이 원본 커밋에서 아직 구현하지 않았다.
+        return false;
     }
 }

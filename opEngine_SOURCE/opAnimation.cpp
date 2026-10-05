@@ -39,7 +39,7 @@ namespace op
 		{
 			m_time = 0.0f; // 다음 프레임의 시간을 새로 측정하기 위해 0으로 설정
 	
-			if (m_index < m_animationSheet.size() - 1) // 현재 프레임이 마지막 프레임보다 앞이라면
+			if (static_cast<size_t>(m_index) < m_animationSheet.size() - 1) // 현재 프레임이 마지막 프레임보다 앞이라면
 			{
 				m_index++; // 다음 프레임 선택
 			}

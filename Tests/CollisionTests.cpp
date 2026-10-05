@@ -1,5 +1,7 @@
 ﻿#include "opApplication.h"
 #include "opBoxCollider2D.h"
+#include "opCircleCollider2D.h"
+#include "opCamera.h"
 #include "opTransform.h"
 #include "opRenderer.h"
 #include <stdexcept>
@@ -159,6 +161,101 @@ void RectangleTests()
     std::cout << "Rectangle/lifecycle/callback regression tests passed\n";
 }
 
+void CircleTests()
+{
+    using namespace op;
+    CollisionManager::Initialize();
+    {
+        GameObject left, right;
+        auto* a = left.AddComponent<CircleCollider2D>();
+        auto* b = right.AddComponent<CircleCollider2D>();
+        Require(a->GetColliderType() == enums::ColliderType::Circle2D, "Circle type");
+        right.GetComponent<Transform>()->SetPosition(Vector2(100.0f, 0.0f));
+        Require(CollisionManager::Intersect(a, b), "Circle tangency included");
+        Require(CollisionManager::Intersect(b, a), "Symmetric circle intersection");
+        right.GetComponent<Transform>()->SetPosition(Vector2(100.01f, 0.0f));
+        Require(!CollisionManager::Intersect(a, b), "Separated circles");
+        right.GetComponent<Transform>()->SetPosition(Vector2(99.0f, 99.0f));
+        Require(!CollisionManager::Intersect(a, b), "Circle test differs from AABB");
+        right.GetComponent<Transform>()->SetPosition(Vector2(70.0f, 70.0f));
+        Require(CollisionManager::Intersect(a, b), "Diagonal circle overlap");
+        a->SetSize(Vector2(2.0f, 2.0f));
+        right.GetComponent<Transform>()->SetPosition(Vector2(200.0f, 50.0f));
+        Require(CollisionManager::Intersect(a, b), "Unequal-radius circle tangent centers");
+        right.GetComponent<Transform>()->SetPosition(Vector2(220.0f, 50.0f));
+        Require(!CollisionManager::Intersect(a, b), "Unequal-radius separation");
+        b->SetOffset(Vector2(-20.0f, 0.0f));
+        Require(CollisionManager::Intersect(a, b), "Circle offset");
+        left.GetComponent<Transform>()->SetScale(Vector2(0.5f, 0.5f));
+        Require(CollisionManager::Intersect(a, b), "Collider size independent of sprite scale");
+        a->SetSize(Vector2::Zero);
+        Require(!CollisionManager::Intersect(a, b), "Empty circle excluded");
+    }
+    auto* scene = SceneManager::CreateScene<Scene>(L"CircleEventTests");
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Animal, true);
+    auto* left = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    auto* right = TestObject(scene, enums::LayerType::Animal, Vector2(75.0f, 0.0f));
+    left->AddComponent<CircleCollider2D>();
+    right->AddComponent<CircleCollider2D>();
+    auto* a = left->GetComponent<CountingScript>();
+    auto* b = right->GetComponent<CountingScript>();
+    CollisionManager::Update();
+    CollisionManager::Update();
+    Require(a->enters == 1 && b->enters == 1 && a->stays == 1 && b->stays == 1, "Circle Enter/Stay");
+    right->GetComponent<Transform>()->SetPosition(Vector2(100.0f, 0.0f));
+    CollisionManager::Update();
+    Require(a->stays == 2, "Tangent circle stays");
+    right->GetComponent<Transform>()->SetPosition(Vector2(100.01f, 0.0f));
+    CollisionManager::Update();
+    Require(a->exits == 1 && b->exits == 1, "Circle Exit");
+    right->GetComponent<Transform>()->SetPosition(Vector2::Zero);
+    CollisionManager::Update();
+    Require(a->enters == 2, "Circle re-enter");
+    right->AddComponent<BoxCollider2D>();
+    Require(!CollisionManager::Intersect(left->GetComponent<Collider>(), right->GetComponent<Collider>()), "Original mixed-shape TODO");
+    CollisionManager::Update();
+    Require(CollisionManager::GetContactCount() == 0, "Replacement collider cleanup");
+    right->AddComponent<CircleCollider2D>();
+    CollisionManager::Update();
+    Require(a->enters == 3, "New collider creates new contact");
+    SceneManager::Release();
+
+    HDC screen = GetDC(nullptr);
+    HDC dc = CreateCompatibleDC(screen);
+    HBITMAP bitmap = CreateCompatibleBitmap(screen, 256, 256);
+    HGDIOBJ previous = SelectObject(dc, bitmap);
+    {
+        GameObject object;
+        auto* circle = object.AddComponent<CircleCollider2D>();
+        circle->SetOffset(Vector2(-50.0f, -50.0f));
+        object.GetComponent<Transform>()->SetPosition(Vector2(100.0f, 100.0f));
+        for (int i = 0; i < 100; ++i) circle->Render(dc);
+        GdiFlush();
+        DWORD count = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+        for (int i = 0; i < 1000; ++i) circle->Render(dc);
+        GdiFlush();
+        Require(GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS) == count, "Circle GDI handles");
+        Require(GetPixel(dc, 50, 100) == RGB(0, 255, 0), "Circle outline bounds");
+        GameObject cameraObject;
+        auto* camera = cameraObject.AddComponent<Camera>();
+        cameraObject.GetComponent<Transform>()->SetPosition(Vector2(10.0f, 20.0f));
+        camera->Update();
+        renderer::mainCamera = camera;
+        circle->Render(dc);
+        Require(GetPixel(dc, 40, 80) == RGB(0, 255, 0), "Circle camera conversion");
+        auto* box = object.AddComponent<BoxCollider2D>();
+        box->SetOffset(Vector2(-50.0f, -50.0f));
+        box->Render(dc);
+        Require(GetPixel(dc, 40, 60) == RGB(0, 255, 0), "Box camera conversion");
+        renderer::mainCamera = nullptr;
+    }
+    SelectObject(dc, previous);
+    DeleteObject(bitmap);
+    DeleteDC(dc);
+    ReleaseDC(nullptr, screen);
+    std::cout << "Circle geometry/events/rendering tests passed\n";
+}
+
 void IntegrationTests()
 {
     using namespace op;
@@ -175,6 +272,13 @@ void IntegrationTests()
     LoadResources();
     Require(Resources::Find<graphics::Texture>(L"Player") != nullptr, "Player image load");
     LoadScenes();
+    auto* play = SceneManager::GetActiveScene();
+    Require(play->GetLayer(enums::LayerType::Player)->GetGameObjects().size() == 1, "Player layer sample");
+    Require(play->GetLayer(enums::LayerType::Animal)->GetGameObjects().size() == 1, "Animal layer sample");
+    auto* player = play->GetLayer(enums::LayerType::Player)->GetGameObjects().front();
+    auto* animal = play->GetLayer(enums::LayerType::Animal)->GetGameObjects().front();
+    Require(player->GetComponent<Collider>()->GetColliderType() == enums::ColliderType::Circle2D, "Player circle sample");
+    Require(animal->GetComponent<Collider>()->GetColliderType() == enums::ColliderType::Circle2D, "Animal circle sample");
     for (int i = 0; i < 20; ++i)
     {
         Time::Update();
@@ -245,6 +349,7 @@ int RunTests()
     DeleteDC(dc);
     ReleaseDC(nullptr, screen);
     RectangleTests();
+    CircleTests();
     IntegrationTests();
     std::cout << "Collider rendering tests passed\n";
     return 0;
