@@ -8,11 +8,155 @@
 #include "opTime.h"
 #include "opAnimator.h"
 #include "opCollisionManager.h"
+#include "opScript.h"
+#include "../opEngine_Window/opPlayerScript.h"
 
 op::Application application;
 void Require(bool condition, const char* message)
 {
     if (!condition) throw std::runtime_error(message);
+}
+
+class CountingScript : public op::Script
+{
+public:
+    int enters = 0, stays = 0, exits = 0;
+    bool initializedWithOwner = false;
+    std::function<void(op::Collider*)> entered;
+    void Initialize() override { initializedWithOwner = GetOwner() != nullptr; }
+    void OnCollisionEnter(op::Collider* other) override { ++enters; if (entered) entered(other); }
+    void OnCollisionStay(op::Collider*) override { ++stays; }
+    void OnCollisionExit(op::Collider*) override { ++exits; }
+};
+
+op::GameObject* TestObject(op::Scene* scene, op::enums::LayerType layer, op::math::Vector2 position)
+{
+    auto* object = new op::GameObject();
+    object->AddComponent<op::BoxCollider2D>();
+    object->AddComponent<CountingScript>();
+    object->GetComponent<op::Transform>()->SetPosition(position);
+    scene->AddGameObject(object, layer);
+    return object;
+}
+
+void RectangleTests()
+{
+    using namespace op;
+    CollisionManager::Initialize();
+    // 원본의 중심/왼쪽 위 혼동을 드러내는 서로 다른 크기의 상자.
+    {
+        GameObject left, right;
+        auto* a = left.AddComponent<BoxCollider2D>();
+        auto* b = right.AddComponent<BoxCollider2D>();
+        Require(a->GetID() != b->GetID(), "Unique collider IDs");
+        a->SetSize(Vector2(2.0f, 1.0f));
+        right.GetComponent<Transform>()->SetPosition(Vector2(190.0f, 10.0f));
+        Require(CollisionManager::Intersect(a, b), "Unequal-size boxes overlap");
+        Require(CollisionManager::Intersect(b, a), "Symmetric rectangle intersection");
+        right.GetComponent<Transform>()->SetPosition(Vector2(200.0f, 10.0f));
+        Require(!CollisionManager::Intersect(a, b), "Rectangle edge-only contact excluded");
+        b->SetOffset(Vector2(-20.0f, 0.0f));
+        Require(CollisionManager::Intersect(a, b), "Rectangle offset");
+        a->SetSize(Vector2::Zero);
+        Require(!CollisionManager::Intersect(a, b), "Empty rectangle excluded");
+        a->SetSize(Vector2::One);
+        right.GetComponent<Transform>()->SetPosition(Vector2(30.0f, 0.0f));
+        CollisionManager::ColliderCollision(a, b); // Script가 없어도 안전하다.
+    }
+    Require(CollisionManager::GetContactCount() == 0, "Destructor contact cleanup");
+    auto* scene = SceneManager::CreateScene<Scene>(L"CollisionTests");
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Animal, true);
+    auto* left = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    auto* right = TestObject(scene, enums::LayerType::Animal, Vector2(50.0f, 0.0f));
+    auto* a = left->GetComponent<CountingScript>();
+    auto* b = right->GetComponent<CountingScript>();
+    Require(a->initializedWithOwner, "Owner set before Initialize");
+    CollisionManager::Update();
+    Require(a->enters == 1 && b->enters == 1, "Enter once on both objects");
+    CollisionManager::Update();
+    Require(a->stays == 1 && b->stays == 1, "Stay once per frame");
+    right->GetComponent<Transform>()->SetPosition(Vector2(500.0f, 0.0f));
+    CollisionManager::Update();
+    Require(a->exits == 1 && b->exits == 1, "Exit on separation");
+    right->GetComponent<Transform>()->SetPosition(Vector2(50.0f, 0.0f));
+    CollisionManager::Update();
+    Require(a->enters == 2 && b->enters == 2, "Re-enter after separation");
+    CollisionManager::ColliderCollision(right->GetComponent<Collider>(), left->GetComponent<Collider>());
+    Require(a->enters == 2 && a->stays == 2, "Canonical reversed pair ID");
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Animal, enums::LayerType::Player, false);
+    CollisionManager::Update();
+    Require(a->exits == 2 && b->exits == 2, "Exit when mask disabled");
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Animal, enums::LayerType::Player, true);
+    CollisionManager::Update();
+    right->SetActive(false);
+    CollisionManager::Update();
+    Require(a->exits == 3 && b->exits == 3, "Exit when paused");
+    right->SetActive(true);
+    CollisionManager::Update();
+    Require(a->enters == 4 && b->enters == 4, "Enter after reactivation");
+    object::Destroy(right);
+    SceneManager::Destroy();
+    Require(CollisionManager::GetContactCount() == 0, "Deleted collider forgotten");
+    CollisionManager::Update();
+    auto* noScript = new GameObject();
+    noScript->AddComponent<BoxCollider2D>();
+    scene->AddGameObject(noScript, enums::LayerType::Animal);
+    CollisionManager::Update();
+    object::Destroy(noScript);
+    CollisionManager::Update();
+    Require(a->exits == 4, "Exit before deferred deletion");
+    SceneManager::Destroy();
+
+    // 같은 레이어의 3개는 3쌍, 각 오브젝트는 2회씩 Enter를 받는다.
+    scene = SceneManager::CreateScene<Scene>(L"SameLayerTests");
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Player, true);
+    auto* one = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    auto* two = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    auto* three = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    CollisionManager::Update();
+    Require(CollisionManager::GetContactCount() == 3, "Same-layer unique pairs");
+    for (auto* object : {one, two, three})
+        Require(object->GetComponent<CountingScript>()->enters == 2, "No self/duplicate events");
+    auto* target = SceneManager::CreateScene<Scene>(L"TransitionTests");
+    SceneManager::LoadScene(L"SameLayerTests");
+    CollisionManager::Update();
+    Require(one->GetComponent<CountingScript>()->enters == 4, "Fresh contacts on scene enter");
+    Require(SceneManager::LoadScene(L"MissingScene") == nullptr, "Missing scene lookup");
+    Require(SceneManager::GetActiveScene() == scene && CollisionManager::GetContactCount() == 3, "Invalid load preserves current contacts");
+    SceneManager::LoadScene(L"TransitionTests");
+    Require(CollisionManager::GetContactCount() == 0, "Scene switch clears contacts");
+
+    // 콜백에서 같은 레이어에 새 오브젝트를 추가해도 검사 목록은 안전하다.
+    scene = SceneManager::CreateScene<Scene>(L"CallbackTests");
+    one = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    two = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    bool spawned = false;
+    one->GetComponent<CountingScript>()->entered = [scene, &spawned](Collider*)
+    {
+        if (!spawned) { spawned = true; TestObject(scene, enums::LayerType::Player, Vector2::Zero); }
+    };
+    CollisionManager::Update();
+    Require(spawned && CollisionManager::GetContactCount() == 1, "Callback spawn snapshot");
+    CollisionManager::Update();
+    Require(CollisionManager::GetContactCount() == 3, "Spawned collider checked next frame");
+
+    // 원본 PlayerScript의 충돌 데모 동작 확인.
+    scene = SceneManager::CreateScene<Scene>(L"PlayerDemoTests");
+    one = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    one->AddComponent<PlayerScript>();
+    two = TestObject(scene, enums::LayerType::Animal, Vector2::Zero);
+    CollisionManager::Update();
+    Vector2 moved = two->GetComponent<Transform>()->GetPosition();
+    Require(moved.x == 400.0f && moved.y == 500.0f, "Original collision demo teleport");
+
+    scene = SceneManager::CreateScene<Scene>(L"SwitchCallbackTests");
+    one = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    two = TestObject(scene, enums::LayerType::Player, Vector2::Zero);
+    one->GetComponent<CountingScript>()->entered = [](Collider*) { SceneManager::LoadScene(L"TransitionTests"); };
+    CollisionManager::Update();
+    Require(SceneManager::GetActiveScene() == target && CollisionManager::GetContactCount() == 0, "Scene change in callback");
+    SceneManager::Release();
+    std::cout << "Rectangle/lifecycle/callback regression tests passed\n";
 }
 
 void IntegrationTests()
@@ -100,6 +244,7 @@ int RunTests()
     DeleteObject(bitmap);
     DeleteDC(dc);
     ReleaseDC(nullptr, screen);
+    RectangleTests();
     IntegrationTests();
     std::cout << "Collider rendering tests passed\n";
     return 0;

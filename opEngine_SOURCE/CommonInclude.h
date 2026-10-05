@@ -6,6 +6,8 @@
 #include <string>
 #include <map>
 #include <bitset>
+#include <unordered_map>
+#include <unordered_set>
 #include <assert.h>
 #include <functional>
 #include <filesystem>

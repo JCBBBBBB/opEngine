@@ -1,4 +1,6 @@
 #include "opSceneManager.h"
+#include "opCollisionManager.h"
+#include "opRenderer.h"
 
 namespace op
 {
@@ -27,6 +29,8 @@ namespace op
 
 	void SceneManager::Release()
 	{
+		CollisionManager::Reset();
+        renderer::mainCamera = nullptr;
 		for (auto& iter : m_scene)
 		{
 			delete iter.second;
@@ -40,4 +44,14 @@ namespace op
 	{
 		if (m_activeScene) m_activeScene->Destroy();
 	}
+    Scene* SceneManager::LoadScene(const std::wstring& name)
+    {
+        auto iter = m_scene.find(name);
+        if (iter == m_scene.end()) return nullptr;
+        CollisionManager::Reset();
+        if (m_activeScene) m_activeScene->OnExit();
+        m_activeScene = iter->second;
+        m_activeScene->OnEnter();
+        return m_activeScene;
+    }
 }

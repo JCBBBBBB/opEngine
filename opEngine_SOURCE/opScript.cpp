@@ -25,4 +25,7 @@ namespace op
 	void Script::Render(HDC hdc)
 	{
 	}
+    void Script::OnCollisionEnter(Collider*) {}
+    void Script::OnCollisionStay(Collider*) {}
+    void Script::OnCollisionExit(Collider*) {}
 }

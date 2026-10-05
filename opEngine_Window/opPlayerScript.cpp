@@ -1,4 +1,5 @@
 #include "opPlayerScript.h"
+#include "opCollider.h"
 #include "opInput.h"
 #include "opTransform.h"
 #include "opTime.h"
@@ -243,4 +244,13 @@ namespace op
 		Vector2 mousePos = Input::GetMousePosition();
 		catScript->m_dest = mousePos;
 	}
+    void PlayerScript::OnCollisionEnter(Collider* other)
+    {
+        // 원본 데모: 플레이어와 충돌한 상대를 (400, 500)으로 이동시킨다.
+        if (other && other->GetOwner())
+            if (auto* transform = other->GetOwner()->GetComponent<Transform>())
+                transform->SetPosition(Vector2(400.0f, 500.0f));
+    }
+    void PlayerScript::OnCollisionStay(Collider*) {}
+    void PlayerScript::OnCollisionExit(Collider*) {}
 }

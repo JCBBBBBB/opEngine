@@ -23,7 +23,7 @@ namespace op
 
 	GameObject::~GameObject()
 	{
-		for (Component* component : m_components)
+		for (Component*& component : m_components)
 		{
 			if (component == nullptr)
 			{
@@ -37,7 +37,7 @@ namespace op
 	
 	void GameObject::Initialize()
 	{
-		for (Component* component : m_components)
+		for (Component*& component : m_components)
 		{
 			if (component == nullptr)
 			{
@@ -50,7 +50,7 @@ namespace op
 
 	void GameObject::Update()
 	{
-		for (Component* component : m_components)
+		for (Component*& component : m_components)
 		{
 			if (component == nullptr)
 			{
@@ -63,7 +63,7 @@ namespace op
 
 	void GameObject::LateUpdate()
 	{
-		for (Component* component : m_components)
+		for (Component*& component : m_components)
 		{
 			if (component == nullptr)
 			{
@@ -76,7 +76,7 @@ namespace op
 
 	void GameObject::Render(HDC hdc)
 	{
-		for (Component* component : m_components)
+		for (Component*& component : m_components)
 		{
 			if (component == nullptr)
 			{

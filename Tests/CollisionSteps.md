@@ -14,3 +14,9 @@ Validation: build the solution, then run Tests/RunTests.ps1.
 2. 099e767 - Collision Manager 충돌체 레이어 마스킹 체크 구조 및 충돌 체크 로직
    - Layer mask and collider pair traversal. Geometry/events follow in step 3.
    - Checks after object updates, skips self/duplicates, snapshots object lists.
+
+3. e112618 - Collision 충돌 함수 Enter, stay ,Exit 구현
+   - Collider IDs/size, rectangle intersection, Script collision callbacks.
+   - Player enters Player layer; original demo teleports the other object to (400, 500).
+   - Canonical pair IDs, null-safe scripts, deleted contact cleanup and scene resets.
+   - Rectangle tests use the rendered top-left/size, fixing unequal-size boxes.

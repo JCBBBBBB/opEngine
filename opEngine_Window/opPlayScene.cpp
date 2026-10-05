@@ -43,7 +43,7 @@ namespace op
 		renderer::mainCamera = cameraComponent;
 
 		// 플레이어
-		m_player = object::Instantiate<Player>(enums::LayerType::Particle); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
+		m_player = object::Instantiate<Player>(enums::LayerType::Player); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
 		BoxCollider2D* collider = m_player->AddComponent<BoxCollider2D>();
         collider->SetOffset(Vector2(-50.0f, -50.0f));
         PlayerScript* playerScript = m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다
