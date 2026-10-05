@@ -58,16 +58,8 @@ namespace op
     {
         if (static_cast<size_t>(left) >= LayerCount || static_cast<size_t>(right) >= LayerCount) return;
         // 유지 씬도 함께 검사한다. 현재 씬과 동일하면 목록을 한 번만 넣는다.
-        std::vector<GameObject*> lefts, rights;
-        for (Scene* candidate : {scene, SceneManager::GetDontDestroyOnLoad()})
-        {
-            if (!candidate) continue;
-            const auto& leftObjects = candidate->GetLayer(left)->GetGameObjects();
-            const auto& rightObjects = candidate->GetLayer(right)->GetGameObjects();
-            lefts.insert(lefts.end(), leftObjects.begin(), leftObjects.end());
-            rights.insert(rights.end(), rightObjects.begin(), rightObjects.end());
-            if (candidate == SceneManager::GetDontDestroyOnLoad()) break;
-        }
+        const auto lefts = SceneManager::GetGameObjects(left);
+        const auto rights = SceneManager::GetGameObjects(right);
         for (size_t i = 0; i < lefts.size(); ++i)
         {
             GameObject* leftObject = lefts[i];
@@ -131,6 +123,19 @@ namespace op
         m_checkedPairs.clear();
         m_collisionScene = nullptr;
     }
+
+    void CollisionManager::Clear()
+    {
+        // 접촉 기록과 이번 프레임 검사 기록 정리
+        Reset();
+
+        // 모든 레이어의 충돌 검사 설정 해제
+        for (auto& row : m_collisionLayerMatrix)
+        {
+            row.reset();
+        }
+    }
+
     void CollisionManager::Dispatch(UINT64 pair, int event)
     {
         const UINT32 leftID = static_cast<UINT32>(pair >> 32);

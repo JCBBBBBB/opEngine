@@ -26,6 +26,10 @@ namespace op
 		static Scene* LoadScene(const std::wstring& name);
 		static Scene* GetActiveScene() { return m_activeScene; }
         static Scene* GetDontDestroyOnLoad() { return m_dontDestroyOnLoad; }
+		// 현재 씬과 유지 씬에서 해당 레이어의 객체를 함께 가져온다.
+		static std::vector<GameObject*> GetGameObjects(
+			enums::LayerType layerType);
+
 
 		static void Initialize();
 		static void Update();

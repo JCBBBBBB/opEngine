@@ -1,4 +1,5 @@
 #include "opScene.h"
+#include "opCollisionManager.h"
 
 namespace op
 {
@@ -107,7 +108,7 @@ namespace op
 
 	void Scene::OnExit()
 	{
-
+		CollisionManager::Clear();
 	}
 
     void Scene::EraseGameObject(GameObject* gameObject)

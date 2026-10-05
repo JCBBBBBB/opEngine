@@ -17,6 +17,7 @@ namespace op
         static void ColliderCollision(Collider* left, Collider* right);
         static bool Intersect(Collider* left, Collider* right);
         static void Reset();
+        static void Clear();
         static void RegisterCollider(Collider* collider);
         static void ForgetCollider(UINT32 id);
         static size_t GetContactCount() { return m_collisionMap.size(); }

@@ -86,4 +86,46 @@ namespace op
         m_activeScene->OnEnter();
         return m_activeScene;
     }
+
+	std::vector<GameObject*> SceneManager::GetGameObjects(
+		enums::LayerType layerType)
+	{
+		std::vector<GameObject*> gameObjects;
+
+		// 현재 씬의 해당 레이어
+		if (m_activeScene)
+		{
+			Layer* layer = m_activeScene->GetLayer(layerType);
+
+			if (layer)
+			{
+				const auto& objects = layer->GetGameObjects();
+
+				gameObjects.insert(
+					gameObjects.end(),
+					objects.begin(),
+					objects.end());
+			}
+		}
+
+		// 유지 씬의 해당 레이어
+		// 현재 씬이 유지 씬 자체라면 중복으로 추가하지 않는다.
+		if (m_dontDestroyOnLoad
+			&& m_dontDestroyOnLoad != m_activeScene)
+		{
+			Layer* layer = m_dontDestroyOnLoad->GetLayer(layerType);
+
+			if (layer)
+			{
+				const auto& objects = layer->GetGameObjects();
+
+				gameObjects.insert(
+					gameObjects.end(),
+					objects.begin(),
+					objects.end());
+			}
+		}
+
+		return gameObjects;
+	}
 }
