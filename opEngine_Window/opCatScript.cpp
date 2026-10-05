@@ -75,38 +75,8 @@ namespace op
 
 	void CatScript::SitDown()
 	{
-		m_time += Time::DeltaTime();
-
-		if (m_time > 2.0f)
-		{
-			//object::Destroy(GetOwner());
-		}
-
-		Transform* transform =
-			GetOwner()->GetComponent<Transform>();
-
-		Vector2 pos = transform->GetPosition();
-
-		// 플레이어 위치에서 목적지로 향하는 벡터
-		Transform* playerTransform =
-			m_player->GetComponent<Transform>();
-
-		Vector2 dest =
-			m_dest - playerTransform->GetPosition();
-
-		dest.normalize();
-
-		// 오른쪽 방향과의 내적으로 각도 계산
-		float rotDegree =
-			Vector2::Dot(dest, Vector2::Right);
-
-		rotDegree = acosf(rotDegree);
-		rotDegree = math::ConvertDegree(rotDegree);
-
-		// 계산한 방향으로 이동
-		pos += dest * (100.0f * Time::DeltaTime());
-
-		transform->SetPosition(pos);
+        // 원본 BoxCollider 단계에서는 대기 중 이동 계산을 사용하지 않는다.
+        m_time += Time::DeltaTime();
 	}
 
 	void CatScript::Move()

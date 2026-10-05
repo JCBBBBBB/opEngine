@@ -1,6 +1,7 @@
 #include "opAnimator.h"
 #include "opResources.h"
 #include "opTexture.h"
+#include <stdexcept>
 
 namespace op
 {
@@ -31,28 +32,16 @@ namespace op
 
 	void Animator::Update()
 	{
-		if (m_activeAnimation)
-		{
-			m_activeAnimation->Update(); // 현재 Animation의 시간을 갱신하고 프레임 변경 여부 판단
-
-			Events* events = FindEvents(m_activeAnimation->GetName());
-
-			if (m_activeAnimation->IsComplete() == true) // 마지막 프레임까지 끝났고 반복 설정이 켜져 있으면
-			{
-				if (events)
-				{
-					events->completeEvent();
-
-					if (m_isLoop == true)
-					{
-						m_activeAnimation->Reset();
-					}
-				}
-
-				m_activeAnimation->Reset(); // 첫 프레임으로 되돌림
-			}
-
-		}
+        Animation* animation = m_activeAnimation;
+        if (!animation || animation->IsComplete()) return;
+        animation->Update();
+        if (animation->IsComplete())
+        {
+            Events* events = FindEvents(animation->GetName());
+            if (events) events->completeEvent();
+            // 콜백이 다른 애니메이션을 선택했다면 새 애니메이션을 초기화하지 않는다.
+            if (m_activeAnimation == animation && m_isLoop) animation->Reset();
+        }
 	}
 
 	void Animator::LateUpdate()
@@ -169,63 +158,31 @@ namespace op
 		Vector2 offset,
 		float duration)
 	{
-		Animation* animation = nullptr;
-		animation = FindAnimation(name);
-
-		if (animation != nullptr)
-			return;
-
-		int fileCount = 0;
-
-		std::filesystem::path fs(path);
-
-		std::vector<graphics::Texture*> images = {};
-
-		for (auto& p :
-			std::filesystem::recursive_directory_iterator(fs))
-		{
-			std::wstring fileName = p.path().filename();
-			std::wstring fullName = p.path();
-
-			graphics::Texture* texture =
-				Resources::Load<graphics::Texture>(
-					fileName, fullName);
-
-			images.push_back(texture);
-			fileCount++;
-		}
-
-		UINT sheetWidth = images[0]->GetWidth() * fileCount;
-		UINT sheetHeight = images[0]->GetHeight();
-
-		graphics::Texture* spriteSheet =
-			graphics::Texture::Create(
-				name, sheetWidth, sheetHeight);
-
-		UINT imageWidth = images[0]->GetWidth();
-		UINT imageHeight = images[0]->GetHeight();
-
-		for (size_t i = 0; i < images.size(); i++)
-		{
-			BitBlt(
-				spriteSheet->GetHdc(),
-				i * imageWidth,
-				0,
-				imageWidth,
-				imageHeight,
-				images[i]->GetHdc(),
-				0,
-				0,
-				SRCCOPY);
-		}
-
-		CreateAnimation(
-			name,
-			spriteSheet,
-			Vector2(0.0f, 0.0f),
-			Vector2(imageWidth, imageHeight),
-			offset,
-			fileCount,
-			duration);
+        if (FindAnimation(name)) return;
+        std::vector<std::filesystem::path> files;
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
+            if (entry.is_regular_file() && entry.path().extension() == L".bmp") files.push_back(entry.path());
+        std::sort(files.begin(), files.end());
+        if (files.empty()) throw std::runtime_error("Animation folder contains no BMP frames");
+        std::vector<graphics::Texture*> images;
+        for (const auto& file : files)
+        {
+            auto* image = Resources::Load<graphics::Texture>(file.wstring(), file.wstring());
+            if (!image) throw std::runtime_error("Cannot load animation frame");
+            images.push_back(image);
+        }
+        UINT width = images.front()->GetWidth();
+        UINT height = images.front()->GetHeight();
+        auto* sheet = graphics::Texture::Create(name, width * static_cast<UINT>(images.size()), height);
+        if (!sheet) throw std::runtime_error("Cannot create animation sheet");
+        for (size_t i = 0; i < images.size(); ++i)
+        {
+            if (images[i]->GetWidth() != width || images[i]->GetHeight() != height)
+                throw std::runtime_error("Animation frame sizes differ");
+            BitBlt(sheet->GetHdc(), static_cast<int>(i * width), 0, static_cast<int>(width),
+                static_cast<int>(height), images[i]->GetHdc(), 0, 0, SRCCOPY);
+        }
+        CreateAnimation(name, sheet, Vector2::Zero, Vector2(static_cast<float>(width), static_cast<float>(height)),
+            offset, static_cast<UINT>(images.size()), duration);
 	}
 }

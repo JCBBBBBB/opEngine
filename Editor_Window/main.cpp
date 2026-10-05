@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 �
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EDITORWINDOW));
 
-    MSG msg;
+    MSG msg = {};
 
 
     // PeekMessage : 메세지큐에 메세지 유무에 상관없이 함수가 리턴된다.
@@ -84,8 +84,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 �
         }
     }
 
-    Gdiplus::GdiplusShutdown(gpToken);
     application.Release();
+    Gdiplus::GdiplusShutdown(gpToken);
 
     return (int)msg.wParam;
 }
@@ -144,6 +144,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, width, height, nullptr, nullptr, hInstance, nullptr);
 
+   if (!hWnd) return FALSE;
    application.Initialize(hWnd, width, height);
 
    //2개이상의 윈도우도 생성 가능하다.
@@ -163,8 +164,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    op::LoadResources(); // 배경 이미지 읽기, "BackGround로 등록"
    op::LoadScenes(); // 씬을 생성하고 현재 씬을 선택
    
-   int a = 0;
-   srand((unsigned int)(&a));
+   srand(static_cast<unsigned int>(GetTickCount()));
 
    return TRUE;
 }

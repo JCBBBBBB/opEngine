@@ -63,8 +63,18 @@ namespace op
 
 	void Application::Release()
 	{
-		SceneManager::Release();
-		Resources::Release();
+        SceneManager::Release();
+        Resources::Release();
+        if (m_backHdc)
+        {
+            SelectObject(m_backHdc, m_oldBackBitmap);
+            DeleteObject(m_backBitmap);
+            DeleteDC(m_backHdc);
+            m_backHdc = nullptr;
+            m_backBitmap = nullptr;
+            m_oldBackBitmap = nullptr;
+        }
+        if (m_hdc) { ReleaseDC(m_hwnd, m_hdc); m_hdc = nullptr; }
 	}
 
 	void Application::Destroy()
@@ -76,8 +86,10 @@ namespace op
 
 	void Application::ClearRenderTarget()
 	{
-		Rectangle(m_backHdc, -1, -1, 801, 601); // 백버퍼에 배경 그리기
-
+        HBRUSH brush = CreateSolidBrush(RGB(128, 128, 128));
+        RECT area = { 0, 0, static_cast<LONG>(m_width), static_cast<LONG>(m_height) };
+        FillRect(m_backHdc, &area, brush);
+        DeleteObject(brush);
 	}
 
 	void Application::CopyRenderTarget(HDC source, HDC dest)
@@ -89,30 +101,19 @@ namespace op
 
 	void Application::AdjustWindow(HWND hwnd, UINT width, UINT height)
 	{
-		m_hwnd = hwnd;
-		m_hdc = GetDC(hwnd);
-
-		RECT rect = { 0, 0, width, height };
-		AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-		
-		m_width = rect.right - rect.left;
-		m_height = rect.bottom - rect.top;
-
-		SetWindowPos(m_hwnd, nullptr, 0, 0, m_width, m_height, 0);
-		ShowWindow(m_hwnd, true);
+        m_hwnd = hwnd;
+        m_hdc = GetDC(hwnd);
+        m_width = width;
+        m_height = height;
+        RECT rect = { 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
+        AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+        SetWindowPos(hwnd, nullptr, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER);
 	}
 
 	void Application::CreateBuffer(UINT Width, UINT height)
 	{
-		// 윈도우 해상도에 맞는 백버퍼 생성
-		m_backBitmap = CreateCompatibleBitmap(m_hdc, m_width, height);
-
-		// 백버퍼를 가리킬 DC 생성
-		m_backHdc = CreateCompatibleDC(m_hdc);
-
-		// 도화지를 m_backBitmap으로 바꾼다
-		HBITMAP oldBitmap = (HBITMAP)SelectObject(m_backHdc, m_backBitmap);
-		DeleteObject(oldBitmap); // 이전 비트맵 삭제
-
+        m_backBitmap = CreateCompatibleBitmap(m_hdc, static_cast<int>(m_width), static_cast<int>(m_height));
+        m_backHdc = CreateCompatibleDC(m_hdc);
+        m_oldBackBitmap = static_cast<HBITMAP>(SelectObject(m_backHdc, m_backBitmap));
 	}
 }

@@ -33,8 +33,8 @@ namespace op
 
     void SpriteRenderer::Render(HDC hdc)
     {
-        if (m_texture == nullptr)
-            assert(false);
+        if (m_texture == nullptr || GetOwner() == nullptr)
+            return;
 
         Transform* transform =
             GetOwner()->GetComponent<Transform>();
@@ -43,7 +43,7 @@ namespace op
         float rot = transform->GetRotation();
         Vector2 scale = transform->GetScale();
 
-        pos = renderer::mainCamera->CalculatePosition(pos);
+        if (renderer::mainCamera) pos = renderer::mainCamera->CalculatePosition(pos);
 
         if (m_texture->GetTextureType()
             == graphics::Texture::TextureType::Bmp)
@@ -58,10 +58,10 @@ namespace op
 
                 AlphaBlend(
                     hdc,
-                    pos.x,
-                    pos.y,
-                    m_texture->GetWidth() * m_size.x * scale.x,
-                    m_texture->GetHeight() * m_size.y * scale.y,
+                    static_cast<int>(pos.x),
+                    static_cast<int>(pos.y),
+                    static_cast<int>(m_texture->GetWidth() * m_size.x * scale.x),
+                    static_cast<int>(m_texture->GetHeight() * m_size.y * scale.y),
                     m_texture->GetHdc(),
                     0,
                     0,
@@ -73,10 +73,10 @@ namespace op
             {
                 TransparentBlt(
                     hdc,
-                    pos.x,
-                    pos.y,
-                    m_texture->GetWidth() * m_size.x * scale.x,
-                    m_texture->GetHeight() * m_size.y * scale.y,
+                    static_cast<int>(pos.x),
+                    static_cast<int>(pos.y),
+                    static_cast<int>(m_texture->GetWidth() * m_size.x * scale.x),
+                    static_cast<int>(m_texture->GetHeight() * m_size.y * scale.y),
                     m_texture->GetHdc(),
                     0,
                     0,
@@ -103,10 +103,10 @@ namespace op
             graphics.DrawImage(
                 m_texture->GetImage(),
                 Gdiplus::Rect(
-                    pos.x,
-                    pos.y,
-                    m_texture->GetWidth() * m_size.x * scale.x,
-                    m_texture->GetHeight() * m_size.y * scale.y),
+                    static_cast<int>(pos.x),
+                    static_cast<int>(pos.y),
+                    static_cast<int>(m_texture->GetWidth() * m_size.x * scale.x),
+                    static_cast<int>(m_texture->GetHeight() * m_size.y * scale.y)),
                 0,
                 0,
                 m_texture->GetWidth(),

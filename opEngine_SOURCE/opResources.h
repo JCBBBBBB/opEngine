@@ -31,7 +31,8 @@ namespace op
 			resource = new T(); // 없으면 새 리소스 생성
 			if (FAILED(resource->Load(path)))
 			{
-				assert(false);
+				delete resource;
+				return nullptr;
 			}
 
 			resource->SetName(key); // 리소스의 이름 설정
@@ -48,6 +49,7 @@ namespace op
 				delete iter.second;
 				iter.second = nullptr;
 			}
+			m_resources.clear();
 		}
 
 		static void Insert(

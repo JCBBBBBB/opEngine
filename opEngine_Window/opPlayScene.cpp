@@ -19,6 +19,7 @@
 #include "opTitleScene.h"
 #include "opSceneManager.h"
 #include "opAnimator.h"
+#include "opBoxCollider2D.h"
 
 namespace op
 {
@@ -41,7 +42,9 @@ namespace op
 
 		// 플레이어
 		m_player = object::Instantiate<Player>(enums::LayerType::Particle); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
-		PlayerScript* playerScript = m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다 
+		BoxCollider2D* collider = m_player->AddComponent<BoxCollider2D>();
+        collider->SetOffset(Vector2(-50.0f, -50.0f));
+        PlayerScript* playerScript = m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다
 
 		graphics::Texture* playerTexture = Resources::Find<graphics::Texture>(L"Player"); // LoadResources()에서 Cat으로 등록한 bmp파일 찾음, Resources 목록에서 chicken 찾기
 		Animator* playerAnimator = m_player->AddComponent<Animator>(); // 애니메이션을 관리하고 그리는 컴포넌트 추가
@@ -55,7 +58,18 @@ namespace op
 		m_player->GetComponent<Transform>()->SetScale(Vector2(0.5f, 0.5f));
 
 
-		Scene::Initialize();
+        // 원본과 같이 Animal 레이어에 버섯 애니메이션을 사용하는 Cat을 생성한다.
+        Cat* cat = object::Instantiate<Cat>(enums::LayerType::Animal);
+        cat->AddComponent<CatScript>();
+        Animator* catAnimator = cat->AddComponent<Animator>();
+        BoxCollider2D* catCollider = cat->AddComponent<BoxCollider2D>();
+        catCollider->SetOffset(Vector2(-50.0f, -50.0f));
+        catAnimator->CreateAnimationByFolder(L"MushroomIdle", L"..\\Resources\\Mushroom", Vector2::Zero, 0.1f);
+        catAnimator->PlayAnimation(L"MushroomIdle", true);
+        cat->GetComponent<Transform>()->SetPosition(Vector2(200.0f, 200.0f));
+        cat->GetComponent<Transform>()->SetScale(Vector2(1.0f, 1.0f));
+
+        Scene::Initialize();
 	}
 
 	void PlayScene::Update()

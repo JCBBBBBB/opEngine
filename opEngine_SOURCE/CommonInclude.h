@@ -12,6 +12,9 @@
 #include "opEnums.h"
 #include "opMath.h"
 #include <mmsystem.h>
+#ifndef DIRECTINPUT_VERSION
+#define DIRECTINPUT_VERSION 0x0800
+#endif
 #include <dinput.h>
 #pragma comment(lib, "Msimg32.lib")
 #pragma comment(lib, "winmm.lib")

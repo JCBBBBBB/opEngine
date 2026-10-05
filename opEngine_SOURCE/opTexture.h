@@ -40,6 +40,7 @@ namespace op::graphics
 	private:
 		TextureType m_type; // bmp인지 png인지 구분
 		Gdiplus::Image* m_image; // png를 읽은 gdi+ 이미지
+		HBITMAP m_oldBitmap = nullptr;
 		HBITMAP m_bitmap; // bmp 비트맵
 		HDC m_hdc; // bmp 복사할 때 사용할 메모리 dc
 

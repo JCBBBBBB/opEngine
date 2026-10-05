@@ -80,8 +80,8 @@ namespace op
 		GetCursorPos(&mousePos);
 		ScreenToClient(application.GetHwnd(), &mousePos);
 
-		m_mousePosition.x = mousePos.x;
-		m_mousePosition.y = mousePos.y;
+		m_mousePosition.x = static_cast<float>(mousePos.x);
+		m_mousePosition.y = static_cast<float>(mousePos.y);
 	}
 
 }

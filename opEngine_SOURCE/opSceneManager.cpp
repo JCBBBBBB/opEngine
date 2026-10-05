@@ -12,17 +12,17 @@ namespace op
 
 	void SceneManager::Update()
 	{
-		m_activeScene->Update();
+		if (m_activeScene) m_activeScene->Update();
 	}
 
 	void SceneManager::LateUpdate()
 	{
-		m_activeScene->LateUpdate();
+		if (m_activeScene) m_activeScene->LateUpdate();
 	}
 
 	void SceneManager::Render(HDC hdc)
 	{
-		m_activeScene->Render(hdc);
+		if (m_activeScene) m_activeScene->Render(hdc);
 	}
 
 	void SceneManager::Release()
@@ -32,10 +32,12 @@ namespace op
 			delete iter.second;
 			iter.second = nullptr;
 		}
+		m_scene.clear();
+		m_activeScene = nullptr;
 	}
 
 	void SceneManager::Destroy()
 	{
-		m_activeScene->Destroy();
+		if (m_activeScene) m_activeScene->Destroy();
 	}
 }

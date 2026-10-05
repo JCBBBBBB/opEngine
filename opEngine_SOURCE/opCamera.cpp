@@ -18,8 +18,8 @@ namespace op
 
 	void Camera::Initialize()
 	{
-		m_resolution.x = application.GetWidth();
-		m_resolution.y = application.GetHeight();
+		m_resolution.x = static_cast<float>(application.GetWidth());
+		m_resolution.y = static_cast<float>(application.GetHeight());
 	}
 
 	void Camera::Update()

@@ -63,4 +63,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opTime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTransform.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCollider.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCollider.cpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opBoxCollider2D.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opBoxCollider2D.cpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCircleCollider2D.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCircleCollider2D.cpp" />
+  </ItemGroup>
 </Project>

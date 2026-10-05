@@ -26,7 +26,7 @@ namespace op
 	// 처음 상태는 m_index = 0, m_time = 0, m_isComplete = false
 	void Animation::Update()
 	{
-		if (m_isComplete)
+		if (m_isComplete || m_index < 0 || static_cast<size_t>(m_index) >= m_animationSheet.size())
 		{
 			return; // 이미 재생 끝났으면 더 진행하지 않음
 		}
@@ -53,7 +53,7 @@ namespace op
 	// 현재 프레임의 그림을 가져와 플레이어 위치에 그리는 함수
     void Animation::Render(HDC hdc)
     {
-        if (m_texture == nullptr)
+        if (m_texture == nullptr || m_animator == nullptr || m_index < 0 || static_cast<size_t>(m_index) >= m_animationSheet.size())
             return;
 
         GameObject* gameObject = m_animator->GetOwner();
@@ -88,32 +88,33 @@ namespace op
 
                 AlphaBlend(
                     hdc,
-                    pos.x - (sprite.size.x / 2.0f) + sprite.offset.x,
-                    pos.y - (sprite.size.y / 2.0f) + sprite.offset.y,
-                    sprite.size.x * scale.x,
-                    sprite.size.y * scale.y,
+                    static_cast<int>(pos.x - (sprite.size.x * scale.x / 2.0f) + sprite.offset.x),
+                    static_cast<int>(pos.y - (sprite.size.y * scale.y / 2.0f) + sprite.offset.y),
+                    static_cast<int>(sprite.size.x * scale.x),
+                    static_cast<int>(sprite.size.y * scale.y),
                     imgHdc,
-                    sprite.leftTop.x,
-                    sprite.leftTop.y,
-                    sprite.size.x,
-                    sprite.size.y,
+                    static_cast<int>(sprite.leftTop.x),
+                    static_cast<int>(sprite.leftTop.y),
+                    static_cast<int>(sprite.size.x),
+                    static_cast<int>(sprite.size.y),
                     func);
             }
             else
             {
                 TransparentBlt(
                     hdc,
-                    pos.x - (sprite.size.x / 2.0f) + sprite.offset.x,
-                    pos.y - (sprite.size.y / 2.0f) + sprite.offset.y,
-                    sprite.size.x * scale.x,
-                    sprite.size.y * scale.y,
+                    static_cast<int>(pos.x - (sprite.size.x * scale.x / 2.0f) + sprite.offset.x),
+                    static_cast<int>(pos.y - (sprite.size.y * scale.y / 2.0f) + sprite.offset.y),
+                    static_cast<int>(sprite.size.x * scale.x),
+                    static_cast<int>(sprite.size.y * scale.y),
                     imgHdc,
-                    sprite.leftTop.x,
-                    sprite.leftTop.y,
-                    sprite.size.x,
-                    sprite.size.y,
+                    static_cast<int>(sprite.leftTop.x),
+                    static_cast<int>(sprite.leftTop.y),
+                    static_cast<int>(sprite.size.x),
+                    static_cast<int>(sprite.size.y),
                     RGB(255, 0, 255));
             }
+            Rectangle(hdc, static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(pos.x + 10), static_cast<int>(pos.y + 10));
         }
         else if (type == graphics::Texture::TextureType::Png)
         {
@@ -132,14 +133,14 @@ namespace op
             graphics.DrawImage(
                 m_texture->GetImage(),
                 Gdiplus::Rect(
-                    pos.x - (sprite.size.x / 2.0f),
-                    pos.y - (sprite.size.y / 2.0f),
-                    sprite.size.x * scale.x,
-                    sprite.size.y * scale.y),
-                sprite.leftTop.x,
-                sprite.leftTop.y,
-                sprite.size.x,
-                sprite.size.y,
+                    static_cast<int>(pos.x - (sprite.size.x * scale.x / 2.0f)),
+                    static_cast<int>(pos.y - (sprite.size.y * scale.y / 2.0f)),
+                    static_cast<int>(sprite.size.x * scale.x),
+                    static_cast<int>(sprite.size.y * scale.y)),
+                static_cast<int>(sprite.leftTop.x),
+                static_cast<int>(sprite.leftTop.y),
+                static_cast<int>(sprite.size.x),
+                static_cast<int>(sprite.size.y),
                 Gdiplus::UnitPixel,
                 /*&imgAtt*/nullptr);
         }

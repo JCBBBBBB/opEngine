@@ -6,14 +6,16 @@ extern op::Application application;
 
 namespace op::graphics
 {
-	Texture::Texture() : Resource(enums::ResourceType::Texture), m_isAlpha(false) // 부모 Resource에 나는 Texture 리소스라고 전달
+	Texture::Texture() : Resource(enums::ResourceType::Texture), m_type(TextureType::None), m_image(nullptr), m_bitmap(nullptr), m_hdc(nullptr), m_width(0), m_height(0), m_isAlpha(false) // 부모 Resource에 나는 Texture 리소스라고 전달
 	{
 
 	}
 
 	Texture::~Texture()
 	{
-
+        delete m_image;
+        if (m_hdc) { SelectObject(m_hdc, m_oldBitmap); DeleteDC(m_hdc); }
+        if (m_bitmap) DeleteObject(m_bitmap);
 	}
 
 	HRESULT Texture::Load(const std::wstring& path)
@@ -28,7 +30,7 @@ namespace op::graphics
 
 			if (m_bitmap == nullptr)
 			{
-				return S_FALSE; // 로딩 문제 시 반환하는 값
+				return E_FAIL; // 로딩 문제 시 반환하는 값
 			}
 
 			BITMAP info = {}; // 이미지 정보를 받을 구조체 0으로 초기화
@@ -45,17 +47,16 @@ namespace op::graphics
 			HDC mainDC = application.GetHDC(); // 그 DC와 호환되는 메모리 DC 생성
 			m_hdc = CreateCompatibleDC(mainDC);
 
-			HBITMAP oldBitmap = (HBITMAP)SelectObject(m_hdc, m_bitmap);
-			DeleteObject(oldBitmap);
+			m_oldBitmap = static_cast<HBITMAP>(SelectObject(m_hdc, m_bitmap));
 		}
 
 		else if (ext == L"png")
 		{
 			m_type = TextureType::Png;
 			m_image = Gdiplus::Image::FromFile(path.c_str()); // 경로의 파일을 GDI+ 이미지로 읽음
-			if (m_image == nullptr)
+			if (m_image == nullptr || m_image->GetLastStatus() != Gdiplus::Ok)
 				{
-					return S_FALSE;
+					return E_FAIL;
 				}
 			m_width = m_image->GetWidth(); // 너비 저장
 			m_height = m_image->GetHeight(); // 높이 저장
@@ -69,33 +70,25 @@ namespace op::graphics
 		UINT width,
 		UINT height)
 	{
-		Texture* image = Resources::Find<Texture>(name);
-
-		if (image)
-			return image;
-
-		image = new Texture();
-		image->m_type = TextureType::Bmp;
-		image->SetName(name);
-		image->SetWidth(width);
-		image->SetHeight(height);
-
-		HDC hdc = application.GetHDC();
-		HWND hwnd = application.GetHwnd();
-
-		image->m_bitmap = CreateCompatibleBitmap(
-			hdc, width, height);
-
-		image->m_hdc = CreateCompatibleDC(hdc);
-
-		HBITMAP oldBitmap = (HBITMAP)SelectObject(
-			image->m_hdc, image->m_bitmap);
-
-		DeleteObject(oldBitmap);
-
-		Resources::Insert(name + L"Image", image);
-
-		return image;
+        const std::wstring key = name + L"Image";
+        if (auto* existing = Resources::Find<Texture>(key)) return existing;
+        Texture* image = new Texture();
+        image->m_type = TextureType::Bmp;
+        image->SetName(key);
+        image->m_width = width;
+        image->m_height = height;
+        HDC mainDC = application.GetHDC();
+        image->m_bitmap = CreateCompatibleBitmap(mainDC, static_cast<int>(width), static_cast<int>(height));
+        image->m_hdc = CreateCompatibleDC(mainDC);
+        if (!image->m_bitmap || !image->m_hdc) { delete image; return nullptr; }
+        image->m_oldBitmap = static_cast<HBITMAP>(SelectObject(image->m_hdc, image->m_bitmap));
+        // 새 시트의 비트맵을 선택한 뒤 투명 키 색으로 배경을 초기화한다.
+        HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
+        RECT area = { 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
+        FillRect(image->m_hdc, &area, brush);
+        DeleteObject(brush);
+        Resources::Insert(key, image);
+        return image;
 	}
 }
 

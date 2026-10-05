@@ -30,11 +30,11 @@ namespace op
 		static float time = 0.0f;
 
 		time += DeltaTimeValue;
-		float fps = 1.0f / DeltaTimeValue;
+		float fps = DeltaTimeValue > 0.0f ? 1.0f / DeltaTimeValue : 0.0f;
 
 		wchar_t str[50] = L"";
 		swprintf_s(str, 50, L"Time : %d", (int)fps);
-		int len = wcsnlen_s(str, 50);
+		int len = static_cast<int>(wcsnlen_s(str, 50));
 
 		TextOut(hdc, 0, 0, str, len);
 	}

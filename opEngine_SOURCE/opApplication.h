@@ -35,6 +35,7 @@ namespace op
 		HDC m_hdc; // 그 창에 그리기 위한 DC 핸들
 
 		HDC m_backHdc; // 메모리에 그리는데 사용할 DC
+		HBITMAP m_oldBackBitmap = nullptr;
 		HBITMAP m_backBitmap; // 그 그림을 저장할 비트맵
 
 		UINT m_width;

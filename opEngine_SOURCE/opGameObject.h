@@ -36,9 +36,11 @@ namespace op
 		T* AddComponent()
 		{
 			T* component = new T();
-			component->Initialize();
 			component->SetOwner(this);
-			m_components[(UINT)component->GetType()] = component;
+            const size_t index = static_cast<size_t>(component->GetType());
+            delete m_components[index];
+            m_components[index] = component;
+            component->Initialize();
 
 			return component;
 		}
