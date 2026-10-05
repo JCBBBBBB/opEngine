@@ -51,77 +51,99 @@ namespace op
 	}
 
 	// 현재 프레임의 그림을 가져와 플레이어 위치에 그리는 함수
-	void Animation::Render(HDC hdc)
-	{
-		if (m_texture == nullptr)
-		{
-			return; // 원본 이미지가 없으면 그릴 수 없다
-		}
+    void Animation::Render(HDC hdc)
+    {
+        if (m_texture == nullptr)
+            return;
 
-		GameObject* gameObject = m_animator->GetOwner(); // 이 Animaton의 Animator가 붙어 있는 플레이어를 찾는다
-		Transform* transform = gameObject->GetComponent<Transform>(); // 플레이어의 위치 정보를 찾는다
-		Vector2 pos = transform->GetPosition();
-		float rot = transform->GetRotation();
-		Vector2 scale = transform->GetScale();
+        GameObject* gameObject = m_animator->GetOwner();
+        Transform* transform =
+            gameObject->GetComponent<Transform>();
 
+        Vector2 pos = transform->GetPosition();
+        float rot = transform->GetRotation();
+        Vector2 scale = transform->GetScale();
 
+        if (renderer::mainCamera)
+        {
+            pos = renderer::mainCamera->CalculatePosition(pos);
+        }
 
-		if (renderer::mainCamera) // 메인 카메라가 있으면
-		{
-			pos = renderer::mainCamera->CalculatePosition(pos); // 게임 좌표를 실제 화면에 그릴 좌표로 변환
-		}
+        Sprite sprite = m_animationSheet[m_index];
 
+        graphics::Texture::TextureType type =
+            m_texture->GetTextureType();
 
-		Sprite sprite = m_animationSheet[m_index]; // 현재 프레임 번호의 영역 정보를 가져온다
-		graphics::Texture::TextureType type = m_texture->GetTextureType();
-		if (type == graphics::Texture::TextureType::Bmp)
-		{
+        if (type == graphics::Texture::TextureType::Bmp)
+        {
+            HDC imgHdc = m_texture->GetHdc();
 
-			HDC imgHdc = m_texture->GetHdc(); // 원본 bmp가 선택되어 있는 메모리 DC
+            if (m_texture->IsAlpha())
+            {
+                BLENDFUNCTION func = {};
+                func.BlendOp = AC_SRC_OVER;
+                func.BlendFlags = 0;
+                func.AlphaFormat = AC_SRC_ALPHA;
+                func.SourceConstantAlpha = 255;
 
-			TransparentBlt(
-				hdc,
-				pos.x - (sprite.size.x / 2.0f),
-				pos.y - (sprite.size.y / 2.0f),
-				sprite.size.x * scale.x,
-				sprite.size.y * scale.y,
-				imgHdc,
-				sprite.leftTop.x,
-				sprite.leftTop.y,
-				sprite.size.x,
-				sprite.size.y,
-				RGB(255, 0, 255));
-		}
-		else if (type == graphics::Texture::TextureType::Png)
-		{
-			Gdiplus::ImageAttributes imgAtt = {}; // 내가 원하는 픽셀 투명화 시킬때
+                AlphaBlend(
+                    hdc,
+                    pos.x - (sprite.size.x / 2.0f) + sprite.offset.x,
+                    pos.y - (sprite.size.y / 2.0f) + sprite.offset.y,
+                    sprite.size.x * scale.x,
+                    sprite.size.y * scale.y,
+                    imgHdc,
+                    sprite.leftTop.x,
+                    sprite.leftTop.y,
+                    sprite.size.x,
+                    sprite.size.y,
+                    func);
+            }
+            else
+            {
+                TransparentBlt(
+                    hdc,
+                    pos.x - (sprite.size.x / 2.0f) + sprite.offset.x,
+                    pos.y - (sprite.size.y / 2.0f) + sprite.offset.y,
+                    sprite.size.x * scale.x,
+                    sprite.size.y * scale.y,
+                    imgHdc,
+                    sprite.leftTop.x,
+                    sprite.leftTop.y,
+                    sprite.size.x,
+                    sprite.size.y,
+                    RGB(255, 0, 255));
+            }
+        }
+        else if (type == graphics::Texture::TextureType::Png)
+        {
+            Gdiplus::ImageAttributes imgAtt = {};
 
-			// 투명화 시킬 픽셀의 색 지정
-			imgAtt.SetColorKey(Gdiplus::Color(230, 230, 230), Gdiplus::Color(255, 255, 255));
-			Gdiplus::Graphics graphics(hdc);
+            imgAtt.SetColorKey(
+                Gdiplus::Color(230, 230, 230),
+                Gdiplus::Color(255, 255, 255));
 
-			graphics.TranslateTransform(pos.x, pos.y);
-			graphics.RotateTransform(rot);
-			graphics.TranslateTransform(-pos.x, -pos.y);
+            Gdiplus::Graphics graphics(hdc);
 
-			graphics.DrawImage(m_texture->GetImage()
-				, Gdiplus::Rect
-				(
-					pos.x - (sprite.size.x / 2.0f)
-					, pos.y - (sprite.size.y / 2.0f)
-					, sprite.size.x * scale.x
-					, sprite.size.y * scale.y
-				)
-				, sprite.leftTop.x
-				, sprite.leftTop.y
-				, sprite.size.x
-				, sprite.size.y
-				, Gdiplus::UnitPixel
-				, /*&imgAtt*/nullptr
-			);
-		}
+            graphics.TranslateTransform(pos.x, pos.y);
+            graphics.RotateTransform(rot);
+            graphics.TranslateTransform(-pos.x, -pos.y);
 
-	}
+            graphics.DrawImage(
+                m_texture->GetImage(),
+                Gdiplus::Rect(
+                    pos.x - (sprite.size.x / 2.0f),
+                    pos.y - (sprite.size.y / 2.0f),
+                    sprite.size.x * scale.x,
+                    sprite.size.y * scale.y),
+                sprite.leftTop.x,
+                sprite.leftTop.y,
+                sprite.size.x,
+                sprite.size.y,
+                Gdiplus::UnitPixel,
+                /*&imgAtt*/nullptr);
+        }
+    }
 
 	// 프레임 정보 구성
 	void Animation::CreateAnimation(const std::wstring& name, graphics::Texture* spriteSheet, Vector2 leftTop, Vector2 size, Vector2 offset, UINT spriteLength, float duration)

@@ -6,7 +6,7 @@ extern op::Application application;
 
 namespace op::graphics
 {
-	Texture::Texture() : Resource(enums::ResourceType::Texture) // 부모 Resource에 나는 Texture 리소스라고 전달
+	Texture::Texture() : Resource(enums::ResourceType::Texture), m_isAlpha(false) // 부모 Resource에 나는 Texture 리소스라고 전달
 	{
 
 	}
@@ -36,6 +36,11 @@ namespace op::graphics
 
 			m_width = info.bmWidth; // 너비 저장
 			m_height = info.bmHeight; // 높이 저장
+
+			if (info.bmBitsPixel == 32)
+				m_isAlpha = true;
+			else if (info.bmBitsPixel == 24)
+				m_isAlpha = false;
 
 			HDC mainDC = application.GetHDC(); // 그 DC와 호환되는 메모리 DC 생성
 			m_hdc = CreateCompatibleDC(mainDC);
@@ -70,7 +75,7 @@ namespace op::graphics
 			return image;
 
 		image = new Texture();
-
+		image->m_type = TextureType::Bmp;
 		image->SetName(name);
 		image->SetWidth(width);
 		image->SetHeight(height);

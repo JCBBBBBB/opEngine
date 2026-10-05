@@ -31,42 +31,90 @@ namespace op
 
 	}
 
-	void SpriteRenderer::Render(HDC hdc)
-	{
-		if (m_texture == nullptr)
-		{
-			assert(false);
-		}
+    void SpriteRenderer::Render(HDC hdc)
+    {
+        if (m_texture == nullptr)
+            assert(false);
 
-		Transform* transform = GetOwner()->GetComponent<Transform>();
-		Vector2 pos = transform->GetPosition();
-		float rot = transform->GetRotation();
-		Vector2 scale = transform->GetScale();
+        Transform* transform =
+            GetOwner()->GetComponent<Transform>();
 
-		pos = renderer::mainCamera->CalculatePosition(pos);
+        Vector2 pos = transform->GetPosition();
+        float rot = transform->GetRotation();
+        Vector2 scale = transform->GetScale();
 
-		if (m_texture->GetTextureType() == graphics::Texture::TextureType::Bmp)
-		{
-			TransparentBlt(hdc, pos.x, pos.y
-				, m_texture->GetWidth() * m_size.x, m_texture->GetHeight() * m_size.y
-				, m_texture->GetHdc(), 0, 0, m_texture->GetWidth(), m_texture->GetHeight()
-				, RGB(255, 0, 255));
-		}
-		else if (m_texture->GetTextureType() == graphics::Texture::TextureType::Png)
-		{
-			Gdiplus::ImageAttributes imgAtt = {};
-			imgAtt.SetColorKey(Gdiplus::Color(230, 230, 230), Gdiplus::Color(255, 255, 255));
+        pos = renderer::mainCamera->CalculatePosition(pos);
 
-			Gdiplus::Graphics graphics(hdc);
+        if (m_texture->GetTextureType()
+            == graphics::Texture::TextureType::Bmp)
+        {
+            if (m_texture->IsAlpha())
+            {
+                BLENDFUNCTION func = {};
+                func.BlendOp = AC_SRC_OVER;
+                func.BlendFlags = 0;
+                func.AlphaFormat = AC_SRC_ALPHA;
+                func.SourceConstantAlpha = 255;
 
-			graphics.TranslateTransform(pos.x, pos.y);
-			graphics.RotateTransform(rot);
-			graphics.TranslateTransform(-pos.x, -pos.y);
+                AlphaBlend(
+                    hdc,
+                    pos.x,
+                    pos.y,
+                    m_texture->GetWidth() * m_size.x * scale.x,
+                    m_texture->GetHeight() * m_size.y * scale.y,
+                    m_texture->GetHdc(),
+                    0,
+                    0,
+                    m_texture->GetWidth(),
+                    m_texture->GetHeight(),
+                    func);
+            }
+            else
+            {
+                TransparentBlt(
+                    hdc,
+                    pos.x,
+                    pos.y,
+                    m_texture->GetWidth() * m_size.x * scale.x,
+                    m_texture->GetHeight() * m_size.y * scale.y,
+                    m_texture->GetHdc(),
+                    0,
+                    0,
+                    m_texture->GetWidth(),
+                    m_texture->GetHeight(),
+                    RGB(255, 0, 255));
+            }
+        }
+        else if (m_texture->GetTextureType()
+            == graphics::Texture::TextureType::Png)
+        {
+            Gdiplus::ImageAttributes imgAtt = {};
 
+            imgAtt.SetColorKey(
+                Gdiplus::Color(230, 230, 230),
+                Gdiplus::Color(255, 255, 255));
 
-			graphics.DrawImage(m_texture->GetImage(), Gdiplus::Rect(pos.x, pos.y, m_texture->GetWidth() * m_size.x, m_texture->GetHeight() * m_size.y), 0, 0, m_texture->GetWidth(), m_texture->GetHeight(), Gdiplus::UnitPixel, nullptr);
-		}
-	}
+            Gdiplus::Graphics graphics(hdc);
+
+            graphics.TranslateTransform(pos.x, pos.y);
+            graphics.RotateTransform(rot);
+            graphics.TranslateTransform(-pos.x, -pos.y);
+
+            graphics.DrawImage(
+                m_texture->GetImage(),
+                Gdiplus::Rect(
+                    pos.x,
+                    pos.y,
+                    m_texture->GetWidth() * m_size.x * scale.x,
+                    m_texture->GetHeight() * m_size.y * scale.y),
+                0,
+                0,
+                m_texture->GetWidth(),
+                m_texture->GetHeight(),
+                Gdiplus::UnitPixel,
+                nullptr/*&imgAtt*/);
+        }
+    }
 
 	
 }

@@ -35,6 +35,7 @@ namespace op::graphics
 		HDC GetHdc() { return m_hdc; }
 		TextureType GetTextureType() { return m_type; }
 		Gdiplus::Image* GetImage() { return m_image; }
+		bool IsAlpha() { return m_isAlpha; }
 
 	private:
 		TextureType m_type; // bmp인지 png인지 구분
