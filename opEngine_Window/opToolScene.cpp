@@ -76,100 +76,17 @@ namespace op
 			return;
 		}
 
-		if (!Input::GetKeyDown(KeyCode::LButton))
+		if (Input::GetKeyDown(KeyCode::LButton))
 		{
-			return;
+			CreateTileObject();
 		}
-
-		Vector2 pos = Input::GetMousePosition();
-
-		// 화면 밖 클릭인지 먼저 확인
-		if (pos.x < 0.0f || pos.y < 0.0f)
-		{
-			return;
-		}
-
-		if (!renderer::mainCamera)
-		{
-			return;
-		}
-
-		// 화면 좌표 → 게임 좌표
-		pos = renderer::mainCamera->CalculateTilePosition(pos);
-
-		// 이번 원본에서는 게임 공간의 음수 위치에는 배치하지 않는다.
-		if (pos.x < 0.0f || pos.y < 0.0f)
-		{
-			return;
-		}
-
-		if (TilemapRenderer::SelectedIndex.x < 0.0f
-			|| TilemapRenderer::SelectedIndex.y < 0.0f)
-		{
-			return;
-		}
-
-		const int indexX = static_cast<int>(
-			pos.x / TilemapRenderer::TileSize.x);
-
-		const int indexY = static_cast<int>(
-			pos.y / TilemapRenderer::TileSize.y);
-
-		Tile* tile = object::Instantiate<Tile>(
-			enums::LayerType::Tile);
-
-		TilemapRenderer* tileRenderer =
-			tile->AddComponent<TilemapRenderer>();
-
-		tileRenderer->SetTexture(
-			Resources::Find<graphics::Texture>(L"SpringFloor"));
-
-		tileRenderer->SetIndex(TilemapRenderer::SelectedIndex);
-
-		// 이름 변경 반영
-		tile->SetIndexPosition(indexX, indexY);
-
-		m_tiles.push_back(tile);
 	}
 
 	void ToolScene::Render(HDC hdc)
 	{
 		Scene::Render(hdc);
 
-		if (!renderer::mainCamera)
-		{
-			return;
-		}
-
-		// 세로선
-		for (int i = 0; i < 50; ++i)
-		{
-			Vector2 pos(
-				TilemapRenderer::TileSize.x * static_cast<float>(i),
-				0.0f);
-
-			pos = renderer::mainCamera->CalculatePosition(pos);
-
-			const int x = static_cast<int>(pos.x);
-
-			MoveToEx(hdc, x, 0, nullptr);
-			LineTo(hdc, x, 1000);
-		}
-
-		// 가로선
-		for (int i = 0; i < 50; ++i)
-		{
-			Vector2 pos(
-				0.0f,
-				TilemapRenderer::TileSize.y * static_cast<float>(i));
-
-			pos = renderer::mainCamera->CalculatePosition(pos);
-
-			const int y = static_cast<int>(pos.y);
-
-			MoveToEx(hdc, 0, y, nullptr);
-			LineTo(hdc, 1000, y);
-		}
+		RenderGreed(hdc);
 	}
 
 	void ToolScene::OnEnter()
@@ -380,6 +297,96 @@ namespace op
 		}
 
 		std::fclose(file);
+	}
+
+	void ToolScene::CreateTileObject()
+	{
+		Vector2 pos = Input::GetMousePosition();
+
+		// 메인 창 밖에서 클릭했으면 생성하지 않는다.
+		if (pos.x < 0.0f || pos.y < 0.0f)
+		{
+			return;
+		}
+
+		if (!renderer::mainCamera)
+		{
+			return;
+		}
+
+		// 화면 좌표를 게임 좌표로 변환
+		pos = renderer::mainCamera->CalculateTilePosition(pos);
+
+		if (pos.x < 0.0f || pos.y < 0.0f)
+		{
+			return;
+		}
+
+		if (TilemapRenderer::SelectedIndex.x < 0.0f
+			|| TilemapRenderer::SelectedIndex.y < 0.0f)
+		{
+			return;
+		}
+
+		// 배치할 격자의 열과 행
+		const int indexX = static_cast<int>(
+			pos.x / TilemapRenderer::TileSize.x);
+
+		const int indexY = static_cast<int>(
+			pos.y / TilemapRenderer::TileSize.y);
+
+		Tile* tile = object::Instantiate<Tile>(
+			enums::LayerType::Tile);
+
+		TilemapRenderer* tileRenderer =
+			tile->AddComponent<TilemapRenderer>();
+
+		tileRenderer->SetTexture(
+			Resources::Find<graphics::Texture>(L"SpringFloor"));
+
+		tileRenderer->SetIndex(TilemapRenderer::SelectedIndex);
+
+		tile->SetIndexPosition(indexX, indexY);
+
+		m_tiles.push_back(tile);
+	}
+
+	void ToolScene::RenderGreed(HDC hdc)
+	{
+		if (!hdc || !renderer::mainCamera)
+		{
+			return;
+		}
+
+		// 세로선
+		for (int i = 0; i < 50; ++i)
+		{
+			Vector2 pos(
+				TilemapRenderer::TileSize.x * static_cast<float>(i),
+				0.0f);
+
+			pos = renderer::mainCamera->CalculatePosition(pos);
+
+			const int x = static_cast<int>(pos.x);
+
+			MoveToEx(hdc, x, 0, nullptr);
+			LineTo(hdc, x, 1000);
+		}
+
+		// 가로선
+		for (int i = 0; i < 50; ++i)
+		{
+			Vector2 pos(
+				0.0f,
+				TilemapRenderer::TileSize.y * static_cast<float>(i));
+
+			pos = renderer::mainCamera->CalculatePosition(pos);
+
+			const int y = static_cast<int>(pos.y);
+
+			MoveToEx(hdc, 0, y, nullptr);
+			LineTo(hdc, 1000, y);
+		}
 	}
 }
 

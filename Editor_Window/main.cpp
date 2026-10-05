@@ -31,6 +31,7 @@ ATOM MyRegisterClass(
     const wchar_t* name,
     WNDPROC proc);
 BOOL                InitInstance(HINSTANCE, int);
+BOOL                InitToolScene(HINSTANCE hInstance);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -188,69 +189,86 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     op::LoadResources();
     op::LoadScenes();
 
+    InitToolScene(hInstance);
+
     srand(static_cast<unsigned int>(GetTickCount()));
 
-    op::Scene* activeScene = op::SceneManager::GetActiveScene();
-
-    // 작업용 씬으로 시작할 때만 타일용 창 생성
-    if (activeScene && activeScene->GetName() == L"ToolScene")
-    {
-        HWND toolHwnd = CreateWindowW(
-            L"TILEWINDOW",
-            L"TileWindow",
-            WS_OVERLAPPEDWINDOW,
-            0,
-            0,
-            static_cast<int>(width),
-            static_cast<int>(height),
-            nullptr,
-            nullptr,
-            hInstance,
-            nullptr);
-
-        if (!toolHwnd)
-        {
-            MessageBoxW(
-                hWnd,
-                L"타일용 창을 생성하지 못했습니다.",
-                L"타일 도구",
-                MB_OK | MB_ICONERROR);
-
-            return TRUE;
-        }
-
-        op::graphics::Texture* texture =
-            op::Resources::Find<op::graphics::Texture>(L"SpringFloor");
-
-        if (texture)
-        {
-            RECT rect = {
-                0,
-                0,
-                static_cast<LONG>(texture->GetWidth()),
-                static_cast<LONG>(texture->GetHeight())
-            };
-
-            AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
-
-            SetWindowPos(
-                toolHwnd,
-                nullptr,
-                static_cast<int>(width),
-                0,
-                rect.right - rect.left,
-                rect.bottom - rect.top,
-                SWP_NOZORDER);
-        }
-
-        ShowWindow(toolHwnd, SW_SHOW);
-        UpdateWindow(toolHwnd);
-    }
 
     return TRUE;
 }
 
+BOOL InitToolScene(HINSTANCE hInstance)
+{
+    op::Scene* activeScene = op::SceneManager::GetActiveScene();
 
+    // 작업용 씬으로 시작하는 경우에만 창을 생성한다.
+    if (!activeScene || activeScene->GetName() != L"ToolScene")
+    {
+        return TRUE;
+    }
+
+    op::graphics::Texture* texture =
+        op::Resources::Find<op::graphics::Texture>(L"SpringFloor");
+
+    if (!texture)
+    {
+        MessageBoxW(
+            application.GetHwnd(),
+            L"SpringFloor 텍스처가 없습니다.",
+            L"타일 도구",
+            MB_OK | MB_ICONERROR);
+
+        return FALSE;
+    }
+
+    HWND toolHwnd = CreateWindowW(
+        L"TILEWINDOW",
+        L"TileWindow",
+        WS_OVERLAPPEDWINDOW,
+        0,
+        0,
+        CW_USEDEFAULT,
+        0,
+        nullptr,
+        nullptr,
+        hInstance,
+        nullptr);
+
+    if (!toolHwnd)
+    {
+        MessageBoxW(
+            application.GetHwnd(),
+            L"타일용 창을 생성하지 못했습니다.",
+            L"타일 도구",
+            MB_OK | MB_ICONERROR);
+
+        return FALSE;
+    }
+
+    // 클라이언트 영역을 원본 이미지 크기로 맞춘다.
+    RECT rect = {
+        0,
+        0,
+        static_cast<LONG>(texture->GetWidth()),
+        static_cast<LONG>(texture->GetHeight())
+    };
+
+    AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+    SetWindowPos(
+        toolHwnd,
+        nullptr,
+        672,
+        0,
+        rect.right - rect.left,
+        rect.bottom - rect.top,
+        SWP_NOZORDER);
+
+    ShowWindow(toolHwnd, SW_SHOW);
+    UpdateWindow(toolHwnd);
+
+    return TRUE;
+}
 //
 //  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
 //

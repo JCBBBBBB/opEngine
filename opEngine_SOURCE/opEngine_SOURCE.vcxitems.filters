@@ -59,6 +59,10 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)opDestroy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opTilemapRenderer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opRigidbody.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h">
@@ -123,6 +127,10 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)opDestroy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opTilemapRenderer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opRigidbody.h">
+      <Filter>Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
@@ -145,19 +153,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opCollider.h"><Filter>Component</Filter></ClInclude>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opCollider.cpp"><Filter>Component</Filter></ClCompile>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opBoxCollider2D.h"><Filter>Component</Filter></ClInclude>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opBoxCollider2D.cpp"><Filter>Component</Filter></ClCompile>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opCircleCollider2D.h"><Filter>Component</Filter></ClInclude>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opCircleCollider2D.cpp"><Filter>Component</Filter></ClCompile>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCollider.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCollider.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opBoxCollider2D.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opBoxCollider2D.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCircleCollider2D.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCircleCollider2D.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opCollisionManager.h"><Filter>Component</Filter></ClInclude>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opCollisionManager.cpp"><Filter>Component</Filter></ClCompile>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCollisionManager.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCollisionManager.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opDontDestroyOnLoad.h"><Filter>Scene</Filter></ClInclude>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opDontDestroyOnLoad.cpp"><Filter>Scene</Filter></ClCompile>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opDontDestroyOnLoad.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opDontDestroyOnLoad.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

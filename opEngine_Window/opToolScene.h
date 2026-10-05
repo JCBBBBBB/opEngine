@@ -22,6 +22,10 @@ namespace op
 		void Load();
 
 	private:
+		void RenderGreed(HDC hdc);
+		void CreateTileObject();
+
+	private:
 		// 저장할 타일 목록. 타일의 실제 삭제는 Scene/Layer가 담당한다.
 		std::vector<Tile*> m_tiles;
 	};
