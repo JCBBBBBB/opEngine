@@ -2,6 +2,15 @@
 
 namespace op::object
 {
-    // 원본의 향후 씬 유지 오브젝트 목록. 이 커밋에서는 아직 사용하지 않는다.
-    static std::vector<GameObject*> DontDestroyGameObjects = {};
+    void DontDestroyOnLoad(GameObject* gameObject)
+    {
+        Scene* persistent = SceneManager::GetDontDestroyOnLoad();
+        if (!gameObject || gameObject->IsDead() || !persistent) return;
+        Scene* source = gameObject->GetScene();
+        if (!source || source == persistent) return;
+        const auto layerType = gameObject->GetLayerType();
+        if (!persistent->GetLayer(layerType)) return;
+        source->EraseGameObject(gameObject);
+        persistent->AddGameObject(gameObject, layerType);
+    }
 }

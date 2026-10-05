@@ -75,4 +75,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opCollisionManager.h" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opCollisionManager.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opDontDestroyOnLoad.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opDontDestroyOnLoad.cpp" />
+  </ItemGroup>
 </Project>

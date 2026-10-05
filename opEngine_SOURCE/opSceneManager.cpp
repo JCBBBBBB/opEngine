@@ -1,30 +1,58 @@
 #include "opSceneManager.h"
 #include "opCollisionManager.h"
 #include "opRenderer.h"
+#include "opDontDestroyOnLoad.h"
 
 namespace op
 {
+    std::unordered_set<GameObject*>* SceneManager::m_processedObjects = nullptr;
+    // 한 번의 Update/LateUpdate/Render 도중 옮긴 객체도 한 번만 실행한다.
+    struct SceneManager::ObjectPass
+    {
+        std::unordered_set<GameObject*>* previous;
+        explicit ObjectPass(std::unordered_set<GameObject*>& objects) : previous(m_processedObjects)
+        { m_processedObjects = &objects; }
+        ~ObjectPass() { m_processedObjects = previous; }
+    };
+    bool SceneManager::ShouldProcess(GameObject* gameObject)
+    {
+        return !m_processedObjects || m_processedObjects->insert(gameObject).second;
+    }
 	std::map<std::wstring, Scene*> SceneManager::m_scene = {};
+	Scene* SceneManager::m_dontDestroyOnLoad = nullptr;
 	Scene* SceneManager::m_activeScene = nullptr; // 현재 실행할 씬
 
 	void SceneManager::Initialize()
 	{
-
+        if (!m_dontDestroyOnLoad)
+            m_dontDestroyOnLoad = CreateScene<DontDestroyOnLoad>(L"DontDestroyOnLoad");
 	}
 
 	void SceneManager::Update()
 	{
-		if (m_activeScene) m_activeScene->Update();
+        std::unordered_set<GameObject*> processed;
+        ObjectPass pass(processed);
+        if (m_activeScene) m_activeScene->Update();
+        if (m_dontDestroyOnLoad && m_activeScene != m_dontDestroyOnLoad)
+            m_dontDestroyOnLoad->Update();
 	}
 
 	void SceneManager::LateUpdate()
 	{
-		if (m_activeScene) m_activeScene->LateUpdate();
+        std::unordered_set<GameObject*> processed;
+        ObjectPass pass(processed);
+        if (m_activeScene) m_activeScene->LateUpdate();
+        if (m_dontDestroyOnLoad && m_activeScene != m_dontDestroyOnLoad)
+            m_dontDestroyOnLoad->LateUpdate();
 	}
 
 	void SceneManager::Render(HDC hdc)
 	{
-		if (m_activeScene) m_activeScene->Render(hdc);
+        std::unordered_set<GameObject*> processed;
+        ObjectPass pass(processed);
+        if (m_activeScene) m_activeScene->Render(hdc);
+        if (m_dontDestroyOnLoad && m_activeScene != m_dontDestroyOnLoad)
+            m_dontDestroyOnLoad->Render(hdc);
 	}
 
 	void SceneManager::Release()
@@ -37,12 +65,16 @@ namespace op
 			iter.second = nullptr;
 		}
 		m_scene.clear();
+        m_dontDestroyOnLoad = nullptr;
 		m_activeScene = nullptr;
 	}
 
 	void SceneManager::Destroy()
 	{
-		if (m_activeScene) m_activeScene->Destroy();
+        if (m_activeScene) m_activeScene->Destroy();
+        // 초기화 직후 현재 씬 자체가 유지 씬일 때는 중복 실행하지 않는다.
+        if (m_dontDestroyOnLoad && m_activeScene != m_dontDestroyOnLoad)
+            m_dontDestroyOnLoad->Destroy();
 	}
     Scene* SceneManager::LoadScene(const std::wstring& name)
     {

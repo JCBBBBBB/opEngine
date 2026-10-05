@@ -273,9 +273,10 @@ void IntegrationTests()
     Require(Resources::Find<graphics::Texture>(L"Player") != nullptr, "Player image load");
     LoadScenes();
     auto* play = SceneManager::GetActiveScene();
-    Require(play->GetLayer(enums::LayerType::Player)->GetGameObjects().size() == 1, "Player layer sample");
+    auto* persistent = SceneManager::GetDontDestroyOnLoad();
+    Require(persistent && persistent->GetLayer(enums::LayerType::Player)->GetGameObjects().size() == 1, "Persistent player layer sample");
     Require(play->GetLayer(enums::LayerType::Animal)->GetGameObjects().size() == 1, "Animal layer sample");
-    auto* player = play->GetLayer(enums::LayerType::Player)->GetGameObjects().front();
+    auto* player = persistent->GetLayer(enums::LayerType::Player)->GetGameObjects().front();
     auto* animal = play->GetLayer(enums::LayerType::Animal)->GetGameObjects().front();
     Require(player->GetComponent<Collider>()->GetColliderType() == enums::ColliderType::Circle2D, "Player circle sample");
     Require(animal->GetComponent<Collider>()->GetColliderType() == enums::ColliderType::Circle2D, "Animal circle sample");
@@ -357,6 +358,8 @@ int RunTests()
 
 int main()
 {
+    // 실제 렌더링과 같은 픽셀 단위로 검증하여 화면 배율의 좌표 반올림을 피한다.
+    SetProcessDPIAware();
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
     try { return RunTests(); }
     catch (const std::exception& error) { std::cerr << error.what() << "\n"; return 1; }

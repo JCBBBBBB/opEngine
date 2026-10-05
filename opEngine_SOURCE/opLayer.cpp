@@ -1,4 +1,5 @@
 #include "opLayer.h"
+#include "opSceneManager.h"
 
 namespace op
 {
@@ -23,70 +24,50 @@ namespace op
 
 	void Layer::Initialize()
 	{
-		// 목록에 들어있는 오브젝트 주소를 하나씩 가져옴
-		for (GameObject* gameObject : m_gameObjects)
-		{
-			if (gameObject == nullptr)
-			{
-				continue;
-			}
-
-			gameObject->Initialize();
-		}
+        // 실행 중 씬 이동/객체 생성으로 원본 vector가 바뀌어도 반복자는 안전하다.
+        const auto objects = m_gameObjects;
+        for (GameObject* gameObject : objects)
+        {
+            if (!gameObject) continue;
+            if (std::find(m_gameObjects.begin(), m_gameObjects.end(), gameObject) == m_gameObjects.end()) continue;
+            gameObject->Initialize();
+        }
 	}
 
 	void Layer::Update()
 	{
-		for (GameObject* gameObject : m_gameObjects)
-		{
-			if (gameObject == nullptr)
-			{
-				continue;
-			}
-
-			if (gameObject->IsActive() == false)
-			{
-				continue;
-			}
-
-			gameObject->Update();
-		}
+        // 실행 중 씬 이동/객체 생성으로 원본 vector가 바뀌어도 반복자는 안전하다.
+        const auto objects = m_gameObjects;
+        for (GameObject* gameObject : objects)
+        {
+            if (!gameObject || !gameObject->IsActive()) continue;
+            if (std::find(m_gameObjects.begin(), m_gameObjects.end(), gameObject) == m_gameObjects.end()) continue;
+            if (SceneManager::ShouldProcess(gameObject)) gameObject->Update();
+        }
 	}
 
 	void Layer::LateUpdate()
 	{
-		for (GameObject* gameObject : m_gameObjects)
-		{
-			if (gameObject == nullptr)
-			{
-				continue;
-			}
-
-			if (gameObject->IsActive() == false)
-			{
-				continue;
-			}
-
-			gameObject->LateUpdate();
-		}
+        // 실행 중 씬 이동/객체 생성으로 원본 vector가 바뀌어도 반복자는 안전하다.
+        const auto objects = m_gameObjects;
+        for (GameObject* gameObject : objects)
+        {
+            if (!gameObject || !gameObject->IsActive()) continue;
+            if (std::find(m_gameObjects.begin(), m_gameObjects.end(), gameObject) == m_gameObjects.end()) continue;
+            if (SceneManager::ShouldProcess(gameObject)) gameObject->LateUpdate();
+        }
 	}
 
 	void Layer::Render(HDC hdc)
 	{
-		for (GameObject* gameObject : m_gameObjects)
-		{
-			if (gameObject == nullptr)
-			{
-				continue;
-			}
-
-			if (gameObject->IsActive() == false)
-			{
-				continue;
-			}
-
-			gameObject->Render(hdc);
-		}
+        // 실행 중 씬 이동/객체 생성으로 원본 vector가 바뀌어도 반복자는 안전하다.
+        const auto objects = m_gameObjects;
+        for (GameObject* gameObject : objects)
+        {
+            if (!gameObject || !gameObject->IsActive()) continue;
+            if (std::find(m_gameObjects.begin(), m_gameObjects.end(), gameObject) == m_gameObjects.end()) continue;
+            if (SceneManager::ShouldProcess(gameObject)) gameObject->Render(hdc);
+        }
 	}
 
 	void Layer::Destroy()
@@ -94,24 +75,22 @@ namespace op
 		std::vector<GameObject*> deleteObjects = {};
 
 		findDeadGameObjects(deleteObjects);
-		eraseGameObject();
+		eraseDeadGameObject();
 		deleteGameObjects(deleteObjects);
 	}
 
 	void Layer::AddGameObject(GameObject* gameObject)
 	{
-		if (gameObject == nullptr)
-		{
-			return; // 등록할 객체가 없으면 함수 종료
-		}
-
-		m_gameObjects.push_back(gameObject); // 목록 맨 뒤에 주소 추가
+        if (!gameObject) return;
+        if (std::find(m_gameObjects.begin(), m_gameObjects.end(), gameObject) == m_gameObjects.end())
+            m_gameObjects.push_back(gameObject);
 	}
 
 	void Layer::findDeadGameObjects(OUT std::vector<GameObject*>& gameObjs)
 	{
 		for (GameObject* gameObject : m_gameObjects)
 		{
+			if (!gameObject) continue;
 			GameObject::State active = gameObject->GetState();
 
 			if (active == GameObject::State::Dead)
@@ -130,8 +109,14 @@ namespace op
 		}
 	}
 
-	void Layer::eraseGameObject()
+	void Layer::eraseDeadGameObject()
 	{
-		std::erase_if(m_gameObjects, [](GameObject* gameObj) {return (gameObj)->IsDead(); });
+        std::erase_if(m_gameObjects, [](GameObject* gameObject)
+        { return !gameObject || gameObject->IsDead(); });
 	}
+    void Layer::EraseGameObject(GameObject* gameObject)
+    {
+        // 등록만 해제한다. 다른 씬으로 옮길 객체이므로 여기서 delete하지 않는다.
+        std::erase(m_gameObjects, gameObject);
+    }
 }

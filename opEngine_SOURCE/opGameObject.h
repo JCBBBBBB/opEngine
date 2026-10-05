@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CommonInclude.h"
 #include "opComponent.h"
 
@@ -11,10 +11,12 @@ namespace op::object
 namespace op
 {
 
+	class Scene;
 	class GameObject
 	{
 	public:
 		friend void object::Destroy(GameObject* gameObject);
+        friend class Scene;
 
 		enum class State
 		{
@@ -76,6 +78,9 @@ namespace op
 
 		bool IsActive() { return m_state == State::Active; }
 		bool IsDead() { return m_state == State::Dead; }
+        void SetLayerType(enums::LayerType type) { m_layerType = type; }
+        enums::LayerType GetLayerType() const { return m_layerType; }
+        Scene* GetScene() const { return m_scene; }
 
 	private:
 		void InitializeTransform();
@@ -83,5 +88,7 @@ namespace op
 	private:
 		std::vector<Component*> m_components;
 		State m_state;
+        enums::LayerType m_layerType;
+        Scene* m_scene; // 한 씬만 소유하게 하여 이전 씬과 중복 삭제되지 않게 한다.
 	};
 }

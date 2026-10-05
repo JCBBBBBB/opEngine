@@ -15,7 +15,7 @@ namespace op::object
 namespace op
 {
 
-	GameObject::GameObject() : m_state(State::Active)
+	GameObject::GameObject() : m_state(State::Active), m_layerType(enums::LayerType::None), m_scene(nullptr)
 	{
 		m_components.resize((UINT)enums::ComponentType::End);
 		InitializeTransform();

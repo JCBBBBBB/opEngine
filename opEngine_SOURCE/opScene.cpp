@@ -81,7 +81,14 @@ namespace op
 
 	void Scene::AddGameObject(GameObject* gameObject, const enums::LayerType layerType)
 	{
-		m_layers[(UINT)layerType]->AddGameObject(gameObject);
+        Layer* layer = GetLayer(layerType);
+        if (!gameObject || !layer) return;
+        Scene* previous = gameObject->m_scene;
+        if (previous && (previous != this || gameObject->GetLayerType() != layerType))
+            previous->EraseGameObject(gameObject);
+        gameObject->SetLayerType(layerType);
+        gameObject->m_scene = this;
+        layer->AddGameObject(gameObject);
 	}
 
 	void Scene::CreateLayers()
@@ -103,4 +110,11 @@ namespace op
 
 	}
 
+    void Scene::EraseGameObject(GameObject* gameObject)
+    {
+        if (!gameObject || gameObject->m_scene != this) return;
+        for (Layer* layer : m_layers)
+            if (layer) layer->EraseGameObject(gameObject);
+        gameObject->m_scene = nullptr;
+    }
 }

@@ -23,7 +23,12 @@ namespace op
 		virtual void Destroy();
 
 		void AddGameObject(GameObject* gameObject, const enums::LayerType layerType);
-		Layer* GetLayer(const enums::LayerType type) { return m_layers[(UINT)type]; }
+        void EraseGameObject(GameObject* gameObject);
+        Layer* GetLayer(const enums::LayerType type)
+        {
+            const size_t index = static_cast<size_t>(type);
+            return index < m_layers.size() ? m_layers[index] : nullptr;
+        }
 
 	private:
 		void CreateLayers();

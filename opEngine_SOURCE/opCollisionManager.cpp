@@ -19,7 +19,7 @@ namespace op
     {
         Scene* scene = SceneManager::GetActiveScene();
         if (m_collisionScene != scene) { Reset(); m_collisionScene = scene; }
-        if (!scene) return;
+        if (!scene && !SceneManager::GetDontDestroyOnLoad()) return;
         m_checkedPairs.clear();
         for (size_t row = 0; row < LayerCount; ++row)
             for (size_t col = row; col < LayerCount; ++col)
@@ -56,10 +56,18 @@ namespace op
     }
     void CollisionManager::LayerCollision(Scene* scene, enums::LayerType left, enums::LayerType right)
     {
-        if (!scene || static_cast<size_t>(left) >= LayerCount || static_cast<size_t>(right) >= LayerCount) return;
-        // 콜백에서 새 오브젝트를 추가해도 반복자가 무효화되지 않도록 목록을 복사한다.
-        const auto lefts = scene->GetLayer(left)->GetGameObjects();
-        const auto rights = scene->GetLayer(right)->GetGameObjects();
+        if (static_cast<size_t>(left) >= LayerCount || static_cast<size_t>(right) >= LayerCount) return;
+        // 유지 씬도 함께 검사한다. 현재 씬과 동일하면 목록을 한 번만 넣는다.
+        std::vector<GameObject*> lefts, rights;
+        for (Scene* candidate : {scene, SceneManager::GetDontDestroyOnLoad()})
+        {
+            if (!candidate) continue;
+            const auto& leftObjects = candidate->GetLayer(left)->GetGameObjects();
+            const auto& rightObjects = candidate->GetLayer(right)->GetGameObjects();
+            lefts.insert(lefts.end(), leftObjects.begin(), leftObjects.end());
+            rights.insert(rights.end(), rightObjects.begin(), rightObjects.end());
+            if (candidate == SceneManager::GetDontDestroyOnLoad()) break;
+        }
         for (size_t i = 0; i < lefts.size(); ++i)
         {
             GameObject* leftObject = lefts[i];

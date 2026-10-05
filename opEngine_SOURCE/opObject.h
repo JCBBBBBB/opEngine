@@ -5,32 +5,30 @@
 #include "opScene.h"
 #include "opSceneManager.h"
 #include "opTransform.h"
+#include <stdexcept>
 
 namespace op::object
 {
 	template <typename T> // T 자리에 Player 같은 타입을 전달
 	static T* Instantiate(op::enums::LayerType layerType)
 	{
-		T* gameObject = new T(); // 전달받은 타입의 객체 생성
-		Scene* activeScene = SceneManager::GetActiveScene(); // 현재 씬의 주소 가져오기
-		Layer* layer = activeScene->GetLayer(layerType); // 그 씬에서 지정한 레이어 가져오기
-		layer->AddGameObject(gameObject); // 생성한 오브젝트를 해당 레이어에 등록
-
-		return gameObject;
+        Scene* activeScene = SceneManager::GetActiveScene();
+        if (!activeScene || !activeScene->GetLayer(layerType))
+            throw std::logic_error("Instantiate requires an active scene and a valid layer");
+        T* gameObject = new T();
+        gameObject->SetLayerType(layerType);
+        activeScene->AddGameObject(gameObject, layerType);
+        return gameObject;
 	}
 
 	template <typename T>
 	static T* Instantiate(op::enums::LayerType layerType, math::Vector2 position)
 	{
-		T* gameObject = new T(); // T의 게임 오브젝트 객체 생성
-		Scene* activeScene = SceneManager::GetActiveScene(); // 현재 씬 가져오기
-		Layer* layer = activeScene->GetLayer(layerType); // 레이어 가져오기
-		layer->AddGameObject(gameObject); // 레이어에 게임 오브젝트 등록
-
-		Transform* transform = gameObject->GetComponent<Transform>(); // 생성한 오브젝트에 붙어 있는 Transform 가져오기
-		transform->SetPosition(position); // 전달받은 위치를 Transform에 저장
-
-		return gameObject;
+        T* gameObject = Instantiate<T>(layerType);
+        if (Transform* transform = gameObject->GetComponent<Transform>())
+            transform->SetPosition(position);
+        return gameObject;
 	}
 
+    void DontDestroyOnLoad(GameObject* gameObject);
 }
