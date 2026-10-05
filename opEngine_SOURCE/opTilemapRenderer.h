@@ -26,6 +26,13 @@ namespace op
 			m_size = size;
 		}
 
+
+		// 이 타일이 사용하는 원본 그림의 열과 행
+		math::Vector2 GetIndex() const
+		{
+			return m_index;
+		}
+
 		// 원본 이미지에서 사용할 타일의 열과 행
 		void SetIndex(math::Vector2 index)
 		{

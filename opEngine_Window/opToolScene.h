@@ -1,9 +1,9 @@
 #pragma once
 #include "..\\opEngine_SOURCE\\opScene.h"
+#include "opTile.h"
 
 namespace op
 {
-	// 타일맵을 만드는 작업용 씬
 	class ToolScene : public Scene
 	{
 	public:
@@ -17,6 +17,13 @@ namespace op
 
 		void OnEnter() override;
 		void OnExit() override;
+
+		void Save();
+		void Load();
+
+	private:
+		// 저장할 타일 목록. 타일의 실제 삭제는 Scene/Layer가 담당한다.
+		std::vector<Tile*> m_tiles;
 	};
 }
 
