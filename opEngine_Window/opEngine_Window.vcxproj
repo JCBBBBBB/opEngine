@@ -143,7 +143,9 @@
     <ClInclude Include="opPlayer.h" />
     <ClInclude Include="opPlayerScript.h" />
     <ClInclude Include="opPlayScene.h" />
+    <ClInclude Include="opTile.h" />
     <ClInclude Include="opTitleScene.h" />
+    <ClInclude Include="opToolScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opCat.cpp" />
@@ -151,7 +153,9 @@
     <ClCompile Include="opPlayer.cpp" />
     <ClCompile Include="opPlayerScript.cpp" />
     <ClCompile Include="opPlayScene.cpp" />
+    <ClCompile Include="opTile.cpp" />
     <ClCompile Include="opTitleScene.cpp" />
+    <ClCompile Include="opToolScene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -22,9 +22,13 @@ WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
+ATOM MyRegisterClass(
+    HINSTANCE hInstance,
+    const wchar_t* name,
+    WNDPROC proc);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK WndTileProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 핸들
@@ -46,7 +50,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 �
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_EDITORWINDOW, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+    // 메인 창은 WndProc으로 메시지를 처리한다.
+    MyRegisterClass(hInstance, szWindowClass, WndProc);
+
+    // 타일용 창은 WndTileProc으로 메시지를 처리한다.
+    MyRegisterClass(hInstance, L"TILEWINDOW", WndTileProc);
 
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance(hInstance, nCmdShow))
@@ -103,23 +111,31 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 �
 //
 //  용도: 창 클래스를 등록합니다.
 //
-ATOM MyRegisterClass(HINSTANCE hInstance)
+ATOM MyRegisterClass(
+    HINSTANCE hInstance,
+    const wchar_t* name,
+    WNDPROC proc)
 {
-    WNDCLASSEXW wcex;
+    WNDCLASSEXW wcex = {};
 
-    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.cbSize = sizeof(WNDCLASSEXW);
 
     wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
+    wcex.lpfnWndProc = proc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EDITORWINDOW));
+
+    wcex.hIcon = LoadIcon(
+        hInstance, MAKEINTRESOURCE(IDI_EDITORWINDOW));
+
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = NULL;
-    wcex.lpszClassName = szWindowClass;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.lpszMenuName = nullptr;
+    wcex.lpszClassName = name;
+
+    wcex.hIconSm = LoadIcon(
+        hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
 }
@@ -136,37 +152,125 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+    hInst = hInstance;
 
-   const UINT width = 672;
-   const UINT height = 846;
+    const UINT width = 672;
+    const UINT height = 846;
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, width, height, nullptr, nullptr, hInstance, nullptr);
+    // 메인 창 생성
+    HWND hWnd = CreateWindowW(
+        szWindowClass,
+        szTitle,
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT,
+        0,
+        static_cast<int>(width),
+        static_cast<int>(height),
+        nullptr,
+        nullptr,
+        hInstance,
+        nullptr);
 
-   if (!hWnd) return FALSE;
-   application.Initialize(hWnd, width, height);
+    if (!hWnd)
+    {
+        return FALSE;
+    }
 
-   //2개이상의 윈도우도 생성 가능하다.
-   //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-   //    CW_USEDEFAULT, 0, 1600, 900, nullptr, nullptr, hInstance, nullptr);
+    // 타일용 창 생성
+    HWND toolHwnd = CreateWindowW(
+        L"TILEWINDOW",
+        L"TileWindow",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT,
+        0,
+        static_cast<int>(width),
+        static_cast<int>(height),
+        nullptr,
+        nullptr,
+        hInstance,
+        nullptr);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
+    if (!toolHwnd)
+    {
+        DestroyWindow(hWnd);
+        return FALSE;
+    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+    // Application은 메인 창만 사용한다.
+    application.Initialize(hWnd, width, height);
 
-   Gdiplus::GdiplusStartup(&gpToken, &gpsi, NULL);
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
 
-   op::LoadResources(); // 배경 이미지 읽기, "BackGround로 등록"
-   op::LoadScenes(); // 씬을 생성하고 현재 씬을 선택
-   
-   srand(static_cast<unsigned int>(GetTickCount()));
+    ShowWindow(toolHwnd, nCmdShow);
+    UpdateWindow(toolHwnd);
 
-   return TRUE;
+    Gdiplus::GdiplusStartup(&gpToken, &gpsi, nullptr);
+
+    // 리소스를 먼저 읽고, 그 리소스를 사용하는 씬을 생성한다.
+    op::LoadResources();
+    op::LoadScenes();
+
+    srand(static_cast<unsigned int>(GetTickCount()));
+
+    return TRUE;
+}
+
+LRESULT CALLBACK WndTileProc(
+    HWND hWnd,
+    UINT message,
+    WPARAM wParam,
+    LPARAM lParam)
+{
+    switch (message)
+    {
+    case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+
+        switch (wmId)
+        {
+        case IDM_ABOUT:
+            DialogBox(
+                hInst,
+                MAKEINTRESOURCE(IDD_ABOUTBOX),
+                hWnd,
+                About);
+            break;
+
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+
+        default:
+            return DefWindowProc(
+                hWnd, message, wParam, lParam);
+        }
+    }
+    break;
+
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps = {};
+        BeginPaint(hWnd, &ps);
+
+        // 이번 커밋에서는 타일용 창에 아직 이미지를 그리지 않는다.
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
+
+    case WM_DESTROY:
+        // 이번 원본에서는 타일용 창을 닫아도 프로그램이 종료된다.
+        PostQuitMessage(0);
+        break;
+
+    default:
+        return DefWindowProc(
+            hWnd, message, wParam, lParam);
+    }
+
+    return 0;
 }
 
 //

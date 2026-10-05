@@ -62,7 +62,7 @@ namespace op
 		}
 
 	private:
-		std::map<std::wstring, Events*> m_events;
+		std::map<std::wstring, Events*> m_events; // 이름별 시작/완료/종료 이벤트 목록
 		std::map<std::wstring, Animation*> m_animations; // 이름으로 찾을 수 있는 애니메이션 목록
 		Animation* m_activeAnimation; // 현재 Update와 Render를 실행할 Animation의 주소
 		bool m_isLoop; // 현재 Animation이 끝나면 첫 프레임부터 반복할지 여부

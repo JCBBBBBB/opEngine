@@ -36,6 +36,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opScript.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opSpriteRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTexture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opTilemapRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTransform.h" />
   </ItemGroup>
@@ -60,6 +61,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opScript.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opSpriteRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTexture.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opTilemapRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTransform.cpp" />
   </ItemGroup>

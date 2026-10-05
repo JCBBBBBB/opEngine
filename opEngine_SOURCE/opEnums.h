@@ -18,6 +18,7 @@ namespace op::enums
 	{
 		None,
 		BackGround,
+		Tile,
 		Animal,
 		Player,
 		Particle,
