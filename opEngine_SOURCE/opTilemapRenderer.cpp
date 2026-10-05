@@ -7,6 +7,10 @@
 namespace op
 {
 	math::Vector2 TilemapRenderer::TileSize = math::Vector2::One;
+	math::Vector2 TilemapRenderer::OriginTileSize = math::Vector2::One;
+	math::Vector2 TilemapRenderer::SelectedIndex =
+		math::Vector2(-1.0f, -1.0f);
+
 
 	TilemapRenderer::TilemapRenderer()
 		: Component(enums::ComponentType::SpriteRenderer)
@@ -16,6 +20,7 @@ namespace op
 		, m_index(0.0f, 0.0f)
 	{
 		TileSize = m_tileSize * m_size;
+		OriginTileSize = m_tileSize;
 	}
 
 	TilemapRenderer::~TilemapRenderer()

@@ -59,13 +59,11 @@ namespace op
 	{
 		Scene::LateUpdate();
 
-		// 마우스 왼쪽 버튼을 처음 누른 프레임에만 생성
 		if (!Input::GetKeyDown(KeyCode::LButton))
 		{
 			return;
 		}
 
-		// 메인 창에서 클릭했을 때만 배치한다.
 		if (GetForegroundWindow() != application.GetHwnd())
 		{
 			return;
@@ -73,7 +71,6 @@ namespace op
 
 		Vector2 pos = Input::GetMousePosition();
 
-		// 메인 창의 그리기 영역 밖에서는 생성하지 않는다.
 		if (pos.x < 0.0f || pos.y < 0.0f
 			|| pos.x >= static_cast<float>(application.GetWidth())
 			|| pos.y >= static_cast<float>(application.GetHeight()))
@@ -81,7 +78,13 @@ namespace op
 			return;
 		}
 
-		// 마우스 픽셀 좌표를 격자의 열과 행으로 변환
+		if (TilemapRenderer::SelectedIndex.x < 0.0f
+			|| TilemapRenderer::SelectedIndex.y < 0.0f)
+		{
+			return;
+		}
+
+		// 메인 창에서 배치할 격자 위치
 		const int indexX = static_cast<int>(
 			pos.x / TilemapRenderer::TileSize.x);
 
@@ -97,7 +100,10 @@ namespace op
 		tileRenderer->SetTexture(
 			Resources::Find<graphics::Texture>(L"SpringFloor"));
 
-		// 해당 격자 칸의 왼쪽 위에 배치
+		// 어떤 그림을 사용할지 설정
+		tileRenderer->SetIndex(TilemapRenderer::SelectedIndex);
+
+		// 메인 창의 어느 칸에 배치할지 설정
 		tile->SetPosition(indexX, indexY);
 	}
 
@@ -147,8 +153,52 @@ LRESULT CALLBACK WndTileProc(
 	{
 	case WM_LBUTTONDOWN:
 	{
-		// 이번 커밋에서는 시트에서 타일을 선택하는 기능은 아직 없다.
+		POINT mousePos = {};
+
+		// 모니터 좌표를 타일용 창 내부 좌표로 변환
+		GetCursorPos(&mousePos);
+		ScreenToClient(hWnd, &mousePos);
+
+		op::graphics::Texture* texture =
+			op::Resources::Find<op::graphics::Texture>(L"SpringFloor");
+
+		if (!texture)
+		{
+			break;
+		}
+
+		const float tileWidth =
+			op::TilemapRenderer::OriginTileSize.x;
+
+		const float tileHeight =
+			op::TilemapRenderer::OriginTileSize.y;
+
+		if (tileWidth <= 0.0f || tileHeight <= 0.0f)
+		{
+			break;
+		}
+
+		// 창을 늘렸더라도 이미지 바깥은 선택하지 않는다.
+		if (mousePos.x < 0 || mousePos.y < 0
+			|| mousePos.x >= static_cast<LONG>(texture->GetWidth())
+			|| mousePos.y >= static_cast<LONG>(texture->GetHeight()))
+		{
+			break;
+		}
+
+		// 원본 타일 크기인 16픽셀로 나누어 열과 행을 구한다.
+		const int indexX = static_cast<int>(
+			static_cast<float>(mousePos.x) / tileWidth);
+
+		const int indexY = static_cast<int>(
+			static_cast<float>(mousePos.y) / tileHeight);
+
+		// 선택한 타일 번호 저장
+		op::TilemapRenderer::SelectedIndex = op::math::Vector2(
+			static_cast<float>(indexX),
+			static_cast<float>(indexY));
 	}
+	break;
 	break;
 
 	case WM_PAINT:
