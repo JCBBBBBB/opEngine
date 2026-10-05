@@ -7,6 +7,7 @@
 #include "../opEngine_Window/opLoadScenes.h"
 #include "opTime.h"
 #include "opAnimator.h"
+#include "opCollisionManager.h"
 
 op::Application application;
 void Require(bool condition, const char* message)
@@ -34,7 +35,7 @@ void IntegrationTests()
     {
         Time::Update();
         SceneManager::Update();
-        SceneManager::LateUpdate();
+        application.LateUpdate();
         application.Render();
     }
     // N키와 동일한 씬 전환 경로를 여러 번 확인한다.
@@ -68,6 +69,14 @@ void IntegrationTests()
 int RunTests()
 {
     using namespace op;
+    CollisionManager::Initialize();
+    CollisionManager::Update(); // 씬이 없어도 안전해야 한다.
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Animal, enums::LayerType::Player, true);
+    Require(CollisionManager::IsLayerEnabled(enums::LayerType::Player, enums::LayerType::Animal), "Symmetric layer mask");
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Animal, false);
+    Require(!CollisionManager::IsLayerEnabled(enums::LayerType::Animal, enums::LayerType::Player), "Disabled layer mask");
+    CollisionManager::CollisionLayerCheck(enums::LayerType::Max, enums::LayerType::Player, true);
+    Require(!CollisionManager::IsLayerEnabled(enums::LayerType::Max, enums::LayerType::Player), "Layer index bounds");
     GameObject object;
     auto* box = object.AddComponent<BoxCollider2D>();
     Require(box->GetOwner() == &object, "Collider owner");

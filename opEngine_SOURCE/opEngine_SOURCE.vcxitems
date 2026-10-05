@@ -71,4 +71,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opCircleCollider2D.h" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opCircleCollider2D.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCollisionManager.h" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCollisionManager.cpp" />
+  </ItemGroup>
 </Project>

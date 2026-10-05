@@ -18,6 +18,7 @@ namespace op
 		virtual void Destroy();
 
 		void AddGameObject(GameObject* gameObject);
+        const std::vector<GameObject*>& GetGameObjects() const { return m_gameObjects; }
 
 	private:
 		void findDeadGameObjects(OUT std::vector<GameObject*>& gameObjs);

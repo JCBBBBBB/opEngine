@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <map>
+#include <bitset>
 #include <assert.h>
 #include <functional>
 #include <filesystem>

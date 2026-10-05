@@ -10,3 +10,7 @@ Original: eazuooz/YamYam_Engine
    - Collider outlines use the same camera conversion as sprites.
 
 Validation: build the solution, then run Tests/RunTests.ps1.
+
+2. 099e767 - Collision Manager 충돌체 레이어 마스킹 체크 구조 및 충돌 체크 로직
+   - Layer mask and collider pair traversal. Geometry/events follow in step 3.
+   - Checks after object updates, skips self/duplicates, snapshots object lists.

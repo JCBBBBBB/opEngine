@@ -20,6 +20,7 @@
 #include "opSceneManager.h"
 #include "opAnimator.h"
 #include "opBoxCollider2D.h"
+#include "opCollisionManager.h"
 
 namespace op
 {
@@ -35,6 +36,7 @@ namespace op
 
 	void PlayScene::Initialize()
 	{
+        CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Animal, true);
 		// main camera
 		GameObject* camera = object::Instantiate<GameObject>(enums::LayerType::Particle, Vector2(344.0f, 442.0f));
 		Camera* cameraComponent = camera->AddComponent<Camera>();

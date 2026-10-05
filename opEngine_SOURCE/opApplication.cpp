@@ -3,6 +3,7 @@
 #include "opTime.h"
 #include "opSceneManager.h"
 #include "opResources.h"
+#include "opCollisionManager.h"
 
 namespace op
 {
@@ -24,6 +25,7 @@ namespace op
 		
 		Input::Initialize();
 		Time::Initialize();
+		CollisionManager::Initialize();
 		SceneManager::Initialize();
 	}
 
@@ -48,6 +50,9 @@ namespace op
 	void Application::LateUpdate()
 	{
 		SceneManager::LateUpdate();
+        // 이번 프레임 이동이 모두 끝난 위치로 검사한다.
+        CollisionManager::Update();
+        CollisionManager::LateUpdate();
 	}
 
 	// 백버퍼에서 그림 그리고, 프론트버퍼에 복사해서 보여주는 거 반복
@@ -56,6 +61,7 @@ namespace op
 		ClearRenderTarget(); // 백버퍼의 이전 그림을 배경으로 덮기
 
 		Time::Render(m_backHdc); // 백버퍼에 글자 그리기
+		CollisionManager::Render(m_backHdc);
 		SceneManager::Render(m_backHdc); // 현재 씬의 모든 게임 객체 그리기
 		
 		CopyRenderTarget(m_backHdc, m_hdc); // 완성된 백버퍼를 실제 창에 복사

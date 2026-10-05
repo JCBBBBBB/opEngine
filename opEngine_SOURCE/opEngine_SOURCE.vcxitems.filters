@@ -152,4 +152,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opCircleCollider2D.h"><Filter>Component</Filter></ClInclude>
     <ClCompile Include="$(MSBuildThisFileDirectory)opCircleCollider2D.cpp"><Filter>Component</Filter></ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opCollisionManager.h"><Filter>Component</Filter></ClInclude>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opCollisionManager.cpp"><Filter>Component</Filter></ClCompile>
+  </ItemGroup>
 </Project>
