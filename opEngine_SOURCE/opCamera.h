@@ -8,6 +8,11 @@ namespace op
 	{
 	public:
 		Vector2 CalculatePosition(Vector2 pos) { return pos - m_distance; } // 화면에 그릴 위치 계산
+		// 화면 좌표를 게임 공간의 좌표로 변환
+		Vector2 CalculateTilePosition(Vector2 pos)
+		{
+			return pos + m_distance;
+		}
 
 		Camera();
 		~Camera();

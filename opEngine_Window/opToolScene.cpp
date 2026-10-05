@@ -1,3 +1,4 @@
+#include "opCameraScript.h"
 #include "..\\opEngine_SOURCE\\opTransform.h"
 #include <commdlg.h>
 #include <cstdio>
@@ -30,7 +31,6 @@ namespace op
 
 	void ToolScene::Initialize()
 	{
-		// 카메라 중심을 화면 중심과 맞춘다.
 		Vector2 cameraPosition(
 			static_cast<float>(application.GetWidth()) / 2.0f,
 			static_cast<float>(application.GetHeight()) / 2.0f);
@@ -40,19 +40,13 @@ namespace op
 			cameraPosition);
 
 		Camera* cameraComponent = camera->AddComponent<Camera>();
+
+		// 추가: 방향키로 카메라 이동
+		camera->AddComponent<CameraScript>();
+
 		renderer::mainCamera = cameraComponent;
 
-		// Tile 레이어에 타일 한 개 생성
-		Tile* tile = object::Instantiate<Tile>(
-			enums::LayerType::Tile);
-
-		// 원본 시트의 타일 한 칸을 그리는 컴포넌트
-		TilemapRenderer* tileRenderer =
-			tile->AddComponent<TilemapRenderer>();
-
-		tileRenderer->SetTexture(
-			Resources::Find<graphics::Texture>(L"SpringFloor"));
-
+		// 기존의 초기 테스트 타일 생성 부분은 제거한다.
 		Scene::Initialize();
 	}
 
@@ -65,7 +59,6 @@ namespace op
 	{
 		Scene::LateUpdate();
 
-		// 메인 창에서 작업할 때만 입력 처리
 		if (GetForegroundWindow() != application.GetHwnd())
 		{
 			return;
@@ -90,9 +83,22 @@ namespace op
 
 		Vector2 pos = Input::GetMousePosition();
 
-		if (pos.x < 0.0f || pos.y < 0.0f
-			|| pos.x >= static_cast<float>(application.GetWidth())
-			|| pos.y >= static_cast<float>(application.GetHeight()))
+		// 화면 밖 클릭인지 먼저 확인
+		if (pos.x < 0.0f || pos.y < 0.0f)
+		{
+			return;
+		}
+
+		if (!renderer::mainCamera)
+		{
+			return;
+		}
+
+		// 화면 좌표 → 게임 좌표
+		pos = renderer::mainCamera->CalculateTilePosition(pos);
+
+		// 이번 원본에서는 게임 공간의 음수 위치에는 배치하지 않는다.
+		if (pos.x < 0.0f || pos.y < 0.0f)
 		{
 			return;
 		}
@@ -120,9 +126,9 @@ namespace op
 
 		tileRenderer->SetIndex(TilemapRenderer::SelectedIndex);
 
-		tile->SetPosition(indexX, indexY);
+		// 이름 변경 반영
+		tile->SetIndexPosition(indexX, indexY);
 
-		// 추가: 배치한 타일을 저장 목록에 등록
 		m_tiles.push_back(tile);
 	}
 
@@ -130,11 +136,21 @@ namespace op
 	{
 		Scene::Render(hdc);
 
+		if (!renderer::mainCamera)
+		{
+			return;
+		}
+
 		// 세로선
 		for (int i = 0; i < 50; ++i)
 		{
-			const int x = static_cast<int>(
-				TilemapRenderer::TileSize.x * static_cast<float>(i));
+			Vector2 pos(
+				TilemapRenderer::TileSize.x * static_cast<float>(i),
+				0.0f);
+
+			pos = renderer::mainCamera->CalculatePosition(pos);
+
+			const int x = static_cast<int>(pos.x);
 
 			MoveToEx(hdc, x, 0, nullptr);
 			LineTo(hdc, x, 1000);
@@ -143,8 +159,13 @@ namespace op
 		// 가로선
 		for (int i = 0; i < 50; ++i)
 		{
-			const int y = static_cast<int>(
+			Vector2 pos(
+				0.0f,
 				TilemapRenderer::TileSize.y * static_cast<float>(i));
+
+			pos = renderer::mainCamera->CalculatePosition(pos);
+
+			const int y = static_cast<int>(pos.y);
 
 			MoveToEx(hdc, 0, y, nullptr);
 			LineTo(hdc, 1000, y);

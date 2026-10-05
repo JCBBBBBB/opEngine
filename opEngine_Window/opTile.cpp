@@ -24,7 +24,7 @@ namespace op
 		GameObject::Render(hdc);
 	}
 
-	void Tile::SetPosition(int x, int y)
+	void Tile::SetIndexPosition(int x, int y)
 	{
 		Transform* transform = GetComponent<Transform>();
 

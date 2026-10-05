@@ -13,6 +13,6 @@ namespace op
 		void Render(HDC hdc) override;
 		
 		// 픽셀 좌표가 아니라 격자의 열과 행을 받는다.
-		void SetPosition(int x, int y);
+		void SetIndexPosition(int x, int y);
 	};
 }

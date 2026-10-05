@@ -1,3 +1,7 @@
+#include "opTile.h"
+#include "..\\opEngine_SOURCE\\opTilemapRenderer.h"
+#include <cstdio>
+
 #include "opCat.h"
 #include "opCatScript.h"
 
@@ -36,10 +40,85 @@ namespace op
 
 	void PlayScene::Initialize()
 	{
+		// 저장된 타일맵 읽기
+		{
+			FILE* mapFile = nullptr;
+
+			if (_wfopen_s(
+				&mapFile,
+				L"..\\Resources\\Test.tile",
+				L"rb") != 0 || !mapFile)
+			{
+				MessageBoxW(
+					nullptr,
+					L"Resources 폴더에 Test.tile 파일이 없습니다.",
+					L"타일맵 불러오기",
+					MB_OK | MB_ICONWARNING);
+			}
+			else
+			{
+				graphics::Texture* tileTexture =
+					Resources::Find<graphics::Texture>(L"SpringFloor");
+
+				if (tileTexture)
+				{
+					while (true)
+					{
+						int data[4] = {};
+
+						const size_t readBytes =
+							std::fread(data, 1, sizeof(data), mapFile);
+
+						if (readBytes == 0)
+						{
+							if (std::ferror(mapFile))
+							{
+								MessageBoxW(
+									nullptr,
+									L"타일맵을 읽는 중 오류가 발생했습니다.",
+									L"타일맵 불러오기",
+									MB_OK | MB_ICONERROR);
+							}
+
+							break;
+						}
+
+						if (readBytes != sizeof(data))
+						{
+							MessageBoxW(
+								nullptr,
+								L"타일맵의 데이터가 불완전합니다.",
+								L"타일맵 불러오기",
+								MB_OK | MB_ICONERROR);
+							break;
+						}
+
+						Tile* tile = object::Instantiate<Tile>(
+							enums::LayerType::Tile,
+							Vector2(
+								static_cast<float>(data[2]),
+								static_cast<float>(data[3])));
+
+						TilemapRenderer* tileRenderer =
+							tile->AddComponent<TilemapRenderer>();
+
+						tileRenderer->SetTexture(tileTexture);
+
+						tileRenderer->SetIndex(Vector2(
+							static_cast<float>(data[0]),
+							static_cast<float>(data[1])));
+					}
+				}
+
+				std::fclose(mapFile);
+			}
+		}
+
         CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Animal, true);
 		// main camera
-		GameObject* camera = object::Instantiate<GameObject>(enums::LayerType::Particle, Vector2(344.0f, 442.0f));
-		Camera* cameraComponent = camera->AddComponent<Camera>();
+		GameObject* camera = object::Instantiate<GameObject>(
+			enums::LayerType::Particle,
+			Vector2(336.0f, 423.0f));		Camera* cameraComponent = camera->AddComponent<Camera>();
 		renderer::mainCamera = cameraComponent;
 
 		// 플레이어

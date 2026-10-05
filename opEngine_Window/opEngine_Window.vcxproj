@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="opCameraScript.h" />
     <ClInclude Include="opCat.h" />
     <ClInclude Include="opCatScript.h" />
     <ClInclude Include="opLoadResources.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="opToolScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="opCameraScript.cpp" />
     <ClCompile Include="opCat.cpp" />
     <ClCompile Include="opCatScript.cpp" />
     <ClCompile Include="opPlayer.cpp" />

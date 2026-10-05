@@ -6,11 +6,14 @@
 
 namespace op
 {
-	math::Vector2 TilemapRenderer::TileSize = math::Vector2::One;
-	math::Vector2 TilemapRenderer::OriginTileSize = math::Vector2::One;
-	math::Vector2 TilemapRenderer::SelectedIndex =
-		math::Vector2(-1.0f, -1.0f);
+	math::Vector2 TilemapRenderer::TileSize =
+		math::Vector2(48.0f, 48.0f);
 
+	math::Vector2 TilemapRenderer::OriginTileSize =
+		math::Vector2(16.0f, 16.0f);
+
+	math::Vector2 TilemapRenderer::SelectedIndex =
+		math::Vector2::One;
 
 	TilemapRenderer::TilemapRenderer()
 		: Component(enums::ComponentType::SpriteRenderer)

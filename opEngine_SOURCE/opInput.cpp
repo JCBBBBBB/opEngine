@@ -75,13 +75,28 @@ namespace op
 
 	void Input::GetMousePositionByWindow()
 	{
+		// 메인 창 밖이면 사용할 수 없는 좌표로 표시
+		m_mousePosition = math::Vector2(-1.0f, -1.0f);
+
 		POINT mousePos = {};
+		HWND hwnd = application.GetHwnd();
 
-		GetCursorPos(&mousePos);
-		ScreenToClient(application.GetHwnd(), &mousePos);
+		if (!hwnd
+			|| !GetCursorPos(&mousePos)
+			|| !ScreenToClient(hwnd, &mousePos))
+		{
+			return;
+		}
 
-		m_mousePosition.x = static_cast<float>(mousePos.x);
-		m_mousePosition.y = static_cast<float>(mousePos.y);
+		const LONG width = static_cast<LONG>(application.GetWidth());
+		const LONG height = static_cast<LONG>(application.GetHeight());
+
+		if (mousePos.x >= 0 && mousePos.x < width
+			&& mousePos.y >= 0 && mousePos.y < height)
+		{
+			m_mousePosition.x = static_cast<float>(mousePos.x);
+			m_mousePosition.y = static_cast<float>(mousePos.y);
+		}
 	}
 
 }
