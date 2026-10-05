@@ -25,11 +25,14 @@ namespace op
 		{
 			m_size = size;
 		}
-
+		
+		// 화면에 표시되는 타일 한 칸의 크기
+		static math::Vector2 TileSize;
+	
 	private:
 		math::Vector2 m_tileSize;       // 원본 타일 한 칸의 크기
 		graphics::Texture* m_texture;   // 여러 타일이 들어 있는 원본 이미지
 		math::Vector2 m_size;           // 표시 크기의 배율
-		math::Vector2 m_index;          // 원본에서 사용할 타일의 열과 행
+		math::Vector2 m_index;
 	};
 }

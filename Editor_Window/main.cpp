@@ -8,6 +8,9 @@
 #include "..\\opEngine_SOURCE\\opApplication.h"
 #include "..\\opEngine_Window\\opLoadScenes.h"
 #include "..\\opEngine_Window\\opLoadResources.h"
+#include "..\\opEngine_SOURCE\\opResources.h"
+#include "..\\opEngine_SOURCE\\opTexture.h"
+#include "..\\opEngine_Window\\opToolScene.h"
 
 op::Application application;
 
@@ -28,7 +31,6 @@ ATOM MyRegisterClass(
     WNDPROC proc);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK WndTileProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, //프로그램의 인스턴스 핸들
@@ -157,7 +159,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     const UINT width = 672;
     const UINT height = 846;
 
-    // 메인 창 생성
     HWND hWnd = CreateWindowW(
         szWindowClass,
         szTitle,
@@ -176,12 +177,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         return FALSE;
     }
 
-    // 타일용 창 생성
     HWND toolHwnd = CreateWindowW(
         L"TILEWINDOW",
         L"TileWindow",
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT,
+        0,
         0,
         static_cast<int>(width),
         static_cast<int>(height),
@@ -196,82 +196,56 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         return FALSE;
     }
 
-    // Application은 메인 창만 사용한다.
     application.Initialize(hWnd, width, height);
 
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
-    ShowWindow(toolHwnd, nCmdShow);
-    UpdateWindow(toolHwnd);
+    // 타일용 창은 아직 표시하지 않는다.
 
     Gdiplus::GdiplusStartup(&gpToken, &gpsi, nullptr);
 
-    // 리소스를 먼저 읽고, 그 리소스를 사용하는 씬을 생성한다.
     op::LoadResources();
     op::LoadScenes();
 
     srand(static_cast<unsigned int>(GetTickCount()));
 
+    op::graphics::Texture* texture =
+        op::Resources::Find<op::graphics::Texture>(L"SpringFloor");
+
+    if (texture)
+    {
+        // 클라이언트 영역을 원본 이미지 크기로 설정
+        RECT rect = {
+            0,
+            0,
+            static_cast<LONG>(texture->GetWidth()),
+            static_cast<LONG>(texture->GetHeight())
+        };
+
+        // 제목 표시줄과 테두리 크기를 포함한 창 크기 계산
+        AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+        const int toolWidth = rect.right - rect.left;
+        const int toolHeight = rect.bottom - rect.top;
+
+        SetWindowPos(
+            toolHwnd,
+            nullptr,
+            static_cast<int>(width),
+            0,
+            toolWidth,
+            toolHeight,
+            SWP_NOZORDER);
+    }
+
+    ShowWindow(toolHwnd, SW_SHOW);
+    UpdateWindow(toolHwnd);
+
     return TRUE;
 }
 
-LRESULT CALLBACK WndTileProc(
-    HWND hWnd,
-    UINT message,
-    WPARAM wParam,
-    LPARAM lParam)
-{
-    switch (message)
-    {
-    case WM_COMMAND:
-    {
-        int wmId = LOWORD(wParam);
 
-        switch (wmId)
-        {
-        case IDM_ABOUT:
-            DialogBox(
-                hInst,
-                MAKEINTRESOURCE(IDD_ABOUTBOX),
-                hWnd,
-                About);
-            break;
-
-        case IDM_EXIT:
-            DestroyWindow(hWnd);
-            break;
-
-        default:
-            return DefWindowProc(
-                hWnd, message, wParam, lParam);
-        }
-    }
-    break;
-
-    case WM_PAINT:
-    {
-        PAINTSTRUCT ps = {};
-        BeginPaint(hWnd, &ps);
-
-        // 이번 커밋에서는 타일용 창에 아직 이미지를 그리지 않는다.
-
-        EndPaint(hWnd, &ps);
-    }
-    break;
-
-    case WM_DESTROY:
-        // 이번 원본에서는 타일용 창을 닫아도 프로그램이 종료된다.
-        PostQuitMessage(0);
-        break;
-
-    default:
-        return DefWindowProc(
-            hWnd, message, wParam, lParam);
-    }
-
-    return 0;
-}
 
 //
 //  함수: WndProc(HWND, UINT, WPARAM, LPARAM)

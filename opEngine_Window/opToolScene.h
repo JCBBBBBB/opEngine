@@ -19,3 +19,5 @@ namespace op
 		void OnExit() override;
 	};
 }
+
+LRESULT CALLBACK WndTileProc(HWND, UINT, WPARAM, LPARAM);

@@ -6,13 +6,16 @@
 
 namespace op
 {
+	math::Vector2 TilemapRenderer::TileSize = math::Vector2::One;
+
 	TilemapRenderer::TilemapRenderer()
 		: Component(enums::ComponentType::SpriteRenderer)
 		, m_tileSize(16.0f, 16.0f)
 		, m_texture(nullptr)
 		, m_size(3.0f, 3.0f)
-		, m_index(8.0f, 7.0f)
+		, m_index(0.0f, 0.0f)
 	{
+		TileSize = m_tileSize * m_size;
 	}
 
 	TilemapRenderer::~TilemapRenderer()
