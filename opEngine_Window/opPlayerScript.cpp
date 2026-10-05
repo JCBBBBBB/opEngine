@@ -88,21 +88,20 @@ namespace op
 			rigidbody->AddForce(Vector2(-200.0f, 0.0f));
 		}
 
-		// 화면 좌표는 y가 작아질수록 위쪽이다.
-		if (Input::GetKey(KeyCode::W))
+		if (Input::GetKeyDown(KeyCode::W) && rigidbody->IsGround())
 		{
-			rigidbody->AddForce(Vector2(0.0f, -200.0f));
-		}
+			Vector2 velocity = rigidbody->GetVelocity();
 
-		if (Input::GetKey(KeyCode::S))
-		{
-			rigidbody->AddForce(Vector2(0.0f, 200.0f));
+			// 음수 y 속도는 위쪽 이동
+			velocity.y = -500.0f;
+
+			rigidbody->SetVelocity(velocity);
+			rigidbody->SetGround(false);
 		}
 
 		if (Input::GetKeyUp(KeyCode::D)
 			|| Input::GetKeyUp(KeyCode::A)
-			|| Input::GetKeyUp(KeyCode::W)
-			|| Input::GetKeyUp(KeyCode::S))
+			|| Input::GetKeyUp(KeyCode::W))
 		{
 			m_state = State::Idle;
 
@@ -112,6 +111,7 @@ namespace op
 			}
 		}
 	}
+
 	void PlayerScript::Idle()
 	{
 		if (Input::GetKey(KeyCode::LButton))
@@ -177,14 +177,11 @@ namespace op
 			catScript->m_dest = mousePos;
 		}
 
-		if (Input::GetKey(KeyCode::W)
-			|| Input::GetKey(KeyCode::A)
-			|| Input::GetKey(KeyCode::S)
-			|| Input::GetKey(KeyCode::D))
+		if (Input::GetKey(KeyCode::A)
+			|| Input::GetKey(KeyCode::D)
+			|| Input::GetKeyDown(KeyCode::W))
 		{
 			m_state = State::Walk;
-
-			// 걷기 상태로 바뀐 프레임에도 힘을 전달한다.
 			Move();
 		}
 	}
@@ -263,10 +260,6 @@ namespace op
 	}
     void PlayerScript::OnCollisionEnter(Collider* other)
     {
-        // 원본 데모: 플레이어와 충돌한 상대를 (400, 500)으로 이동시킨다.
-        if (other && other->GetOwner())
-            if (auto* transform = other->GetOwner()->GetComponent<Transform>())
-                transform->SetPosition(Vector2(400.0f, 500.0f));
     }
     void PlayerScript::OnCollisionStay(Collider*) {}
     void PlayerScript::OnCollisionExit(Collider*) {}

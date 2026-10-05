@@ -16,7 +16,6 @@ namespace op
 
 		void SetMass(float mass)
 		{
-			// 가속도 계산에서 질량으로 나누므로 양수만 허용
 			if (mass > 0.0f)
 			{
 				m_mass = mass;
@@ -28,13 +27,35 @@ namespace op
 			m_force = force;
 		}
 
-	private:
-		float m_mass;     // 질량
-		float m_friction; // 감속에 사용할 값
+		void SetGround(bool ground)
+		{
+			m_ground = ground;
+		}
 
-		math::Vector2 m_force;        // 적용할 힘
-		math::Vector2 m_acceleration; // 가속도
-		math::Vector2 m_velocity;     // 속도
-		math::Vector2 m_gravity;      // 이번 단계에서는 아직 사용하지 않음
+		bool IsGround() const
+		{
+			return m_ground;
+		}
+
+		void SetVelocity(math::Vector2 velocity)
+		{
+			m_velocity = velocity;
+		}
+
+		math::Vector2 GetVelocity() const
+		{
+			return m_velocity;
+		}
+
+	private:
+		bool m_ground;   // 바닥에 서 있는지
+		float m_mass;
+		float m_friction;
+
+		math::Vector2 m_force;
+		math::Vector2 m_acceleration;
+		math::Vector2 m_velocity;
+		math::Vector2 m_limitedVelocity; // 가로/중력 방향의 최대 속도
+		math::Vector2 m_gravity;
 	};
 }

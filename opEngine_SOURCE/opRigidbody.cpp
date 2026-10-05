@@ -7,12 +7,14 @@ namespace op
 {
 	Rigidbody::Rigidbody()
 		: Component(enums::ComponentType::Rigidbody)
+		, m_ground(false)
 		, m_mass(1.0f)
 		, m_friction(10.0f)
 		, m_force(Vector2::Zero)
 		, m_acceleration(Vector2::Zero)
 		, m_velocity(Vector2::Zero)
-		, m_gravity(Vector2::Zero)
+		, m_limitedVelocity(200.0f, 1000.0f)
+		, m_gravity(0.0f, 800.0f)
 	{
 	}
 
@@ -42,25 +44,62 @@ namespace op
 
 		const float deltaTime = Time::DeltaTime();
 
-		// F = m × a → a = F / m
+		// 힘으로 인한 가속도와 속도 계산
 		m_acceleration = m_force / m_mass;
-
-		// 가속도를 이용해 속도 변경
 		m_velocity += m_acceleration * deltaTime;
 
+		// 중력 방향: (0, 800)을 정규화하면 (0, 1)
+		Vector2 gravityDirection = m_gravity;
+		gravityDirection.normalize();
+
+		if (m_ground)
+		{
+			// 바닥에서는 중력 방향의 속도를 제거한다.
+			const float dot =
+				Vector2::Dot(m_velocity, gravityDirection);
+
+			m_velocity -= gravityDirection * dot;
+		}
+		else
+		{
+			// 공중에서는 아래쪽으로 계속 가속한다.
+			m_velocity += m_gravity * deltaTime;
+		}
+
+		// 속도를 중력 방향과 옆 방향으로 나눈다.
+		const float dot =
+			Vector2::Dot(m_velocity, gravityDirection);
+
+		Vector2 gravityVelocity = gravityDirection * dot;
+		Vector2 sideVelocity = m_velocity - gravityVelocity;
+
+		// 중력 방향 최대 속도 제한
+		if (gravityVelocity.length() > m_limitedVelocity.y)
+		{
+			gravityVelocity.normalize();
+			gravityVelocity *= m_limitedVelocity.y;
+		}
+
+		// 옆 방향 최대 속도 제한
+		if (sideVelocity.length() > m_limitedVelocity.x)
+		{
+			sideVelocity.normalize();
+			sideVelocity *= m_limitedVelocity.x;
+		}
+
+		m_velocity = gravityVelocity + sideVelocity;
+
+		// 원본과 같이 현재 속도의 반대 방향으로 감속
 		if (!(m_velocity == Vector2::Zero))
 		{
-			// 현재 속도의 반대 방향
 			Vector2 friction = -m_velocity;
 
-			// 방향을 길이 1로 만든 후 감속량 계산
 			friction =
 				friction.normalize()
 				* m_friction
 				* m_mass
 				* deltaTime;
 
-			// 감속량이 현재 속도보다 크면 정확히 정지
 			if (m_velocity.length() <= friction.length())
 			{
 				m_velocity = Vector2::Zero;
@@ -71,12 +110,10 @@ namespace op
 			}
 		}
 
-		// 최종 속도로 위치 변경
 		Vector2 pos = transform->GetPosition();
 		pos += m_velocity * deltaTime;
 		transform->SetPosition(pos);
 
-		// 이번 계산에 사용한 힘 제거
 		m_force.clear();
 	}
 

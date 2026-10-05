@@ -27,6 +27,11 @@
     <ClInclude Include="opPlayerScript.h" />
     <ClInclude Include="opCat.h" />
     <ClInclude Include="opCatScript.h" />
+    <ClInclude Include="opCameraScript.h" />
+    <ClInclude Include="opTile.h" />
+    <ClInclude Include="opToolScene.h" />
+    <ClInclude Include="opFloor.h" />
+    <ClInclude Include="opFloorScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayScene.cpp">
@@ -41,5 +46,10 @@
     <ClCompile Include="opPlayerScript.cpp" />
     <ClCompile Include="opCat.cpp" />
     <ClCompile Include="opCatScript.cpp" />
+    <ClCompile Include="opCameraScript.cpp" />
+    <ClCompile Include="opTile.cpp" />
+    <ClCompile Include="opToolScene.cpp" />
+    <ClCompile Include="opFloor.cpp" />
+    <ClCompile Include="opFloorScript.cpp" />
   </ItemGroup>
 </Project>

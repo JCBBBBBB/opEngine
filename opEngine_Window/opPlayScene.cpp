@@ -10,6 +10,9 @@
 #include "opCamera.h"
 #include "opRenderer.h"
 
+#include "opFloor.h"
+#include "opFloorScript.h"
+#include "..\\opEngine_SOURCE\\opBoxCollider2D.h"
 
 #include "opTexture.h"
 #include "opResources.h"
@@ -52,8 +55,11 @@ namespace op
 		// 플레이어
 		m_player = object::Instantiate<Player>(enums::LayerType::Player); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
         object::DontDestroyOnLoad(m_player);
-		CircleCollider2D* collider = m_player->AddComponent<CircleCollider2D>();
+
+		BoxCollider2D* collider = m_player->AddComponent<BoxCollider2D>();
+		collider->SetOffset(Vector2(-50.0f, -50.0f));
         collider->SetOffset(Vector2(-50.0f, -50.0f));
+
         PlayerScript* playerScript = m_player->AddComponent<PlayerScript>(); // 방향키 이동 기능 붙인다
 
 		graphics::Texture* playerTexture = Resources::Find<graphics::Texture>(L"Player"); // LoadResources()에서 Cat으로 등록한 bmp파일 찾음, Resources 목록에서 chicken 찾기
@@ -69,16 +75,13 @@ namespace op
 
 		m_player->AddComponent<Rigidbody>();
 
-        // 원본과 같이 Animal 레이어에 버섯 애니메이션을 사용하는 Cat을 생성한다.
-        Cat* cat = object::Instantiate<Cat>(enums::LayerType::Animal);
-        cat->AddComponent<CatScript>();
-        Animator* catAnimator = cat->AddComponent<Animator>();
-        CircleCollider2D* catCollider = cat->AddComponent<CircleCollider2D>();
-        catCollider->SetOffset(Vector2(-50.0f, -50.0f));
-        catAnimator->CreateAnimationByFolder(L"MushroomIdle", L"..\\Resources\\Mushroom", Vector2::Zero, 0.1f);
-        catAnimator->PlayAnimation(L"MushroomIdle", true);
-        cat->GetComponent<Transform>()->SetPosition(Vector2(200.0f, 200.0f));
-        cat->GetComponent<Transform>()->SetScale(Vector2(1.0f, 1.0f));
+		Floor* floor = object::Instantiate<Floor>(enums::LayerType::Floor, Vector2(100.0f, 600.0f));
+		floor->SetName(L"Floor");
+
+		BoxCollider2D* floorCollider = floor->AddComponent<BoxCollider2D>();
+
+		floorCollider->SetSize(Vector2(3.0f, 1.0f));
+		floor->AddComponent<FloorScript>();
 
         Scene::Initialize();
 	}
@@ -105,12 +108,16 @@ namespace op
 
 	void PlayScene::OnEnter()
 	{
-        Scene::OnEnter();
+		Scene::OnEnter();
 
-		// 이 씬에 들어올 때마다 충돌 검사 설정
 		CollisionManager::CollisionLayerCheck(
 			enums::LayerType::Player,
 			enums::LayerType::Animal,
+			true);
+
+		CollisionManager::CollisionLayerCheck(
+			enums::LayerType::Player,
+			enums::LayerType::Floor,
 			true);
 	}
 

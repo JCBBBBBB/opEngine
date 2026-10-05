@@ -22,6 +22,7 @@ namespace op::enums
 		Tile,
 		Animal,
 		Player,
+		Floor,
 		Particle,
 		Max = 16,
 	};

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "opEntity.h"
 #include "CommonInclude.h"
 #include "opComponent.h"
 
@@ -12,7 +13,7 @@ namespace op
 {
 
 	class Scene;
-	class GameObject
+	class GameObject : public Entity
 	{
 	public:
 		friend void object::Destroy(GameObject* gameObject);
