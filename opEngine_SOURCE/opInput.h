@@ -35,10 +35,25 @@ namespace op
 		static void Initialize();
 		static void Update();
 
-		static bool GetKeyDown(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Down; }
-		static bool GetKeyUp(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Up; }
-		static bool GetKey(KeyCode code) { return m_keys[(UINT)code].keyState == KeyState::Pressed; }
-		static math::Vector2 GetMousePosition() { return m_mousePosition; }
+		__forceinline static bool GetKeyDown(KeyCode code)
+		{
+			return m_keys[(UINT)code].keyState == KeyState::Down;
+		}
+
+		__forceinline static bool GetKeyUp(KeyCode code)
+		{
+			return m_keys[(UINT)code].keyState == KeyState::Up;
+		}
+
+		__forceinline static bool GetKey(KeyCode code)
+		{
+			return m_keys[(UINT)code].keyState == KeyState::Pressed;
+		}
+
+		__forceinline static math::Vector2 GetMousePosition()
+		{
+			return m_mousePosition;
+		}
 	
 	private:
 		static void GetMousePositionByWindow();

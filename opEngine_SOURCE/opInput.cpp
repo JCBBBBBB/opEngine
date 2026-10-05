@@ -39,6 +39,8 @@ namespace op
 		아니오			아니오		None*/
 	void Input::Update()
 	{
+		GetMousePositionByWindow();
+
 		for (size_t i = 0; i < m_keys.size(); i++)
 		{
 			// 키가 눌렸다

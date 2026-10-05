@@ -51,21 +51,9 @@ namespace op
 		playerAnimator->PlayAnimation(L"Idle", false); // 처음에는 대기 애니메이션
 		playerAnimator->GetCompleteEvent(L"FrontGiveWater") = std::bind(&PlayerScript::AttackEffect, playerScript);
 
-		m_player->GetComponent<Transform>()->SetPosition(Vector2(100.0f, 100.0f));
+		m_player->GetComponent<Transform>()->SetPosition(Vector2(300.0f, 250.0f));
 		m_player->GetComponent<Transform>()->SetScale(Vector2(0.5f, 0.5f));
 
-		// 고양이
-		Cat* cat = object::Instantiate<Cat>(enums::LayerType::Animal);
-		cat->AddComponent<CatScript>();
-
-		//cameraComponent->SetTarget(cat);
-
-		graphics::Texture* catTexture = Resources::Find<graphics::Texture>(L"Cat");
-		Animator* catAnimator = cat->AddComponent<Animator>();
-		catAnimator->CreateAnimationByFolder(L"MushroomIdle", L"..\\Resources\\Mushroom", Vector2::Zero, 0.1f);
-		catAnimator->PlayAnimation(L"MushroomIdle", true);
-		cat->GetComponent<Transform>()->SetPosition(Vector2(200.0f, 200.0f));
-		cat->GetComponent<Transform>()->SetScale(Vector2(2.0f, 2.0f));
 
 		Scene::Initialize();
 	}

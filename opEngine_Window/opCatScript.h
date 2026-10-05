@@ -32,7 +32,12 @@ namespace op
 		void Update() override;
 		void LateUpdate() override;
 		void Render(HDC hdc) override;
+		void SetPlayer(GameObject* player)
+		{
+			m_player = player;
+		}
 
+		Vector2 m_dest;
 	private:
 		void SitDown();
 		void Move();
@@ -47,5 +52,7 @@ namespace op
 		Direction m_direction; // 선택한 이동 방향
 		float m_time; // 현재 행동에서 누적한 시간
 		float m_deathTime;
+		GameObject* m_player;
+		float m_radian;
 	};
 }

@@ -8,7 +8,14 @@
 
 namespace op
 {
-	CatScript::CatScript() : m_state(CatScript::State::SitDown), m_animator(nullptr), m_time(0.0f), m_deathTime(0.0f)
+	CatScript::CatScript() :m_dest(Vector2::Zero)
+		, m_state(State::SitDown)
+		, m_animator(nullptr)
+		, m_direction(Direction::Down)
+		, m_time(0.0f)
+		, m_deathTime(0.0f)
+		, m_player(nullptr)
+		, m_radian(0.0f)
 	{
 	}
 
@@ -26,7 +33,7 @@ namespace op
 
 		if (m_deathTime > 6.0f)
 		{
-			object::Destroy(GetOwner());
+			//object::Destroy(GetOwner());
 		}
 
 		if (m_animator == nullptr)
@@ -69,15 +76,37 @@ namespace op
 	void CatScript::SitDown()
 	{
 		m_time += Time::DeltaTime();
-		if (m_time > 3.0f)
-		{
-			m_state = CatScript::State::Walk;
-			int direction = (rand() % 4);
 
-			m_direction = (Direction)direction;
-			PlayWalkAnimationByDirection(m_direction);
-			m_time = 0.0f;
+		if (m_time > 2.0f)
+		{
+			//object::Destroy(GetOwner());
 		}
+
+		Transform* transform =
+			GetOwner()->GetComponent<Transform>();
+
+		Vector2 pos = transform->GetPosition();
+
+		// 플레이어 위치에서 목적지로 향하는 벡터
+		Transform* playerTransform =
+			m_player->GetComponent<Transform>();
+
+		Vector2 dest =
+			m_dest - playerTransform->GetPosition();
+
+		dest.normalize();
+
+		// 오른쪽 방향과의 내적으로 각도 계산
+		float rotDegree =
+			Vector2::Dot(dest, Vector2::Right);
+
+		rotDegree = acosf(rotDegree);
+		rotDegree = math::ConvertDegree(rotDegree);
+
+		// 계산한 방향으로 이동
+		pos += dest * (100.0f * Time::DeltaTime());
+
+		transform->SetPosition(pos);
 	}
 
 	void CatScript::Move()

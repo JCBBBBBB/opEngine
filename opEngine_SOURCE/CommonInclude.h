@@ -8,10 +8,9 @@
 #include <assert.h>
 #include <functional>
 #include <filesystem>
-#include <math.h>
 
-#include "opMath.h"
 #include "opEnums.h"
+#include "opMath.h"
 #include <mmsystem.h>
 #include <dinput.h>
 #pragma comment(lib, "Msimg32.lib")
