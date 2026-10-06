@@ -83,29 +83,35 @@ namespace op
 
 		m_player->AddComponent<Rigidbody>();
 
+		// 픽셀 맵을 월드 좌표 (0, 0)에 배치한다.
 		Floor* floor = object::Instantiate<Floor>(
 			enums::LayerType::Floor,
-			Vector2(100.0f, 600.0f));
+			Vector2(0.0f, 0.0f)
+		);
 
 		floor->SetName(L"Floor");
 
-		// 바닥에 소리 재생 컴포넌트 추가
+		// 화면에 픽셀 맵을 그리는 컴포넌트
+		SpriteRenderer* floorSpriteRenderer =
+			floor->AddComponent<SpriteRenderer>();
+
+		graphics::Texture* pixelMapTexture =
+			Resources::Find<graphics::Texture>(L"PixelMap");
+
+		floorSpriteRenderer->SetTexture(pixelMapTexture);
+
+		// 플레이어도 같은 이미지로 발밑의 색을 검사한다.
+		playerScript->SetPixelMapTexture(pixelMapTexture);
+
+		// 원본대로 바닥의 오디오 컴포넌트와 클립 연결은 유지한다.
 		AudioSource* audioSource =
 			floor->AddComponent<AudioSource>();
 
-		BoxCollider2D* floorCollider =
-			floor->AddComponent<BoxCollider2D>();
-
-		floorCollider->SetSize(Vector2(3.0f, 1.0f));
-
-		floor->AddComponent<FloorScript>();
-
-		// 소리 파일을 읽어 Resources에 등록
 		AudioClip* audioClip = Resources::Load<AudioClip>(
 			L"BGSound",
-			L"..\\Resources\\Sound\\smw_bonus_game_end.wav");
+			L"..\\Resources\\Sound\\smw_bonus_game_end.wav"
+		);
 
-		// 바닥의 AudioSource에 소리 연결
 		audioSource->SetClip(audioClip);
 
 		// 지금은 재생하지 않고 착지할 때 재생

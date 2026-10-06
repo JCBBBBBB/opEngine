@@ -1,5 +1,6 @@
 #include "..\\opEngine_SOURCE\\opRigidbody.h"
 
+#include "opRigidbody.h"
 #include "opUIManager.h"
 #include "opPlayerScript.h"
 #include "opCollider.h"
@@ -16,7 +17,7 @@
 
 namespace op
 {
-	PlayerScript::PlayerScript() : m_state(PlayerScript::State::Idle), m_animator(nullptr)
+	PlayerScript::PlayerScript() : m_state(PlayerScript::State::Idle), m_animator(nullptr), m_pixelMap(nullptr)
 	{
 	}
 
@@ -30,33 +31,77 @@ namespace op
 
 	void PlayerScript::Update()
 	{
-		if (m_animator == nullptr)
+		GameObject* owner = GetOwner();
+		if (owner == nullptr)
 		{
-			m_animator = GetOwner()->GetComponent<Animator>();
+			return;
 		}
 
+		if (m_animator == nullptr)
+		{
+			m_animator = owner->GetComponent<Animator>();
+		}
+
+		// 기존 플레이어 행동 처리
 		switch (m_state)
 		{
-		case op::PlayerScript::State::Idle:
+		case State::Idle:
 			Idle();
 			break;
 
-		case op::PlayerScript::State::Walk:
+		case State::Walk:
 			Move();
 			break;
 
-		case op::PlayerScript::State::Sleep:
+		case State::Sleep:
 			break;
 
-		case op::PlayerScript::State::GiveWater:
+		case State::GiveWater:
 			GiveWater();
 			break;
 
-		case op::PlayerScript::State::Attack:
+		case State::Attack:
 			break;
 
 		default:
 			break;
+		}
+
+		// 여기부터 이번 커밋에서 추가하는 픽셀 충돌 처리
+		if (m_pixelMap == nullptr)
+		{
+			return;
+		}
+
+		Transform* transform = owner->GetComponent<Transform>();
+		Rigidbody* playerRb = owner->GetComponent<Rigidbody>();
+
+		if (transform == nullptr || playerRb == nullptr)
+		{
+			return;
+		}
+
+		Vector2 pos = transform->GetPosition();
+
+		// 플레이어 중심보다 아래쪽 50픽셀, 즉 발밑의 색을 읽는다.
+		COLORREF color = m_pixelMap->GetPixel(
+			static_cast<int>(pos.x),
+			static_cast<int>(pos.y + 50.0f)
+		);
+
+		if (color == RGB(255, 0, 0))
+		{
+			// 발밑이 빨간색이면 바닥에 닿았다고 판단한다.
+			playerRb->SetGround(true);
+
+			// 바닥에 들어간 플레이어를 위로 1픽셀 이동시킨다.
+			pos.y -= 1.0f;
+			transform->SetPosition(pos);
+		}
+		else
+		{
+			// 빨간색이 아니면 공중에 있다고 판단한다.
+			playerRb->SetGround(false);
 		}
 	}
 

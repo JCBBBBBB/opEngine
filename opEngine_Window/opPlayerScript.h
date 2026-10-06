@@ -1,6 +1,6 @@
 #pragma once
 #include "..\\opEngine_SOURCE\\opScript.h"
-
+#include "..\\opEngine_SOURCE\\opTexture.h"
 
 namespace op
 {
@@ -29,6 +29,11 @@ namespace op
         void OnCollisionStay(Collider* other) override;
         void OnCollisionExit(Collider* other) override;
 
+		// 충돌 검사에 사용할 이미지를 연결한다.
+		void SetPixelMapTexture(graphics::Texture* texture)
+		{
+			m_pixelMap = texture;
+		}
 	private:
 		void Idle();
 		void Move();
@@ -37,5 +42,7 @@ namespace op
 	private:
 		State m_state;
 		class Animator* m_animator;
+
+		graphics::Texture* m_pixelMap; // 발밑의 색을 검사할 이미지
 	};
 }

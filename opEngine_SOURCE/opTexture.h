@@ -19,6 +19,7 @@ namespace op::graphics
 		~Texture();
 
 		virtual HRESULT Load(const std::wstring& path) override;
+		COLORREF GetPixel(int x, int y);
 		static Texture* Create(const std::wstring& name, UINT width, UINT height);
 
 		void SetWidth(UINT width)

@@ -65,6 +65,21 @@ namespace op::graphics
 		return S_OK;
 	}
 
+	COLORREF Texture::GetPixel(int x, int y)
+	{
+		// 이미지가 없거나 이미지 범위 밖이면 유효하지 않은 색을 반환한다.
+		if (m_hdc == nullptr
+			|| x < 0 || y < 0
+			|| x >= static_cast<int>(m_width)
+			|| y >= static_cast<int>(m_height))
+		{
+			return CLR_INVALID;
+		}
+
+		// 원본 이미지가 선택된 DC에서 픽셀 색을 읽는다.
+		return ::GetPixel(m_hdc, x, y);
+	}
+
 	Texture* Texture::Create(
 		const std::wstring& name,
 		UINT width,
