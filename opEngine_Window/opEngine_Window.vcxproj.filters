@@ -32,6 +32,7 @@
     <ClInclude Include="opToolScene.h" />
     <ClInclude Include="opFloor.h" />
     <ClInclude Include="opFloorScript.h" />
+    <ClInclude Include="opPaddleScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayScene.cpp">
@@ -51,5 +52,6 @@
     <ClCompile Include="opToolScene.cpp" />
     <ClCompile Include="opFloor.cpp" />
     <ClCompile Include="opFloorScript.cpp" />
+    <ClCompile Include="opPaddleScript.cpp" />
   </ItemGroup>
 </Project>

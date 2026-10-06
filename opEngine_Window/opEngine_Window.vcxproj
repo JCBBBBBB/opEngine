@@ -151,6 +151,7 @@
     <ClInclude Include="opFloorScript.h" />
     <ClInclude Include="opLoadResources.h" />
     <ClInclude Include="opLoadScenes.h" />
+    <ClInclude Include="opPaddleScript.h" />
     <ClInclude Include="opPlayer.h" />
     <ClInclude Include="opPlayerScript.h" />
     <ClInclude Include="opPlayScene.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="opCatScript.cpp" />
     <ClCompile Include="opFloor.cpp" />
     <ClCompile Include="opFloorScript.cpp" />
+    <ClCompile Include="opPaddleScript.cpp" />
     <ClCompile Include="opPlayer.cpp" />
     <ClCompile Include="opPlayerScript.cpp" />
     <ClCompile Include="opPlayScene.cpp" />

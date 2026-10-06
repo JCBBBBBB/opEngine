@@ -1,5 +1,6 @@
 #pragma once
 #include "..\opEngine_SOURCE\\opScene.h"
+#include "..\opEngine_SOURCE\\opGameObject.h"
 
 
 namespace op
@@ -19,6 +20,6 @@ namespace op
 		void OnExit() override;
 
 	private:
-		class Player* m_player;
+		GameObject* m_paddle;
 	};
 }
