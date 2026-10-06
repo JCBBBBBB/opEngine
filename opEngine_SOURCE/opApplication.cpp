@@ -1,3 +1,4 @@
+#include "opUIManager.h"
 #include "opApplication.h"
 #include "opInput.h"
 #include "opTime.h"
@@ -22,10 +23,12 @@ namespace op
 		AdjustWindow(hwnd, width, height);
 		CreateBuffer(width, height);
 
-		
 		Input::Initialize();
 		Time::Initialize();
+
+		Fmod::Initialize();
 		CollisionManager::Initialize();
+		UIManager::Initialize();
 		SceneManager::Initialize();
 	}
 
@@ -41,36 +44,45 @@ namespace op
 
 	void Application::Update()
 	{
-		Input::Update(); // 입력 먼저 갱신한 다음 플레이어 갱신해야 함
+		Input::Update();
 		Time::Update();
-		
+
+		UIManager::Update();
 		SceneManager::Update();
 	}
 
 	void Application::LateUpdate()
 	{
+		UIManager::LateUpdate();
 		SceneManager::LateUpdate();
-        // 이번 프레임 이동이 모두 끝난 위치로 검사한다.
-        CollisionManager::Update();
-        CollisionManager::LateUpdate();
+
+		CollisionManager::Update();
+		CollisionManager::LateUpdate();
+
+		// 위치 전달과 충돌에 따른 재생 요청 후 FMOD 갱신
+		Fmod::Update();
 	}
 
-	// 백버퍼에서 그림 그리고, 프론트버퍼에 복사해서 보여주는 거 반복
 	void Application::Render()
 	{
-		ClearRenderTarget(); // 백버퍼의 이전 그림을 배경으로 덮기
+		ClearRenderTarget();
 
-		Time::Render(m_backHdc); // 백버퍼에 글자 그리기
+		Time::Render(m_backHdc);
 		CollisionManager::Render(m_backHdc);
-		SceneManager::Render(m_backHdc); // 현재 씬의 모든 게임 객체 그리기
-		
-		CopyRenderTarget(m_backHdc, m_hdc); // 완성된 백버퍼를 실제 창에 복사
+
+		UIManager::Render(m_backHdc);
+		SceneManager::Render(m_backHdc);
+
+		CopyRenderTarget(m_backHdc, m_hdc);
 	}
 
 	void Application::Release()
 	{
-        SceneManager::Release();
-        Resources::Release();
+		SceneManager::Release();
+		UIManager::Release();
+		Resources::Release();
+		Fmod::Release();
+
         if (m_backHdc)
         {
             SelectObject(m_backHdc, m_oldBackBitmap);

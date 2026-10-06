@@ -1,5 +1,6 @@
 #include "..\\opEngine_SOURCE\\opRigidbody.h"
 
+#include "opUIManager.h"
 #include "opPlayerScript.h"
 #include "opCollider.h"
 #include "opInput.h"
@@ -183,6 +184,16 @@ namespace op
 		{
 			m_state = State::Walk;
 			Move();
+		}
+
+		if (Input::GetKeyDown(KeyCode::I))
+		{
+			UIManager::Push(enums::UIType::HpBar);
+		}
+
+		if (Input::GetKeyDown(KeyCode::O))
+		{
+			UIManager::Pop(enums::UIType::HpBar);
 		}
 	}
 

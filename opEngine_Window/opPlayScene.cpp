@@ -1,3 +1,9 @@
+
+#include "opAudioClip.h"
+#include "opAudioListener.h"
+#include "opAudioSource.h"
+#include "opUIManager.h"
+
 #include "..\\opEngine_SOURCE\\opRigidbody.h"
 #include "opTile.h"
 #include "..\\opEngine_SOURCE\\opTilemapRenderer.h"
@@ -55,6 +61,8 @@ namespace op
 		// 플레이어
 		m_player = object::Instantiate<Player>(enums::LayerType::Player); // 플레이어 생성, 생성자에서 Transform이 자동으로 붙음
         object::DontDestroyOnLoad(m_player);
+		// 플레이어를 소리를 듣는 쪽으로 등록
+		m_player->AddComponent<AudioListener>();
 
 		BoxCollider2D* collider = m_player->AddComponent<BoxCollider2D>();
 		collider->SetOffset(Vector2(-50.0f, -50.0f));
@@ -75,15 +83,33 @@ namespace op
 
 		m_player->AddComponent<Rigidbody>();
 
-		Floor* floor = object::Instantiate<Floor>(enums::LayerType::Floor, Vector2(100.0f, 600.0f));
+		Floor* floor = object::Instantiate<Floor>(
+			enums::LayerType::Floor,
+			Vector2(100.0f, 600.0f));
+
 		floor->SetName(L"Floor");
 
-		BoxCollider2D* floorCollider = floor->AddComponent<BoxCollider2D>();
+		// 바닥에 소리 재생 컴포넌트 추가
+		AudioSource* audioSource =
+			floor->AddComponent<AudioSource>();
+
+		BoxCollider2D* floorCollider =
+			floor->AddComponent<BoxCollider2D>();
 
 		floorCollider->SetSize(Vector2(3.0f, 1.0f));
+
 		floor->AddComponent<FloorScript>();
 
-        Scene::Initialize();
+		// 소리 파일을 읽어 Resources에 등록
+		AudioClip* audioClip = Resources::Load<AudioClip>(
+			L"BGSound",
+			L"..\\Resources\\Sound\\smw_bonus_game_end.wav");
+
+		// 바닥의 AudioSource에 소리 연결
+		audioSource->SetClip(audioClip);
+
+		// 지금은 재생하지 않고 착지할 때 재생
+		Scene::Initialize();
 	}
 
 	void PlayScene::Update()
@@ -119,10 +145,14 @@ namespace op
 			enums::LayerType::Player,
 			enums::LayerType::Floor,
 			true);
+
+		UIManager::Push(enums::UIType::Button);
 	}
 
 	void PlayScene::OnExit()
 	{
-        Scene::OnExit();
+		UIManager::Pop(enums::UIType::Button);
+
+		Scene::OnExit();
 	}
 }

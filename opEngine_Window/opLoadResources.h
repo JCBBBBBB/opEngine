@@ -8,9 +8,14 @@ namespace op
 	void LoadResources()
 	{
 		Resources::Load<graphics::Texture>(L"Cat", L"..\\Resources\\chickenAlpha.bmp");
-		Resources::Load<graphics::Texture>(L"Player", L"..\\Resources\\Player.bmp");
+		Resources::Load<graphics::Texture>(
+			L"Player",
+			L"C:\\Workspace\\opEngine\\Resources\\Player.bmp");
 		Resources::Load<graphics::Texture>(
 			L"SpringFloor", L"..\\Resources\\SpringFloor.bmp");
+		Resources::Load<graphics::Texture>(
+			L"HPBAR",
+			L"..\\Resources\\HPBAR.bmp");
 
 	}
 }

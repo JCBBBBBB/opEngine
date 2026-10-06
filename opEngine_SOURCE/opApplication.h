@@ -1,5 +1,6 @@
 #pragma once
 
+#include "opFmod.h"
 #include "opGameObject.h"
 
 namespace op

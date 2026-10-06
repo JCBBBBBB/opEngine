@@ -31,8 +31,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opEntity.cpp">
       <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)opLayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opResource.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
@@ -42,7 +40,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opTexture.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opCamera.cpp">
       <Filter>Component</Filter>
     </ClCompile>
@@ -58,10 +55,47 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opAnimator.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)opDestroy.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)opTilemapRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opRigidbody.cpp">
       <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIBase.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIButton.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIHUD.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIManager.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opTilemapRenderer.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opLayer.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opMath.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opRenderer.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opDestroy.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opAudioClip.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opAudioListener.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opAudioSource.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)opFmod.cpp">
+      <Filter>Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,9 +132,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opApplication.h">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)opLayer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)opEnums.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opResources.h">
       <Filter>Resource</Filter>
     </ClInclude>
@@ -110,7 +141,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opTexture.h">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opCamera.h">
       <Filter>Component</Filter>
     </ClInclude>
@@ -126,10 +156,50 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opAnimator.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)opDestroy.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)opTilemapRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opRigidbody.h">
       <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIBase.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIButton.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIHUD.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opTilemapRenderer.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opLayer.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opMath.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opRenderer.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opEnums.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opDestroy.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opAudioClip.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opAudioListener.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opAudioSource.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)opFmod.h">
+      <Filter>Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +220,12 @@
     </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{20fdc200-f3d9-48ad-ab05-29a1e7a6da9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{34910e3a-9bd2-434f-b80b-2401942fa73c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{adb4480c-5871-4a35-8b49-fd6fefcd37e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

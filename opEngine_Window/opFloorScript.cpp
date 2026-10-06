@@ -1,5 +1,6 @@
 #include "opFloorScript.h"
 
+#include "..\\opEngine_SOURCE\\opAudioSource.h"
 #include "..\\opEngine_SOURCE\\opCollider.h"
 #include "..\\opEngine_SOURCE\\opGameObject.h"
 #include "..\\opEngine_SOURCE\\opTransform.h"
@@ -87,6 +88,20 @@ namespace op
 
 		velocity.y = 0.0f;
 		playerRb->SetVelocity(velocity);
+
+		// 공중 상태에서 바닥에 착지했을 때만 재생 시작
+		if (!playerRb->IsGround())
+		{
+			AudioSource* audioSource =
+				GetOwner()->GetComponent<AudioSource>();
+
+			if (audioSource)
+			{
+				audioSource->SetLoop(true);
+				audioSource->Play();
+			}
+		}
+
 		playerRb->SetGround(true);
 	}
 

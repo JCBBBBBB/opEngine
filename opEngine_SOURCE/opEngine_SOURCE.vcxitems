@@ -18,11 +18,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opAnimation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opAnimator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opApplication.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opAudioClip.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opAudioListener.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opAudioSource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opDestroy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEntity.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opEnums.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opFmod.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opGameObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opInput.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opLayer.h" />
@@ -40,15 +44,23 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)opTilemapRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)opTransform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIButton.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIHUD.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)opUIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)opAnimation.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opAnimator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opApplication.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opAudioClip.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opAudioListener.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opAudioSource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opDestroy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opEntity.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opFmod.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opGameObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opInput.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opLayer.cpp" />
@@ -66,6 +78,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)opTilemapRenderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)opTransform.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIButton.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIHUD.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)opUIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)opCollider.h" />

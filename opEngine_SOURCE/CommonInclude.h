@@ -11,6 +11,9 @@
 #include <assert.h>
 #include <functional>
 #include <filesystem>
+#include <stack>
+#include <queue>
+
 
 #include "opEnums.h"
 #include "opMath.h"

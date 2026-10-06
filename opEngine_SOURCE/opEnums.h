@@ -11,6 +11,8 @@ namespace op::enums
 		SpriteRenderer,
 		Animator,
 		Camera,
+		AudioListener,
+		AudioSource,
 		End,
 	};
 
@@ -40,6 +42,13 @@ namespace op::enums
 		AudioClip, // 소리
 		Animation,
 		Prefab, // 재사용할 오브젝트
+		End,
+	};
+
+	enum class UIType
+	{
+		HpBar,
+		Button,
 		End,
 	};
 }
