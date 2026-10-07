@@ -8,12 +8,13 @@
 #include "../opEngine_SOURCE/opTransform.h"
 #include "../opEngine_SOURCE/opCamera.h"
 #include "../opEngine_SOURCE/opRenderer.h"
+#include "../opEngine_SOURCE/opCollider.h"
 
 extern op::Application application;
 
 namespace op
 {
-	BallScript::BallScript() : m_paddle(nullptr), m_velocity(math::Vector2::Zero), m_radius(8.0f), m_isLaunched(false)
+	BallScript::BallScript() : m_paddle(nullptr), m_velocity(math::Vector2::Zero), m_radius(8.0f), m_isLaunched(false), m_previousPosition(math::Vector2::Zero)
 	{
 
 	}
@@ -66,6 +67,7 @@ namespace op
 		// 여기 부터는 이미 발사된 공만 실행됨
 
 		Vector2 ballPosition = ballTransform->GetPosition(); // 공의 현재 위치
+		m_previousPosition = ballPosition;
 		ballPosition += m_velocity * Time::DeltaTime();// 위치를 속도 * 델타타임 만큼 이동
 
 		float width = static_cast<float>(application.GetWidth());
@@ -149,6 +151,65 @@ namespace op
 		m_velocity = math::Vector2::Zero; // 이동 속도 0으로 변경
 
 		FollowPaddle(); // 즉시 막대 위로 이동
+	}
+
+	void BallScript::OnCollisionEnter(Collider* other)
+	{
+		// 발사 전에는 반사하지 않는다
+		if (m_isLaunched == false || other == nullptr)
+		{
+			return;
+		}
+
+		// 부딪힌 상대가 연결된 막대인지 확인한다
+		if (m_paddle == nullptr || other->GetOwner() != m_paddle)
+		{
+			return;
+		}
+
+		// 올라가는 공을 아래로 반사하지 않는다
+		if (m_velocity.y <= 0.0f)
+		{
+			return;
+		}
+
+		GameObject* owner = GetOwner();
+		if (owner == nullptr)
+		{
+			return;
+		}
+
+		Transform* ballTransform = owner->GetComponent<Transform>();
+		Transform* paddleTransform = m_paddle->GetComponent<Transform>();
+
+		if (ballTransform == nullptr || paddleTransform == nullptr)
+		{
+			return;
+		}
+
+		Vector2 paddlePosition = paddleTransform->GetPosition();
+
+		// 이동 전 공의 아래쪽 끝이 막대 윗면보다 아래였다면
+		// 옆이나 아래에서 부딪힌 것으로 보고 받아치지 않는다
+		if (m_previousPosition.y + m_radius > paddlePosition.y + 0.1f)
+		{
+			return;
+		}
+
+		Vector2 ballPosition = ballTransform->GetPosition();
+
+		// 충돌해서 막대 안으로 조금 들어간 공을 막대 바로 위로 꺼내는 코드
+		ballPosition.y = paddlePosition.y - m_radius - 0.1f;
+		ballTransform->SetPosition(ballPosition);
+
+		// 아래로 내려가던 공을 위로 보낸다
+		m_velocity.y = -m_velocity.y;
+
+	}
+
+	void BallScript::OnCollisionStay(Collider* other)
+	{
+		OnCollisionEnter(other);
 	}
 
 	void BallScript::FollowPaddle()

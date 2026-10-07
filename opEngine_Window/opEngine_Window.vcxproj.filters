@@ -7,6 +7,9 @@
     <Filter Include="Content">
       <UniqueIdentifier>{75519166-2bd7-4ded-882d-9c81aeb7e526}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Basic">
+      <UniqueIdentifier>{61cb2d86-b0a7-4d6e-b92a-d913a4dfc64f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opLoadScenes.h">
@@ -24,19 +27,35 @@
     <ClInclude Include="opLoadResources.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="opPlayerScript.h" />
-    <ClInclude Include="opCat.h" />
-    <ClInclude Include="opCatScript.h" />
-    <ClInclude Include="opCameraScript.h" />
-    <ClInclude Include="opTile.h" />
-    <ClInclude Include="opToolScene.h" />
-    <ClInclude Include="opFloor.h" />
-    <ClInclude Include="opFloorScript.h" />
     <ClInclude Include="opPaddleScript.h">
       <Filter>Content</Filter>
     </ClInclude>
     <ClInclude Include="opBallScript.h">
       <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="opCameraScript.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="opCat.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="opCatScript.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="opFloor.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="opFloorScript.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="opPlayerScript.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="opTile.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="opToolScene.h">
+      <Filter>Basic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,19 +68,35 @@
     <ClCompile Include="opTitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="opPlayerScript.cpp" />
-    <ClCompile Include="opCat.cpp" />
-    <ClCompile Include="opCatScript.cpp" />
-    <ClCompile Include="opCameraScript.cpp" />
-    <ClCompile Include="opTile.cpp" />
-    <ClCompile Include="opToolScene.cpp" />
-    <ClCompile Include="opFloor.cpp" />
-    <ClCompile Include="opFloorScript.cpp" />
     <ClCompile Include="opPaddleScript.cpp">
       <Filter>Content</Filter>
     </ClCompile>
     <ClCompile Include="opBallScript.cpp">
       <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="opCameraScript.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opCat.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opCatScript.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opFloor.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opFloorScript.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opPlayerScript.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opTile.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opToolScene.cpp">
+      <Filter>Basic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

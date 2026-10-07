@@ -1,6 +1,8 @@
 #pragma once
 #include "..\opEngine_SOURCE\\opScene.h"
 #include "..\opEngine_SOURCE\\opGameObject.h"
+#include "../opEngine_SOURCE/opBoxCollider2D.h"
+#include "../opEngine_SOURCE/opCollisionManager.h"
 #include "opBallScript.h"
 
 namespace op
