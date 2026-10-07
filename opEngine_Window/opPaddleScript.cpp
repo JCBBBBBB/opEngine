@@ -32,13 +32,13 @@ namespace op
 			return;
 		}
 
-		Transform* transform = owner->GetComponent<Transform>();
-		if (transform == nullptr)
+		Transform* paddleTransform = owner->GetComponent<Transform>();
+		if (paddleTransform == nullptr)
 		{
 			return;
 		}
 
-		Vector2 pos = transform->GetPosition();
+		Vector2 paddlePosition = paddleTransform->GetPosition();
 
 		bool left = Input::GetKeyDown(KeyCode::A) || Input::GetKey(KeyCode::A) || Input::GetKeyDown(KeyCode::Left) || Input::GetKey(KeyCode::Left);
 		bool right = Input::GetKeyDown(KeyCode::D) || Input::GetKey(KeyCode::D) || Input::GetKeyDown(KeyCode::Right) || Input::GetKey(KeyCode::Right);
@@ -55,26 +55,26 @@ namespace op
 			direction += 1.0f;
 		}
 
-		pos.x += direction * m_speed * Time::DeltaTime();
+		paddlePosition.x += direction * m_speed * Time::DeltaTime();
 		
-		float maxX = static_cast<float>(application.GetWidth()) - m_size.x;
+		float maxX = static_cast<float>(application.GetWidth()) - m_size.x; // 막대 왼쪽 위의 x가 가질 수 있는 최댓값
 
-		if (maxX < 0.0f)
+		if (maxX < 0.0f) // 화면이 막대보다 작다면 최댓값을 0으로 처리
 		{
 			maxX = 0.0f;
 		}
 
-		if (pos.x < 0.0f)
+		if (paddlePosition.x < 0.0f) // 막대가 왼쪽 화면 밖으로 나갔다면 0
 		{
-			pos.x = 0.0f;
+			paddlePosition.x = 0.0f;
 		}
 
-		else if (pos.x > maxX)
+		else if (paddlePosition.x > maxX)
 		{
-			pos.x = maxX;
+			paddlePosition.x = maxX;
 		}
 
-		transform->SetPosition(pos);
+		paddleTransform->SetPosition(paddlePosition);
 	}
 
 	void PaddleScript::Render(HDC hdc)
@@ -85,13 +85,13 @@ namespace op
 			return;
 		}
 
-		Transform* transform = owner->GetComponent<Transform>();
-		if (transform == nullptr)
+		Transform* paddleTransform = owner->GetComponent<Transform>();
+		if (paddleTransform == nullptr)
 		{
 			return;
 		}
 
-		Vector2 pos = transform->GetPosition();
+		Vector2 pos = paddleTransform->GetPosition();
 
 		if (renderer::mainCamera)
 		{

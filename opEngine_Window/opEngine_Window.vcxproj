@@ -144,6 +144,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="opBallScript.h" />
     <ClInclude Include="opCameraScript.h" />
     <ClInclude Include="opCat.h" />
     <ClInclude Include="opCatScript.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="opToolScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="opBallScript.cpp" />
     <ClCompile Include="opCameraScript.cpp" />
     <ClCompile Include="opCat.cpp" />
     <ClCompile Include="opCatScript.cpp" />

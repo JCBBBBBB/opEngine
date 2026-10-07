@@ -42,7 +42,7 @@ extern op::Application application;
 
 namespace op
 {
-	PlayScene::PlayScene() : m_paddle(nullptr)
+	PlayScene::PlayScene() : m_paddle(nullptr), m_ball(nullptr)
 	{
 
 	}
@@ -66,10 +66,16 @@ namespace op
 		PaddleScript* paddleScript = m_paddle->AddComponent<PaddleScript>();
 		Vector2 paddleSize = paddleScript->GetSize();
 
-		Transform* transform = m_paddle->GetComponent<Transform>();
-		transform->SetPosition(Vector2((width - paddleSize.x) / 2.0f, height - 60.0f));
+		Transform* paddleTransform = m_paddle->GetComponent<Transform>();
+		paddleTransform->SetPosition(Vector2((width - paddleSize.x) / 2.0f, height - 60.0f));
 
+		m_ball = object::Instantiate<GameObject>(enums::LayerType::Player);
+		m_ball->SetName(L"Ball");
+		BallScript* ballScript = m_ball->AddComponent<BallScript>();
+		ballScript->SetPaddle(m_paddle); // 공에게 따라갈 막대를 알려준다
+		ballScript->Reset();
 
+		Scene::Initialize();
 		//// main camera
 		//GameObject* camera = object::Instantiate<GameObject>(
 		//	enums::LayerType::Particle,
@@ -133,7 +139,7 @@ namespace op
 		//audioSource->SetClip(audioClip);
 
 		// 지금은 재생하지 않고 착지할 때 재생
-		Scene::Initialize();
+		
 	}
 
 	void PlayScene::Update()

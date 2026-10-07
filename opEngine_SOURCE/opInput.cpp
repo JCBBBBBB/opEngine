@@ -15,6 +15,7 @@ namespace op
 		'Z', 'X', 'C', 'V', 'B', 'N', 'M',
 		VK_LEFT, VK_RIGHT, VK_DOWN, VK_UP,
 		VK_LBUTTON, VK_MBUTTON, VK_RBUTTON,
+		VK_SPACE,
 	};
 
 	// 26개 키 각각의 정보를 만들어 m_keys에 추가

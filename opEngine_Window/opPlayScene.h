@@ -1,7 +1,7 @@
 #pragma once
 #include "..\opEngine_SOURCE\\opScene.h"
 #include "..\opEngine_SOURCE\\opGameObject.h"
-
+#include "opBallScript.h"
 
 namespace op
 {
@@ -21,5 +21,6 @@ namespace op
 
 	private:
 		GameObject* m_paddle;
+		GameObject* m_ball;
 	};
 }
