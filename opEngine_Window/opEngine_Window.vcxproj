@@ -157,6 +157,7 @@
     <ClInclude Include="opPlayer.h" />
     <ClInclude Include="opPlayerScript.h" />
     <ClInclude Include="opPlayScene.h" />
+    <ClInclude Include="opResultScene.h" />
     <ClInclude Include="opTile.h" />
     <ClInclude Include="opTitleScene.h" />
     <ClInclude Include="opToolScene.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="opPlayer.cpp" />
     <ClCompile Include="opPlayerScript.cpp" />
     <ClCompile Include="opPlayScene.cpp" />
+    <ClCompile Include="opResultScene.cpp" />
     <ClCompile Include="opTile.cpp" />
     <ClCompile Include="opTitleScene.cpp" />
     <ClCompile Include="opToolScene.cpp" />

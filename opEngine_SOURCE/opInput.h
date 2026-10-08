@@ -19,6 +19,7 @@ namespace op
 		Left, Right, Down, Up,
 		LButton, MButton, RButton,
 		Space,
+		Enter,
 		End,
 	};
 

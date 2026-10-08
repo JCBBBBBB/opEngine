@@ -39,7 +39,7 @@ namespace op
 			return;
 		}
 
-		if (Input::GetKeyDown(KeyCode::N))
+		if (Input::GetKeyDown(KeyCode::Enter))
 		{
 			SceneManager::LoadScene(L"PlayScene");
 			return;

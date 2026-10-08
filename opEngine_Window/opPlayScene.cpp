@@ -1,4 +1,6 @@
 
+#include "opResultScene.h"
+#include "../opEngine_SOURCE/opLayer.h"
 #include "opAudioClip.h"
 #include "opAudioListener.h"
 #include "opAudioSource.h"
@@ -42,7 +44,7 @@ extern op::Application application;
 
 namespace op
 {
-	PlayScene::PlayScene() : m_paddle(nullptr), m_ball(nullptr), m_score(0), m_lives(3), m_stage(1), m_remainingBricks(0), m_isClear(false)
+	PlayScene::PlayScene() : m_paddle(nullptr), m_ball(nullptr), m_score(0), m_lives(3), m_stage(1), m_remainingBricks(0), m_isClear(false), m_resultScene(nullptr)
 	{
 
 	}
@@ -92,8 +94,6 @@ namespace op
 		ballCollider->SetOffset(Vector2(-radius, -radius));
 
 		ballScript->Reset();
-
-		CreateBricks();
 		
 
 
@@ -107,6 +107,13 @@ namespace op
 		// 패들 조작과 공 이동이 멈춘다
 		if (IsFinished())
 		{
+			if (m_resultScene != nullptr)
+			{
+				// 결과 화면에 최종값을 복사한다
+				m_resultScene->SetResult(m_score, m_stage, m_isClear);
+				SceneManager::LoadScene(L"ResultScene");
+			}
+
 			return;
 		}
 
@@ -193,6 +200,11 @@ namespace op
 	void PlayScene::OnEnter()
 	{
 		Scene::OnEnter();
+
+		// 시작화면 또는 결과화면에서 들어오면 새 게임을 준비한다
+		// Initialize()를 다시 호출하면 카메라/패들/공까지 중복 생성되므로, 재시작은 Restart()로 처리
+		Restart();
+
 		CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Player, true);
 		CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Brick, true);
 	}
@@ -272,5 +284,56 @@ namespace op
 				m_remainingBricks++;
 			}
 		}
+	}
+
+	void PlayScene::Restart()
+	{
+		if (m_paddle == nullptr || m_ball == nullptr)
+		{
+			return;
+		}
+
+		PaddleScript* paddleScript = m_paddle->GetComponent<PaddleScript>();
+		Transform* paddleTransform = m_paddle->GetComponent<Transform>();
+
+		BallScript* ballScript = m_ball->GetComponent<BallScript>();
+		Layer* brickLayer = GetLayer(enums::LayerType::Brick);
+
+		if (paddleScript == nullptr || paddleTransform == nullptr || ballScript == nullptr || brickLayer == nullptr)
+		{
+			return;
+		}
+
+		// 이전 게임에서 남은 벽돌들을 삭제 예약한다
+		// Break()를 호출하지 않으므로 점수는 올라가지 않는다
+		for (GameObject* brick : brickLayer->GetGameObjects())
+		{
+			if (brick != nullptr)
+			{
+				object::Destroy(brick);
+			}
+		}
+
+		// 반복문이 끝난 뒤 삭제 예약된 벽돌을 실제로 제거한다
+		// 이 함수는 씬에 들어갈 때 실행하므로
+		// 공의 충돌 처리 중에 벽돌을 삭제하는 상황이 아니다
+		brickLayer->Destroy();
+
+		m_score = 0;
+		m_lives = 3;
+		m_stage = 1;
+		m_remainingBricks = 0;
+		m_isClear = false;
+
+		// 패들을 화면 아래 중앙으로 돌려놓는다.
+		float width = static_cast<float>(application.GetWidth());
+		float height = static_cast<float>(application.GetHeight());
+
+		Vector2 paddleSize = paddleScript->GetSize();
+
+		paddleTransform->SetPosition(Vector2((width - paddleSize.x) / 2.0f, height - 60.0f));
+
+		ballScript->Reset(); // 공을 이동한 패들 위로 돌려놓는다
+		CreateBricks(); // 1스테이지 벽돌 24개를 만든다
 	}
 }

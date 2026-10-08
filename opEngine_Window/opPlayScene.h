@@ -7,6 +7,8 @@
 
 namespace op
 {
+	class ResultScene;
+
 	class PlayScene : public Scene
 	{
 	public:
@@ -28,8 +30,11 @@ namespace op
 		void OnBrickBroken(); // 벽돌이 부서졌을 때 점수와 남은 벽돌 수를 갱신
 		bool IsFinished() const { return IsGameOver() || m_isClear; } // 목숨을 모두 잃었거나, 모든 스테이지를 끝냈는지 확인한다
 	
+		void SetResultScene(ResultScene* scene) { m_resultScene = scene; }
+	
 	private:
 		void CreateBricks(); // 현재 스테이지의 벽돌을 생성한다
+		void Restart(); // 점수/목숨/패들/공/벽돌을 초기화
 
 	private:
 		GameObject* m_paddle;
@@ -41,7 +46,9 @@ namespace op
 		int m_stage; // 현재 스테이지 번호
 		int m_remainingBricks; // 아직 부서지지 않은 벽돌 수
 		bool m_isClear; // 모든 스테이지를 끝냈는지
-	
+		
+		ResultScene* m_resultScene;
+
 		static constexpr int MaxStage = 3;
 	};
 }
