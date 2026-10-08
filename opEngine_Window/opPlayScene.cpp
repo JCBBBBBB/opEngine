@@ -3,7 +3,7 @@
 #include "opAudioListener.h"
 #include "opAudioSource.h"
 #include "opUIManager.h"
-
+#include "opBrickScript.h"
 #include "..\\opEngine_SOURCE\\opRigidbody.h"
 #include "opTile.h"
 #include "..\\opEngine_SOURCE\\opTilemapRenderer.h"
@@ -91,6 +91,40 @@ namespace op
 
 		ballScript->Reset();
 
+		const int rowCount = 4;
+		const int columnCount = 6;
+
+		const float gapX = 10.0f;
+		const float gapY = 10.0f;
+		const float startY = 100.0f;
+
+		// 첫번째 줄부터 네번째 줄까지 반복
+		for (int row = 0; row < rowCount; row++)
+		{
+			for (int column = 0; column < columnCount; column++)
+			{
+				// 벽돌 객체 생성
+				GameObject* brick = object::Instantiate<GameObject>(enums::LayerType::Brick);
+				brick->SetName(L"Brick");
+
+				BrickScript* brickScript = brick->AddComponent<BrickScript>();
+				Vector2 brickSize = brickScript->GetSize();
+
+				float totalWidth = columnCount * brickSize.x + (columnCount - 1) * gapX;
+				float startX = (width - totalWidth) / 2.0f;
+				float x = startX + column * (brickSize.x + gapX);
+				float y = startY + column * (brickSize.y + gapY);
+
+				Transform* brickTransform = brick->GetComponent<Transform>();
+				brickTransform->SetPosition(Vector2(x, y));
+
+				BoxCollider2D* brickCollider = brick->AddComponent<BoxCollider2D>();
+				brickCollider->SetSize(brickSize / 100.0f);
+				brickCollider->SetOffset(Vector2::Zero);
+			}
+		}
+
+
 		Scene::Initialize();
 		
 	}
@@ -114,6 +148,7 @@ namespace op
 	{
 		Scene::OnEnter();
 		CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Player, true);
+		CollisionManager::CollisionLayerCheck(enums::LayerType::Player, enums::LayerType::Brick, true);
 	}
 
 	void PlayScene::OnExit()

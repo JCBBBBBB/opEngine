@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="opBallScript.h" />
+    <ClInclude Include="opBrickScript.h" />
     <ClInclude Include="opCameraScript.h" />
     <ClInclude Include="opCat.h" />
     <ClInclude Include="opCatScript.h" />
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opBallScript.cpp" />
+    <ClCompile Include="opBrickScript.cpp" />
     <ClCompile Include="opCameraScript.cpp" />
     <ClCompile Include="opCat.cpp" />
     <ClCompile Include="opCatScript.cpp" />

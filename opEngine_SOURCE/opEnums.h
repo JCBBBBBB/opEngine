@@ -26,6 +26,7 @@ namespace op::enums
 		Player,
 		Floor,
 		Particle,
+		Brick,
 		Max = 16,
 	};
 

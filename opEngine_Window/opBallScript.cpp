@@ -1,5 +1,7 @@
 #include "opBallScript.h"
 #include "opPaddleScript.h"
+#include "opBrickScript.h"
+#include <cmath>
 
 #include "../opEngine_SOURCE/opApplication.h"
 #include "../opEngine_SOURCE/opGameObject.h"
@@ -161,6 +163,21 @@ namespace op
 			return;
 		}
 
+		GameObject* otherObject = other->GetOwner();
+
+		if (otherObject == nullptr || !otherObject->IsActive())
+		{
+			return;
+		}
+
+		BrickScript* brickScript = otherObject->GetComponent<BrickScript>(); // 상대에게 BrickScript가 붙어 있으면 벽돌이다
+		if (brickScript != nullptr)
+		{
+			ReflectBrick(other);
+			return;
+		}
+
+
 		// 부딪힌 상대가 연결된 막대인지 확인한다
 		if (m_paddle == nullptr || other->GetOwner() != m_paddle)
 		{
@@ -239,5 +256,129 @@ namespace op
 		Vector2 ballPos(paddlePos.x + paddleSize.x / 2.0f, paddlePos.y - m_radius - 2.0f);
 
 		ballTransform->SetPosition(ballPos);
+	}
+	void BallScript::ReflectBrick(Collider* other)
+	{
+		GameObject* owner = GetOwner(); // 공 오브젝트
+
+		if (owner == nullptr || other == nullptr)
+		{
+			return;
+		}
+
+		GameObject* brickObject = other->GetOwner(); // 벽돌 객체
+
+		if (brickObject == nullptr || !brickObject->IsActive())
+		{
+			return;
+		}
+
+		Transform* ballTransform = owner->GetComponent<Transform>(); // 공의 위치 정보
+		Transform* brickTransform = brickObject->GetComponent<Transform>(); // 벽돌의 위치 정보
+		BrickScript* brickScript = brickObject->GetComponent<BrickScript>(); // 벽돌 스크립트
+
+		if (ballTransform == nullptr || brickTransform == nullptr || brickScript == nullptr)
+		{
+			return;
+		}
+
+		Vector2 ballPosition = ballTransform->GetPosition(); // 공의 중심 좌표
+
+		
+		Vector2 brickPosition = brickTransform->GetPosition() + other->GetOffset(); // 벽돌 객체 위치에 콜라이더의 위치 보정값을 더한다
+		Vector2 brickSize = other->GetSize() * 100.0f; // 콜라이더 크기에 100을 곱해 실제 크기로 사용
+		Vector2 brickCenter = brickPosition + brickSize / 2.0f; // 왼쪽 위에 너비/높이의 절반을 더하면 벽돌 중심이 됨
+
+		// 벽돌 중심을 기준으로 공이 어느쪽에 있는지 계싼
+		float deltaX = ballPosition.x - brickCenter.x;
+		float deltaY = ballPosition.y - brickCenter.y;
+
+		float overlapX = brickSize.x / 2.0f + m_radius - std::fabs(deltaX);
+		float overlapY = brickSize.y / 2.0f + m_radius - std::fabs(deltaY);
+
+		if (overlapX <= 0.0f || overlapY <= 0.0f)
+		{
+			return;
+		}
+
+		// 공을 더 조금 움직여서 꺼낼 수 있는 축을 선택한다.
+	//
+	// 예: x로는 2픽셀, y로는 15픽셀 이동해야 빠져나온다면
+	//     x 방향으로 꺼내고 좌우로 반사한다.
+		if (overlapX < overlapY)
+		{
+			// 공이 벽돌 중심보다 왼쪽에 있다.
+			if (deltaX < 0.0f)
+			{
+				// 공 중심을 벽돌 왼쪽 끝보다 반지름만큼 왼쪽에 놓는다.
+				// 0.1은 다시 겹치지 않도록 두는 작은 간격이다.
+				ballPosition.x = brickPosition.x - m_radius - 0.1f;
+
+				// 오른쪽으로 벽돌을 향해 움직였다면 왼쪽으로 바꾼다.
+				// 이미 왼쪽으로 움직이는 경우에는 다시 뒤집지 않는다.
+				if (m_velocity.x > 0.0f)
+				{
+					m_velocity.x = -m_velocity.x;
+				}
+			}
+			else
+			{
+				// 공이 벽돌 중심보다 오른쪽에 있다.
+				//
+				// 벽돌 오른쪽 끝 = brickPosition.x + brickSize.x
+				// 그보다 반지름만큼 오른쪽에 공 중심을 놓는다.
+				ballPosition.x =
+					brickPosition.x + brickSize.x + m_radius + 0.1f;
+
+				// 왼쪽으로 벽돌을 향해 움직였다면 오른쪽으로 바꾼다.
+				if (m_velocity.x < 0.0f)
+				{
+					m_velocity.x = -m_velocity.x;
+				}
+			}
+		}
+		else
+		{
+			// y 방향으로 꺼내는 이동량이 더 작거나 같으면
+			// 위아래 방향으로 반사한다.
+
+			if (deltaY < 0.0f)
+			{
+				// 공이 벽돌 중심보다 위쪽에 있다.
+				// 공을 벽돌 윗면 바로 위로 꺼낸다.
+				ballPosition.y = brickPosition.y - m_radius - 0.1f;
+
+				// 아래로 내려가던 공을 위로 보낸다.
+				if (m_velocity.y > 0.0f)
+				{
+					m_velocity.y = -m_velocity.y;
+				}
+			}
+			else
+			{
+				// 공이 벽돌 중심보다 아래쪽에 있다.
+				//
+				// 벽돌 아래쪽 끝 = brickPosition.y + brickSize.y
+				// 그보다 반지름만큼 아래에 공 중심을 놓는다.
+				ballPosition.y =
+					brickPosition.y + brickSize.y + m_radius + 0.1f;
+
+				// 위로 올라가던 공을 아래로 보낸다.
+				if (m_velocity.y < 0.0f)
+				{
+					m_velocity.y = -m_velocity.y;
+				}
+			}
+		}
+
+		// 위에서 계산한 위치는 지역 변수다.
+		// Transform에 저장해야 실제 공 위치가 변경된다.
+		ballTransform->SetPosition(ballPosition);
+
+		// 반사를 처리했으므로 이제 벽돌을 부순다.
+		// Break 안에서 삭제를 예약하고,
+		// 엔진이 프레임 마지막에 실제로 삭제한다.
+		brickScript->Break();
+
 	}
 }

@@ -21,9 +21,10 @@ namespace op
 		void OnCollisionStay(Collider* other) override;
 
 		float GetRadius() const { return m_radius; }
+
 	private:
 		void FollowPaddle();
-
+		void ReflectBrick(Collider* other);
 
 	private:
 		GameObject* m_paddle; // 공이 따라 갈 막대

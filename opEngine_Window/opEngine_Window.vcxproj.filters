@@ -10,6 +10,9 @@
     <Filter Include="Basic">
       <UniqueIdentifier>{61cb2d86-b0a7-4d6e-b92a-d913a4dfc64f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{0b6a483b-b640-451b-a26a-20c6c4913d5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="opLoadScenes.h">
@@ -26,12 +29,6 @@
     </ClInclude>
     <ClInclude Include="opLoadResources.h">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="opPaddleScript.h">
-      <Filter>Content</Filter>
-    </ClInclude>
-    <ClInclude Include="opBallScript.h">
-      <Filter>Content</Filter>
     </ClInclude>
     <ClInclude Include="opCameraScript.h">
       <Filter>Basic</Filter>
@@ -57,6 +54,15 @@
     <ClInclude Include="opToolScene.h">
       <Filter>Basic</Filter>
     </ClInclude>
+    <ClInclude Include="opBrickScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="opPaddleScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="opBallScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="opPlayScene.cpp">
@@ -67,12 +73,6 @@
     </ClCompile>
     <ClCompile Include="opTitleScene.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="opPaddleScript.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
-    <ClCompile Include="opBallScript.cpp">
-      <Filter>Content</Filter>
     </ClCompile>
     <ClCompile Include="opCameraScript.cpp">
       <Filter>Basic</Filter>
@@ -97,6 +97,15 @@
     </ClCompile>
     <ClCompile Include="opToolScene.cpp">
       <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="opBrickScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="opBallScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="opPaddleScript.cpp">
+      <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
