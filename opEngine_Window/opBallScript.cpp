@@ -34,6 +34,12 @@ namespace op
 			return;
 		}
 
+		// 연결된 씬이 없거나 게임이 끝났으면 진행하지 않는다
+		if (m_playScene == nullptr || m_playScene->IsGameOver())
+		{
+			return;
+		}
+
 		GameObject* owner = GetOwner(); // 공 오브젝트
 
 		if (owner == nullptr || m_paddle == nullptr)
@@ -227,15 +233,54 @@ namespace op
 			return;
 		}
 
+		PaddleScript* paddleScript = m_paddle->GetComponent<PaddleScript>(); // 패들의 너비를 알아내기 위해 스크립트를 가져온다
+		if (paddleScript == nullptr)
+		{
+			return;
+		}
+
+		Vector2 paddleSize = paddleScript->GetSize();
+		if (paddleSize.x <= 0.0f)
+		{
+			return;
+		}
+
 		Vector2 ballPosition = ballTransform->GetPosition();
 
-		// 충돌해서 막대 안으로 조금 들어간 공을 막대 바로 위로 꺼내는 코드
+		// 패들의 위치는 왼쪽 위이므로 너비 절반을 더하면 중앙이다
+		float paddleCenterX = paddlePosition.x + paddleSize.x / 2.0f;
+
+		// 공이 중앙에서 얼마나 벗어났는지를 -1~1로 표현한다
+		// -1: 왼쪽 끝 / 0 : 중앙 / 1: 오른쪽 끝
+		float hitPosition = (ballPosition.x - paddleCenterX) / (paddleSize.x / 2.0f);
+		
+		// 공의 가장자리만 패들에 걸치면 범위를 넘을 수 있으므로 제한한다
+		if (hitPosition < -1.0f)
+		{
+			hitPosition = -1.0f;
+		}
+		else if (hitPosition > 1.0f)
+		{
+			hitPosition = 1.0f;
+		}
+
+		// 현재 속도의 크기를 구한다
+		// 반사 방향은 바꾸되, 이동 속력은 유지한다
+		float speed = std::sqrt(m_velocity.x * m_velocity.x + m_velocity.y * m_velocity.y);
+
+		// 바로 위쪽을 기준으로 최대 좌우 60도까지 반사한다
+		// sin과 cos는 라디안을 사용하므로 60도를 변환한다
+		const float maxAngle = 60.0f * 3.14159365f / 180.0f;
+		float angle = hitPosition * maxAngle;
+
+		// 왼쪽에 맞으면 x 속도는 음수, 오른쪽이면 양수가 된다
+		// y 속도는 항상 음수로 만들어 위로 올라가게 한다
+		m_velocity.x = speed * std::sin(angle);
+		m_velocity.y = -speed * std::cos(angle);
+
+		// 공을 패들 윗면 밖으로 꺼내 계속 겹치는 것을 방지한다
 		ballPosition.y = paddlePosition.y - m_radius - 0.1f;
 		ballTransform->SetPosition(ballPosition);
-
-		// 아래로 내려가던 공을 위로 보낸다
-		m_velocity.y = -m_velocity.y;
-
 	}
 
 	void BallScript::OnCollisionStay(Collider* other)
