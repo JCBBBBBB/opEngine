@@ -21,8 +21,12 @@ namespace op
 		void OnEnter() override;
 		void OnExit() override;
 
+		void AddScore(int score); // 벽돌이 부서졌을 때 호출해서 점수를 올린다
+
 	private:
 		GameObject* m_paddle;
 		GameObject* m_ball;
+
+		int m_score;
 	};
 }

@@ -42,7 +42,7 @@ extern op::Application application;
 
 namespace op
 {
-	PlayScene::PlayScene() : m_paddle(nullptr), m_ball(nullptr)
+	PlayScene::PlayScene() : m_paddle(nullptr), m_ball(nullptr), m_score(0)
 	{
 
 	}
@@ -108,12 +108,14 @@ namespace op
 				brick->SetName(L"Brick");
 
 				BrickScript* brickScript = brick->AddComponent<BrickScript>();
+				brickScript->SetPlayScene(this); // 벽돌에게 점수를 관리하는 현재 PlayScene을 알려준다
+
 				Vector2 brickSize = brickScript->GetSize();
 
 				float totalWidth = columnCount * brickSize.x + (columnCount - 1) * gapX;
 				float startX = (width - totalWidth) / 2.0f;
 				float x = startX + column * (brickSize.x + gapX);
-				float y = startY + column * (brickSize.y + gapY);
+				float y = startY + row * (brickSize.y + gapY);
 
 				Transform* brickTransform = brick->GetComponent<Transform>();
 				brickTransform->SetPosition(Vector2(x, y));
@@ -141,7 +143,30 @@ namespace op
 
 	void PlayScene::Render(HDC hdc)
 	{
+		// 먼저 패들·공·벽돌을 그린다.
 		Scene::Render(hdc);
+
+		// 숫자를 문자열로 바꾼다.
+		// 예: m_score가 30이면 "Score : 30"
+		std::wstring text = L"Score : " + std::to_wstring(m_score);
+
+		// 글자 배경을 따로 칠하지 않고 흰색 글자로 표시한다.
+		int oldBackgroundMode = SetBkMode(hdc, TRANSPARENT);
+		COLORREF oldTextColor = SetTextColor(hdc, RGB(255, 255, 255));
+
+		// 화면 왼쪽 위 (20, 40)에 점수를 그린다.
+		// UI이므로 카메라 좌표 변환을 하지 않는다.
+		TextOutW(
+			hdc,
+			20,
+			40,
+			text.c_str(),
+			static_cast<int>(text.length())
+		);
+
+		// 다른 그리기에 영향을 주지 않도록 설정을 복원한다.
+		SetTextColor(hdc, oldTextColor);
+		SetBkMode(hdc, oldBackgroundMode);
 	}
 
 	void PlayScene::OnEnter()
@@ -154,5 +179,10 @@ namespace op
 	void PlayScene::OnExit()
 	{
 		Scene::OnExit();
+	}
+
+	void PlayScene::AddScore(int score)
+	{
+		m_score += score;
 	}
 }

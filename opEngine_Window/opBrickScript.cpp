@@ -8,7 +8,7 @@
 
 namespace op
 {
-	BrickScript::BrickScript() : m_size(80.0f, 24.0f), m_isBroken(false)
+	BrickScript::BrickScript() : m_size(80.0f, 24.0f), m_isBroken(false), m_playScene(nullptr)
 	{
 	}
 
@@ -61,6 +61,12 @@ namespace op
 		}
 
 		m_isBroken = true;
+
+		// 연결된 PlayScene에 10점을 추가한다
+		if (m_playScene != nullptr)
+		{
+			m_playScene->AddScore(10);
+		}
 
 		// 즉시 delete하지 않고 Dead 상태로 만든다
 		// 실제 삭제는 엔진의 프레임 마지막 Destroy에서 처리한다
