@@ -8,7 +8,7 @@
 #include "opTile.h"
 #include "..\\opEngine_SOURCE\\opTilemapRenderer.h"
 #include <cstdio>
-
+#include <string>
 #include "opCat.h"
 #include "opCatScript.h"
 
@@ -42,7 +42,7 @@ extern op::Application application;
 
 namespace op
 {
-	PlayScene::PlayScene() : m_paddle(nullptr), m_ball(nullptr), m_score(0)
+	PlayScene::PlayScene() : m_paddle(nullptr), m_ball(nullptr), m_score(0), m_lives(3)
 	{
 
 	}
@@ -80,6 +80,8 @@ namespace op
 		m_ball->SetName(L"Ball");
 		BallScript* ballScript = m_ball->AddComponent<BallScript>();
 		ballScript->SetPaddle(m_paddle); // 공에게 따라갈 막대를 알려준다
+		ballScript->SetPlayScene(this);
+
 
 		// 공 충돌 영역
 		float radius = ballScript->GetRadius();
@@ -133,6 +135,13 @@ namespace op
 
 	void PlayScene::Update()
 	{
+		// 게임이 끝나면 객체들이 Update를 실행하지 않는다
+		// 패들 조작과 공 이동이 멈춘다
+		if (IsGameOver())
+		{
+			return;
+		}
+
 		Scene::Update();
 	}
 
@@ -148,8 +157,10 @@ namespace op
 
 		// 숫자를 문자열로 바꾼다.
 		// 예: m_score가 30이면 "Score : 30"
-		std::wstring text = L"Score : " + std::to_wstring(m_score);
-
+		std::wstring text =
+			L"Score : " + std::to_wstring(m_score)
+			+ L"   Lives : " + std::to_wstring(m_lives);
+		
 		// 글자 배경을 따로 칠하지 않고 흰색 글자로 표시한다.
 		int oldBackgroundMode = SetBkMode(hdc, TRANSPARENT);
 		COLORREF oldTextColor = SetTextColor(hdc, RGB(255, 255, 255));
@@ -163,6 +174,24 @@ namespace op
 			text.c_str(),
 			static_cast<int>(text.length())
 		);
+
+		if (IsGameOver())
+		{
+			// 화면 전체 범위를 지정한다
+			RECT area = {};
+			area.right = static_cast<LONG>(application.GetWidth());
+			area.bottom = static_cast<LONG>(application.GetHeight());
+		
+			// 화면의 가로·세로 중앙에 한 줄로 표시한다.
+			DrawTextW(
+				hdc,
+				L"GAME OVER",
+				-1,
+				&area,
+				DT_CENTER | DT_VCENTER | DT_SINGLELINE
+			);
+		}
+
 
 		// 다른 그리기에 영향을 주지 않도록 설정을 복원한다.
 		SetTextColor(hdc, oldTextColor);
@@ -184,5 +213,15 @@ namespace op
 	void PlayScene::AddScore(int score)
 	{
 		m_score += score;
+	}
+
+	void PlayScene::LoseLife()
+	{
+		if (IsGameOver())
+		{
+			return;
+		}
+
+		m_lives--;
 	}
 }

@@ -2,6 +2,7 @@
 #include "opPaddleScript.h"
 #include "opBrickScript.h"
 #include <cmath>
+#include <string>
 
 #include "../opEngine_SOURCE/opApplication.h"
 #include "../opEngine_SOURCE/opGameObject.h"
@@ -16,7 +17,7 @@ extern op::Application application;
 
 namespace op
 {
-	BallScript::BallScript() : m_paddle(nullptr), m_velocity(math::Vector2::Zero), m_radius(8.0f), m_isLaunched(false), m_previousPosition(math::Vector2::Zero)
+	BallScript::BallScript() : m_paddle(nullptr), m_velocity(math::Vector2::Zero), m_radius(8.0f), m_isLaunched(false), m_previousPosition(math::Vector2::Zero), m_playScene(nullptr)
 	{
 
 	}
@@ -46,11 +47,7 @@ namespace op
 			return;
 		}
 
-		if (Input::GetKeyDown(KeyCode::R)) // R을 처음 누른 순간 공을 막대 위로 되돌린다
-		{
-			Reset();
-			return;
-		}
+		
 
 		if (m_isLaunched == false) // 아직 발사하지 않았다면 막대 위에서 대기한다
 		{
@@ -73,7 +70,18 @@ namespace op
 		ballPosition += m_velocity * Time::DeltaTime();// 위치를 속도 * 델타타임 만큼 이동
 
 		float width = static_cast<float>(application.GetWidth());
+		float height = static_cast<float>(application.GetHeight());
 
+		// 공의 위쪽 끝마저 화면 아래로 내려갔다면
+		// 공 전체가 화면 밖으로 떨어진 것이다
+		if (ballPosition.y - m_radius >= height)
+		{
+			Reset(); // 발사 상태를 해제하고 공을 패들 위로 돌려놓는다.
+			m_playScene->LoseLife(); // 목숨을 한 번 줄인다
+			return; // 아래의 이동, 반사 처리를 하지 않고 종료한다.
+		}
+
+		// 왼쪽 벽
 		if (ballPosition.x - m_radius <= 0.0f)
 		{
 			ballPosition.x = m_radius;
@@ -83,6 +91,7 @@ namespace op
 				m_velocity.x *= -1;
 			}
 		}
+		// 오른쪽 벽
 		else if (ballPosition.x + m_radius >= width)
 		{
 			ballPosition.x = width - m_radius;
@@ -110,6 +119,11 @@ namespace op
 
 	void BallScript::Render(HDC hdc)
 	{
+		if (m_playScene != nullptr && m_playScene->IsGameOver())
+		{
+			return;
+		}
+
 		GameObject* owner = GetOwner(); // 공 오브젝트 가져온다
 
 		if (owner == nullptr || hdc == nullptr)
@@ -257,6 +271,7 @@ namespace op
 
 		ballTransform->SetPosition(ballPos);
 	}
+
 	void BallScript::ReflectBrick(Collider* other)
 	{
 		GameObject* owner = GetOwner(); // 공 오브젝트

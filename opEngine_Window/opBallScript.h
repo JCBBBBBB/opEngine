@@ -1,9 +1,12 @@
 #pragma once
 #include "../opEngine_SOURCE/opScript.h"
 #include "../opEngine_SOURCE/opGameObject.h"
+#include "../opEngine_Window/opPlayScene.h"
 
 namespace op
 {
+	class PlayScene;
+
 	class BallScript : public Script
 	{
 	public:
@@ -21,7 +24,8 @@ namespace op
 		void OnCollisionStay(Collider* other) override;
 
 		float GetRadius() const { return m_radius; }
-
+		
+		void SetPlayScene(PlayScene* scene) { m_playScene = scene; }
 	private:
 		void FollowPaddle();
 		void ReflectBrick(Collider* other);
@@ -32,5 +36,6 @@ namespace op
 		math::Vector2 m_previousPosition; // 이동하기 전 공 위치
 		float m_radius; // 반지름
 		bool m_isLaunched; // 발사했는지
+		PlayScene* m_playScene; // 목숨을 관리하는 씬
 	};
 }
