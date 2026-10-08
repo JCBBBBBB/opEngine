@@ -16,8 +16,8 @@ namespace op
 
 		//SceneManager::CreateScene<EndScene>(L"EndScene");
 		////SceneManager::CreateScene<TitleScene>(L"TitleScene");
-		//SceneManager::CreateScene<TitleScene>(L"TitleScene");
+		SceneManager::CreateScene<TitleScene>(L"TitleScene");
 		SceneManager::CreateScene<PlayScene>(L"PlayScene");
-		SceneManager::LoadScene(L"PlayScene"); // PlayScene을 처음 화면으로 선택
+		SceneManager::LoadScene(L"TitleScene"); // PlayScene을 처음 화면으로 선택
 	}
 }
