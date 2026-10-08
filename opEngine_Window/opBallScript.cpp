@@ -269,16 +269,51 @@ namespace op
 		// 반사 방향은 바꾸되, 이동 속력은 유지한다
 		float speed = std::sqrt(m_velocity.x * m_velocity.x + m_velocity.y * m_velocity.y);
 
-		// 바로 위쪽을 기준으로 최대 좌우 60도까지 반사한다
-		// sin과 cos는 라디안을 사용하므로 60도를 변환한다
-		const float maxAngle = 60.0f * 3.14159365f / 180.0f;
-		float angle = hitPosition * maxAngle;
+		// 중앙 구간에서는 들어오던 좌우 방향을 유지한다.
+		// hitPosition이 -0.25 ~ 0.25인 영역이다.
+		// 패들 너비가 120이면 중앙에서 좌우 15픽셀까지 해당한다.
+		const float centerZone = 0.25f;
 
-		// 왼쪽에 맞으면 x 속도는 음수, 오른쪽이면 양수가 된다
-		// y 속도는 항상 음수로 만들어 위로 올라가게 한다
-		m_velocity.x = speed * std::sin(angle);
-		m_velocity.y = -speed * std::cos(angle);
+		// 중앙 구간에서는 0, 양 끝에서는 1이 된다.
+		// 0: 기존 좌우 속도만 사용
+		// 1: 맞은 위치로 계산한 좌우 속도만 사용
+		float steeringWeight =
+			(std::fabs(hitPosition) - centerZone) / (1.0f - centerZone);
 
+		if (steeringWeight < 0.0f)
+		{
+			steeringWeight = 0.0f;
+		}
+		else if (steeringWeight > 1.0f)
+		{
+			steeringWeight = 1.0f;
+		}
+
+
+		// 기존처럼 양 끝은 최대 좌우 60도로 보낸다.
+		const float maxAngle = 60.0f * 3.14159265f / 180.0f;
+		float targetAngle = hitPosition * maxAngle;
+		float targetVelocityX = speed * std::sin(targetAngle);
+
+		// 기존 좌우 속도와 위치에 따른 좌우 속도를 섞는다.
+		// 중앙에서는 기존 값이 유지되고, 끝으로 갈수록 목표 값에 가까워진다.
+		m_velocity.x =
+			m_velocity.x * (1.0f - steeringWeight)
+			+ targetVelocityX * steeringWeight;
+
+		// 전체 속력을 유지하도록 위쪽 속도를 계산한다.
+		// 속력² = x속도² + y속도²
+		float verticalSpeedSquared =
+			speed * speed - m_velocity.x * m_velocity.x;
+
+		// 소수점 계산 오차로 음수가 되는 것을 방지한다.
+		if (verticalSpeedSquared < 0.0f)
+		{
+			verticalSpeedSquared = 0.0f;
+		}
+
+		// 음수로 설정해서 공을 위로 보낸다.
+		m_velocity.y = -std::sqrt(verticalSpeedSquared);
 		// 공을 패들 윗면 밖으로 꺼내 계속 겹치는 것을 방지한다
 		ballPosition.y = paddlePosition.y - m_radius - 0.1f;
 		ballTransform->SetPosition(ballPosition);
