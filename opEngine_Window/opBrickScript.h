@@ -1,9 +1,10 @@
 #pragma once
 #include "../opEngine_SOURCE/opScript.h"
-#include "../opEngine_Window/opPlayScene.h"
 
 namespace op
 {
+	class PlayScene;
+
 	class BrickScript : public Script
 	{
 	public:

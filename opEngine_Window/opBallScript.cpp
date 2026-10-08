@@ -1,6 +1,7 @@
 #include "opBallScript.h"
 #include "opPaddleScript.h"
 #include "opBrickScript.h"
+#include "opPlayScene.h"
 #include <cmath>
 #include <string>
 
@@ -35,7 +36,7 @@ namespace op
 		}
 
 		// 연결된 씬이 없거나 게임이 끝났으면 진행하지 않는다
-		if (m_playScene == nullptr || m_playScene->IsGameOver())
+		if (m_playScene == nullptr || m_playScene->IsFinished())
 		{
 			return;
 		}
@@ -125,7 +126,7 @@ namespace op
 
 	void BallScript::Render(HDC hdc)
 	{
-		if (m_playScene != nullptr && m_playScene->IsGameOver())
+		if (m_playScene != nullptr && m_playScene->IsFinished())
 		{
 			return;
 		}

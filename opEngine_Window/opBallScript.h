@@ -1,7 +1,6 @@
 #pragma once
 #include "../opEngine_SOURCE/opScript.h"
 #include "../opEngine_SOURCE/opGameObject.h"
-#include "../opEngine_Window/opPlayScene.h"
 #include <cmath>
 
 namespace op

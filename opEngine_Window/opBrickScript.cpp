@@ -1,4 +1,5 @@
 #include "opBrickScript.h"
+#include "opPlayScene.h"
 
 #include "../opEngine_SOURCE/opGameObject.h"
 #include "../opEngine_SOURCE/opObject.h"
@@ -65,7 +66,7 @@ namespace op
 		// 연결된 PlayScene에 10점을 추가한다
 		if (m_playScene != nullptr)
 		{
-			m_playScene->AddScore(10);
+			m_playScene->OnBrickBroken(); // 점수를 올리고 남은 벽돌 개수를 줄인다
 		}
 
 		// 즉시 delete하지 않고 Dead 상태로 만든다
