@@ -73,7 +73,7 @@ namespace op
 		// 여기 부터는 이미 발사된 공만 실행됨
 
 		Vector2 ballPosition = ballTransform->GetPosition(); // 공의 현재 위치
-		m_previousPosition = ballPosition;
+		m_previousPosition = ballPosition; // 이동 전 위치를 기억
 		ballPosition += m_velocity * Time::DeltaTime();// 위치를 속도 * 델타타임 만큼 이동
 
 		float width = static_cast<float>(application.GetWidth());
@@ -138,7 +138,7 @@ namespace op
 			return;
 		}
 
-		Transform* ballTransform = owner->GetComponent<Transform>();
+		Transform* ballTransform = owner->GetComponent<Transform>(); // 공 위치 정보
 		if (ballTransform == nullptr)
 		{
 			return;
@@ -146,8 +146,9 @@ namespace op
 
 		Vector2 ballPosition = ballTransform->GetPosition(); // 공의 게임 좌표를 가져온다
 
-		if (renderer::mainCamera)
+		if (renderer::mainCamera) // 메인 카메라가 있다면
 		{
+			// 게임 좌표를 화면에 그릴 좌표로 바꾼다
 			ballPosition = renderer::mainCamera->CalculatePosition(ballPosition);
 		}
 
@@ -163,8 +164,8 @@ namespace op
 			static_cast<int>(ballPosition.y + m_radius)// 오른쪽 아래 y 좌표
 		);
 
-		SelectObject(hdc, oldBrush);
-		DeleteObject(brush);
+		SelectObject(hdc, oldBrush); // 이전 브러시로 복원
+		DeleteObject(brush); // 노란 브러시 삭제
 	}
 
 	// 공을 다시 발사 전 상태로 만드는 함수
@@ -176,6 +177,7 @@ namespace op
 		FollowPaddle(); // 즉시 막대 위로 이동
 	}
 
+	// 충돌 관리자가 공의 충돌을 발견하면 함수 호출
 	void BallScript::OnCollisionEnter(Collider* other)
 	{
 		// 발사 전에는 반사하지 않는다
@@ -184,7 +186,7 @@ namespace op
 			return;
 		}
 
-		GameObject* otherObject = other->GetOwner();
+		GameObject* otherObject = other->GetOwner(); // 상대 콜라이더가 붙어 있는 게임 객체 가져온다
 
 		if (otherObject == nullptr || !otherObject->IsActive())
 		{
@@ -194,12 +196,12 @@ namespace op
 		BrickScript* brickScript = otherObject->GetComponent<BrickScript>(); // 상대에게 BrickScript가 붙어 있으면 벽돌이다
 		if (brickScript != nullptr)
 		{
-			ReflectBrick(other);
+			ReflectBrick(other); // 벽돌 반사와 파괴를 처리한다
 			return;
 		}
 
 
-		// 부딪힌 상대가 연결된 막대인지 확인한다
+		// 부딪힌 상대가 연결된 패들인지 확인한다
 		if (m_paddle == nullptr || other->GetOwner() != m_paddle)
 		{
 			return;
@@ -211,21 +213,21 @@ namespace op
 			return;
 		}
 
-		GameObject* owner = GetOwner();
-		if (owner == nullptr)
+		GameObject* owner = GetOwner(); // 공 객체를 가져온다
+		if (owner == nullptr) // 공 객체가 없으면
 		{
 			return;
 		}
 
-		Transform* ballTransform = owner->GetComponent<Transform>();
-		Transform* paddleTransform = m_paddle->GetComponent<Transform>();
+		Transform* ballTransform = owner->GetComponent<Transform>(); // 공 위치 정보
+		Transform* paddleTransform = m_paddle->GetComponent<Transform>(); // 패들 위치 정보
 
 		if (ballTransform == nullptr || paddleTransform == nullptr)
 		{
 			return;
 		}
 
-		Vector2 paddlePosition = paddleTransform->GetPosition();
+		Vector2 paddlePosition = paddleTransform->GetPosition(); // 패들 왼쪽 위 위치 가져온다
 
 		// 이동 전 공의 아래쪽 끝이 막대 윗면보다 아래였다면
 		// 옆이나 아래에서 부딪힌 것으로 보고 받아치지 않는다
@@ -241,12 +243,12 @@ namespace op
 		}
 
 		Vector2 paddleSize = paddleScript->GetSize();
-		if (paddleSize.x <= 0.0f)
+		if (paddleSize.x <= 0.0f) // 너비가 0 이하라면
 		{
 			return;
 		}
 
-		Vector2 ballPosition = ballTransform->GetPosition();
+		Vector2 ballPosition = ballTransform->GetPosition(); // 충돌한 현재 공의 중심 위치 가져온다
 
 		// 패들의 위치는 왼쪽 위이므로 너비 절반을 더하면 중앙이다
 		float paddleCenterX = paddlePosition.x + paddleSize.x / 2.0f;
@@ -269,10 +271,9 @@ namespace op
 		// 반사 방향은 바꾸되, 이동 속력은 유지한다
 		float speed = std::sqrt(m_velocity.x * m_velocity.x + m_velocity.y * m_velocity.y);
 
-		// 중앙 구간에서는 들어오던 좌우 방향을 유지한다.
-		// hitPosition이 -0.25 ~ 0.25인 영역이다.
-		// 패들 너비가 120이면 중앙에서 좌우 15픽셀까지 해당한다.
-		const float centerZone = 0.25f;
+		// 중앙에서 기존 방향을 유지할 구간을 정한다.
+		// 패들 너비 120이면 중앙에서 좌우 15픽셀까지다.
+		const float centerZone = 0.25f; // -0.25 ~ 0.25 안에서는 기존 좌우방향 유지
 
 		// 중앙 구간에서는 0, 양 끝에서는 1이 된다.
 		// 0: 기존 좌우 속도만 사용
@@ -289,22 +290,22 @@ namespace op
 			steeringWeight = 1.0f;
 		}
 
-
-		// 기존처럼 양 끝은 최대 좌우 60도로 보낸다.
-		const float maxAngle = 60.0f * 3.14159265f / 180.0f;
-		float targetAngle = hitPosition * maxAngle;
-		float targetVelocityX = speed * std::sin(targetAngle);
+		const float maxAngle = 60.0f * 3.14159265f / 180.0f; // 최대 각도를 60도로 정하기(60 * π / 180) : 라디안
+		float targetAngle = hitPosition * maxAngle; // 맞은 위치에 따라 각도 정하기(ex : -1이면 왼쪽으로 60도)
+		float targetVelocityX = speed * std::sin(targetAngle); // speed : 공의 전체 속력, sin : 이 각도에서 전체 속력 중 좌우 이동에 해당하는 비율
 
 		// 기존 좌우 속도와 위치에 따른 좌우 속도를 섞는다.
-		// 중앙에서는 기존 값이 유지되고, 끝으로 갈수록 목표 값에 가까워진다.
+		// 비중 0이면 기존 속도 그대로,
+		// 비중 1이면 목표 속도 그대로
+		// 비중 0.5면 두 속도를 절반씩 반영
 		m_velocity.x =
-			m_velocity.x * (1.0f - steeringWeight)
-			+ targetVelocityX * steeringWeight;
+			m_velocity.x * (1.0f - steeringWeight) // m_velocity.x : 들어오던 공의 좌우 속도, // steeringWeight : 목표 속도를 얼마나 반영할지
+			+ targetVelocityX * steeringWeight; // targetVelocityX : 맞은 위치에 따라 보내고 싶은 좌우 속도
 
 		// 전체 속력을 유지하도록 위쪽 속도를 계산한다.
 		// 속력² = x속도² + y속도²
 		float verticalSpeedSquared =
-			speed * speed - m_velocity.x * m_velocity.x;
+			speed * speed - m_velocity.x * m_velocity.x; // 좌우 속도를 바꿨으니, 위아래 속도도 맞춰야 공의 전체 빠르기가 유지됨, 전체 속력 : 500, 새 좌우 속도 : 300
 
 		// 소수점 계산 오차로 음수가 되는 것을 방지한다.
 		if (verticalSpeedSquared < 0.0f)
@@ -314,6 +315,7 @@ namespace op
 
 		// 음수로 설정해서 공을 위로 보낸다.
 		m_velocity.y = -std::sqrt(verticalSpeedSquared);
+
 		// 공을 패들 윗면 밖으로 꺼내 계속 겹치는 것을 방지한다
 		ballPosition.y = paddlePosition.y - m_radius - 0.1f;
 		ballTransform->SetPosition(ballPosition);
@@ -324,6 +326,7 @@ namespace op
 		OnCollisionEnter(other);
 	}
 
+	//
 	void BallScript::FollowPaddle()
 	{
 		GameObject* owner = GetOwner(); // 공 오브젝트
@@ -353,6 +356,7 @@ namespace op
 		ballTransform->SetPosition(ballPos);
 	}
 
+	// 벽돌 반사와 파괴
 	void BallScript::ReflectBrick(Collider* other)
 	{
 		GameObject* owner = GetOwner(); // 공 오브젝트
@@ -385,12 +389,12 @@ namespace op
 		Vector2 brickSize = other->GetSize() * 100.0f; // 콜라이더 크기에 100을 곱해 실제 크기로 사용
 		Vector2 brickCenter = brickPosition + brickSize / 2.0f; // 왼쪽 위에 너비/높이의 절반을 더하면 벽돌 중심이 됨
 
-		// 벽돌 중심을 기준으로 공이 어느쪽에 있는지 계싼
-		float deltaX = ballPosition.x - brickCenter.x;
-		float deltaY = ballPosition.y - brickCenter.y;
 
-		float overlapX = brickSize.x / 2.0f + m_radius - std::fabs(deltaX);
-		float overlapY = brickSize.y / 2.0f + m_radius - std::fabs(deltaY);
+		float deltaX = ballPosition.x - brickCenter.x; // 음수면 공이 벽돌보다 왼쪽, 양수면 오른쪽
+		float deltaY = ballPosition.y - brickCenter.y; // 음수면 공이 벽돌보다 위쪽, 양수면 아래쪽
+
+		float overlapX = brickSize.x / 2.0f + m_radius - std::fabs(deltaX); // 공이랑 벽돌이랑 겹친 픽셀
+		float overlapY = brickSize.y / 2.0f + m_radius - std::fabs(deltaY); // 공이랑 벽돌이랑 겹친 픽셀
 
 		if (overlapX <= 0.0f || overlapY <= 0.0f)
 		{
@@ -435,10 +439,8 @@ namespace op
 		}
 		else
 		{
-			// y 방향으로 꺼내는 이동량이 더 작거나 같으면
-			// 위아래 방향으로 반사한다.
 
-			if (deltaY < 0.0f)
+			if (deltaY < 0.0f) // 공이 벽돌 중심보다 위쪽
 			{
 				// 공이 벽돌 중심보다 위쪽에 있다.
 				// 공을 벽돌 윗면 바로 위로 꺼낸다.
