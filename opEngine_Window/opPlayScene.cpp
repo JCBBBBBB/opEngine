@@ -75,25 +75,25 @@ namespace op
 
 		BoxCollider2D* paddleCollider = m_paddle->AddComponent<BoxCollider2D>();
 		paddleCollider->SetSize(paddleSize / 100.0f);
-		paddleCollider->SetOffset(Vector2::Zero);
+		paddleCollider->SetOffset(Vector2::Zero); // 패들의 위치를 그대로 충돌 영역의 왼쪽 위로 사용
 
 		// 공
 		m_ball = object::Instantiate<GameObject>(enums::LayerType::Player);
 		m_ball->SetName(L"Ball");
 		BallScript* ballScript = m_ball->AddComponent<BallScript>();
 		ballScript->SetPaddle(m_paddle); // 공에게 따라갈 막대를 알려준다
-		ballScript->SetPlayScene(this);
+		ballScript->SetPlayScene(this); // 공에게 현재 PlayScene의 주소를 알려준다 // 
 
 
 		// 공 충돌 영역
-		float radius = ballScript->GetRadius();
-		float diameter = radius * 2.0f;
+		float radius = ballScript->GetRadius(); // 반지름
+		float diameter = radius * 2.0f; // 지름
 
 		BoxCollider2D* ballCollider = m_ball->AddComponent<BoxCollider2D>();
 		ballCollider->SetSize(Vector2(diameter / 100.0f, diameter / 100.0f));
 		ballCollider->SetOffset(Vector2(-radius, -radius));
 
-		ballScript->Reset();
+		ballScript->Reset(); // 공을 발사 대기 상태로 만들고 패들 위에 놓는다
 		
 
 
@@ -103,11 +103,9 @@ namespace op
 
 	void PlayScene::Update()
 	{
-		// 게임이 끝나면 객체들이 Update를 실행하지 않는다
-		// 패들 조작과 공 이동이 멈춘다
-		if (IsFinished())
+		if (IsFinished()) // 게임 오버 또는 전체 클리어라면
 		{
-			if (m_resultScene != nullptr)
+			if (m_resultScene != nullptr) // 연결된 결과 씬이 있다면
 			{
 				// 결과 화면에 최종값을 복사한다
 				m_resultScene->SetResult(m_score, m_stage, m_isClear);
@@ -131,7 +129,7 @@ namespace op
 				}
 			}
 
-			if (m_stage < MaxStage)
+			if (m_stage < MaxStage) // 마지막 스테이지 이전이면
 			{
 				m_stage++;
 
