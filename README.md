@@ -167,49 +167,6 @@ m_velocity.y = -std::sqrt(verticalSpeedSquared);
 - MSVC v143, Windows SDK, C++20
 - 저장소의 FMOD 헤더와 호환되는 Windows x64용 FMOD Core / Studio 라이브러리와 DLL
 
-### 1. 저장소 준비
-
-```powershell
-git clone https://github.com/JCBBBBBB/opEngine.git
-cd opEngine
-```
-
-### 2. FMOD 의존성 준비
-
-저장소에는 FMOD 헤더가 포함되어 있으나, `.lib`와 `.dll` 파일은 Git으로 추적되지 않습니다. 헤더의 버전은 **2.02.14**이며, 호환되는 SDK의 파일을 아래 위치에 준비해야 합니다. 현재 프로젝트의 x64 빌드 설정이 이 경로를 사용합니다.
-
-```text
-External/Library/Fmod/
-├─ Debug/
-│  ├─ fmodL_vc.lib
-│  ├─ fmodstudioL_vc.lib
-│  ├─ fmodL.dll
-│  └─ fmodstudioL.dll
-└─ Release/
-   ├─ fmod_vc.lib
-   ├─ fmodstudio_vc.lib
-   ├─ fmod.dll
-   └─ fmodstudio.dll
-```
-
-FMOD는 기존 엔진의 오디오 초기화에 사용됩니다. 위 파일이 준비되면 빌드 후 이벤트가 필요한 DLL을 실행 파일의 출력 폴더로 복사합니다.
-
-### 3. Visual Studio에서 실행
-
-1. `opEngine.sln`을 엽니다.
-2. **`Editor_Window`를 시작 프로젝트로 설정**합니다. `opEngine_Window`는 게임과 엔진 코드를 빌드하는 정적 라이브러리 프로젝트입니다.
-3. 솔루션 구성을 **`Debug | x64`**로 선택합니다.
-4. `Editor_Window`의 디버깅 작업 디렉터리를 `$(ProjectDir)`로 설정합니다. 기본 리소스 경로가 이 위치를 기준으로 합니다.
-5. 솔루션을 빌드한 뒤 `Ctrl + F5`로 실행합니다.
-
-<details>
-<summary><b>리소스 경로 또는 DLL 문제로 실행되지 않을 때</b></summary>
-
-- 리소스 로드는 [`opLoadResources.h`](opEngine_Window/opLoadResources.h)에서 설정합니다. `..\Resources\` 상대 경로와 함께 `Player.bmp`에 대한 개발 환경의 절대 경로가 남아 있으므로, 다른 위치에 복제했다면 해당 경로를 자신의 저장소 위치에 맞게 수정해야 합니다.
-- `fmodL.dll`, `fmodstudioL.dll` 등을 찾을 수 없다는 메시지가 나오면, 현재 빌드 구성에 맞는 DLL이 실행 파일 폴더에 복사되었는지 확인합니다.
-- FMOD 파일의 아키텍처가 빌드 대상인 x64와 일치하는지 확인합니다.
-
-</details>
 
 ## 프로젝트 구성
 
