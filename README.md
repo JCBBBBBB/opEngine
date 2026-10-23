@@ -38,7 +38,6 @@
 | :---: | :---: | :---: |
 | ![게임 시작과 조작 방법을 안내하는 타이틀 화면](docs/images/breakout-title.png) | ![벽돌, 공, 패들과 점수·목숨·스테이지가 표시된 플레이 화면](docs/images/breakout-play.png) | ![게임 종료 결과와 재시작 방법을 안내하는 결과 화면](docs/images/breakout-result.png) |
 
-*화면과 아래의 반사 개선 도식은 작성자의 벽돌깨기 포트폴리오에서 가져왔습니다.*
 
 <a id="features"></a>
 
